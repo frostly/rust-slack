@@ -2,6 +2,8 @@
 extern crate curl;
 extern crate serialize;
 
-pub mod slack;
+pub use slack::{Slack, Payload, Attachment, Attachments};
+
+mod slack;
 
 // #[cfg(test)]
