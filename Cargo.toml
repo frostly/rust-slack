@@ -1,0 +1,16 @@
+[package]
+name = "rust-slack"
+version = "0.0.1"
+authors = [ "brickley@gmail.com" ]
+
+[dependencies.curl]
+git = "https://github.com/carllerche/curl-rust.git"
+
+[dependencies.shiny]
+git = "https://github.com/farcaller/shiny.git"
+
+
+[[lib]]
+
+name = "slack"
+path = "src/lib.rs"
