@@ -1,5 +1,5 @@
 [package]
-name = "rust-slack"
+name = "slack"
 version = "0.0.1"
 authors = [ "brickley@gmail.com" ]
 
@@ -11,6 +11,5 @@ git = "https://github.com/farcaller/shiny.git"
 
 
 [[lib]]
-
 name = "slack"
 path = "src/lib.rs"
