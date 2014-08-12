@@ -9,7 +9,7 @@ pub struct Slack {
 
 impl Slack {
     pub fn send(&self, payload: Payload) -> Result<(), String> {
-        let url = format!("https://{}.slack.com/services/hooks/incoming-webhook?token={}",self.domain, self.token);
+        let url = format!("https://{}.slack.com/services/hooks/incoming-webhook?token={}", self.domain, self.token);
         println!("url = {}", url);
         println!("sending payload, {}", payload);
         let resp = http::handle()
@@ -53,4 +53,3 @@ pub struct Attachment {
     value : &'static str,
     short : Option<bool>
 }
-
