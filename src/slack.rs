@@ -2,8 +2,8 @@ use curl::http;
 use serialize::{json, Encodable};
 
 pub struct Slack {
-    pub domain : &'static str,
-    pub token  : &'static str
+    domain : &'static str,
+    token  : &'static str
 }
 
 impl Slack {
