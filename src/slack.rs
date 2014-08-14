@@ -8,14 +8,13 @@ pub struct Slack {
 }
 
 impl Slack {
-    pub fn send(&self, payload: Payload) -> Result<(), String> {
+    pub fn send(&self, payload: &Payload) -> Result<(), String> {
         let url = format!("https://{}.slack.com/services/hooks/incoming-webhook?token={}", self.domain, self.token);
-        println!("url = {}", url);
-        println!("sending payload, {}", payload);
+        debug!("sending payload, {}", payload);
         let resp = http::handle()
-          .post(url, &json::encode(&payload))
+          .post(url, &json::encode(payload))
           .exec().unwrap();
-        println!("{}",resp);
+        debug!("slack response, {}", resp);
 
         let body = str::from_utf8(resp.get_body());
         match body {
