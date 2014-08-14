@@ -3,8 +3,8 @@ use std::str;
 use serialize::{json, Encodable};
 
 pub struct Slack {
-    pub domain : &'static str,
-    pub token  : &'static str
+    pub domain : &str,
+    pub token  : &str
 }
 
 impl Slack {
@@ -27,11 +27,11 @@ impl Slack {
 
 #[deriving(Encodable, Show)]
 pub struct Payload {
-    pub channel      : &'static str,
-    pub text         : &'static str,
-    pub username     : Option<&'static str>,
-    pub icon_url     : Option<&'static str>,
-    pub icon_emoji   : Option<&'static str>,
+    pub channel      : &str,
+    pub text         : &str,
+    pub username     : Option<&str>,
+    pub icon_url     : Option<&str>,
+    pub icon_emoji   : Option<&str>,
     pub attachments  : Option<Attachments>,
     pub unfurl_links : Option<u8>,
     pub link_names   : Option<u8>
@@ -39,16 +39,16 @@ pub struct Payload {
 
 #[deriving(Encodable, Show)]
 pub struct Attachments {
-    pub fallback : &'static str,
-    pub text     : Option<&'static str>,
-    pub pretext  : Option<&'static str>,
-    pub color    : &'static str,
+    pub fallback : &str,
+    pub text     : Option<&str>,
+    pub pretext  : Option<&str>,
+    pub color    : &str,
     pub fields   : Vec<Attachment>
 }
 
 #[deriving(Encodable, Show)]
 pub struct Attachment {
-    pub title : &'static str,
-    pub value : &'static str,
+    pub title : &str,
+    pub value : &str,
     pub short : Option<bool>
 }
