@@ -7,5 +7,3 @@ extern crate serialize;
 pub use slack::{Slack, Payload, Attachment, Attachments};
 
 mod slack;
-
-// #[cfg(test)]
