@@ -6,10 +6,6 @@ authors = [ "brickley@gmail.com" ]
 [dependencies.curl]
 git = "https://github.com/carllerche/curl-rust.git"
 
-[dependencies.shiny]
-git = "https://github.com/farcaller/shiny.git"
-
-
 [[lib]]
 name = "slack"
 path = "src/lib.rs"
