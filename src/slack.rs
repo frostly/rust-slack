@@ -3,16 +3,18 @@ use std::str;
 use serialize::{json, Encodable};
 
 pub struct Slack {
-    pub domain : &str,
-    pub token  : &str
+    incoming_url : String
 }
 
 impl Slack {
+    pub fn new(domain: String, token: String) -> Slack {
+        let url = format!("https://{}.slack.com/services/hooks/incoming-webhook?token={}", domain, token);
+        Slack {incoming_url: url}
+    }
     pub fn send(&self, payload: &Payload) -> Result<(), String> {
-        let url = format!("https://{}.slack.com/services/hooks/incoming-webhook?token={}", self.domain, self.token);
         debug!("sending payload, {}", payload);
         let resp = http::handle()
-          .post(url, &json::encode(payload))
+          .post(self.incoming_url.as_slice(), &json::encode(payload))
           .exec().unwrap();
         debug!("slack response, {}", resp);
 
@@ -27,11 +29,11 @@ impl Slack {
 
 #[deriving(Encodable, Show)]
 pub struct Payload {
-    pub channel      : &str,
-    pub text         : &str,
-    pub username     : Option<&str>,
-    pub icon_url     : Option<&str>,
-    pub icon_emoji   : Option<&str>,
+    pub channel      : String,
+    pub text         : String,
+    pub username     : Option<String>,
+    pub icon_url     : Option<String>,
+    pub icon_emoji   : Option<String>,
     pub attachments  : Option<Attachments>,
     pub unfurl_links : Option<u8>,
     pub link_names   : Option<u8>
@@ -39,16 +41,16 @@ pub struct Payload {
 
 #[deriving(Encodable, Show)]
 pub struct Attachments {
-    pub fallback : &str,
-    pub text     : Option<&str>,
-    pub pretext  : Option<&str>,
-    pub color    : &str,
+    pub fallback : String,
+    pub text     : Option<String>,
+    pub pretext  : Option<String>,
+    pub color    : String,
     pub fields   : Vec<Attachment>
 }
 
 #[deriving(Encodable, Show)]
 pub struct Attachment {
-    pub title : &str,
-    pub value : &str,
+    pub title : String,
+    pub value : String,
     pub short : Option<bool>
 }
