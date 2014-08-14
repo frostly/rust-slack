@@ -54,3 +54,9 @@ pub struct Attachment {
     pub value : String,
     pub short : Option<bool>
 }
+
+#[test]
+fn slack_test() {
+    let s = Slack::new("hello.com".to_string(), "secret".to_string());
+    assert_eq!(s.incoming_url, "https://hello.com.slack.com/services/hooks/incoming-webhook?token=secret".to_string());
+}
