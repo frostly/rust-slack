@@ -24,8 +24,17 @@ Add your slack integration:
 ```rust
 fn main() {
     let slack = Slack::new("my-slack-domain".to_string(), "my-secret-token-1234".to_string());
+    let p = Payload {
+      channel: "#testing".to_string(),
+      text: "test message".to_string(),
+      username: Some("My Bot".to_string()),
+      icon_url: None,
+      icon_emoji: Some(":chart_with_upwards_trend:".to_string()),
+      attachments: None,
+      unfurl_links: Some(0),
+      link_names: Some(1)
+    };
 
-    let p = Payload {channel: "#testing".to_string(), text: "test message".to_string(), username: Some("My Bot".to_string()), icon_url: None, icon_emoji: Some(":chart_with_upwards_trend:".to_string()), attachments: None, unfurl_links: Some(0), link_names: Some(1)};
     let res = slack.send(&p);
     match res {
         Ok(()) => println!("ok"),
