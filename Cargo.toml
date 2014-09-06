@@ -4,8 +4,8 @@ version = "0.0.1"
 authors = [ "brickley@gmail.com" ]
 
 [dependencies.curl]
-git = "https://github.com/carllerche/curl-rust.git"
+git = "https://github.com/carllerche/curl-rust"
 
-[[lib]]
+[lib]
 name = "slack"
 path = "src/lib.rs"
