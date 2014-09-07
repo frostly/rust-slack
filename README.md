@@ -4,6 +4,8 @@ A rust crate for sending messages to Slack via webhooks.
 
 [Slack](https://slack.com/) is a messaging platform for team collaboration.
 
+[![Build Status](https://travis-ci.org/frostly/rust-slack.png?branch=master)](https://travis-ci.org/frostly/rust-slack)
+
 # Usage
 
 Add the crate to your existing project:
