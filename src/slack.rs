@@ -171,7 +171,7 @@ fn json_slacklink_test() {
 }
 
 #[test]
-fn json_attachment_test() {
+fn json_payload_test() {
     let a = [Attachment::new(
         "fallback <&>".to_string(),
         Some("text <&>".to_string()),
