@@ -162,10 +162,32 @@ fn slack_link_test() {
 }
 
 #[test]
-fn json_test() {
+fn json_slacklink_test() {
     let s = SlackLink {
         text  : SlackText("moo <&> moo".to_string()),
         url   : "http://google.com".to_string()
     };
     assert_eq!(json::encode(&s).to_string(), "\"<http://google.com|moo &lt;&amp;&gt; moo>\"".to_string())
+}
+
+#[test]
+fn json_attachment_test() {
+    let a = [Attachment::new(
+        "fallback <&>".to_string(),
+        Some("text <&>".to_string()),
+        None,
+        "#6800e8".to_string(),
+        None)];
+
+    let p = Payload::new(
+        "#abc".to_string(),
+        "test message".to_string(),
+        Some("Bot".to_string()),
+        None,
+        Some(":chart_with_upwards_trend:".to_string()),
+        Some(a.as_slice()),
+        Some(0),
+        Some(0));
+
+    assert_eq!(json::encode(&p).to_string(), r##"{"channel":"#abc","text":"test message","username":"Bot","icon_url":null,"icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","pretext":null,"color":"#6800e8","fields":null}],"unfurl_links":0,"link_names":0}"##.to_string())
 }
