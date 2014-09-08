@@ -22,8 +22,8 @@ impl Slack {
         let body = str::from_utf8(resp.get_body());
         match body {
             Some("ok") => Ok(()),
-            Some(x) => Err(x.to_string()),
-            None => Err("no response given".to_string())
+            Some(x)    => Err(x.to_string()),
+            None       => Err("no response given".to_string())
         }
     }
 }
@@ -40,6 +40,21 @@ pub struct Payload {
     pub link_names   : Option<u8>
 }
 
+impl Payload {
+    pub fn new(channel: String, text: String, username: Option<String>, icon_url: Option<String>, icon_emoji: Option<String>, attachments: Option<Attachment>, unfurl_links: Option<u8>, link_names: Option<u8>) -> Payload {
+        return Payload {
+            channel      : channel,
+            text         : SlackText(text),
+            username     : username,
+            icon_url     : icon_url,
+            icon_emoji   : icon_emoji,
+            attachments  : attachments,
+            unfurl_links : unfurl_links,
+            link_names   : link_names
+        }
+    }
+}
+
 #[deriving(Encodable, Show)]
 pub struct Attachment {
     pub fallback : SlackText,
@@ -47,6 +62,25 @@ pub struct Attachment {
     pub pretext  : Option<SlackText>,
     pub color    : String,
     pub fields   : Option<Vec<Field>>
+}
+
+impl Attachment {
+    pub fn new(fallback: String, text: Option<String>, pretext: Option<String>, color: String, fields: Option<Vec<Field>>) -> Attachment {
+        return Attachment {
+            fallback : SlackText(fallback),
+            text     : some_slacktext(text),
+            pretext  : some_slacktext(pretext),
+            color    : color,
+            fields   : fields
+        }
+    }
+}
+
+fn some_slacktext(opt: Option<String>) -> Option<SlackText> {
+    return match opt {
+        Some(opt) => Some(SlackText(opt)),
+        _         => None
+    }
 }
 
 #[deriving(Encodable, Show)]
@@ -74,8 +108,17 @@ impl fmt::Show for SlackText {
 
 #[deriving(Encodable)]
 pub struct SlackLink {
-    pub url: String,
-    pub text: SlackText,
+    pub url  : String,
+    pub text : SlackText,
+}
+
+impl SlackLink {
+    pub fn new(url: String, text: String) -> SlackLink {
+        return SlackLink {
+            url  : url,
+            text : SlackText(text)
+        }
+    }
 }
 
 impl fmt::Show for SlackLink {
@@ -99,8 +142,8 @@ fn slack_text_test() {
 #[test]
 fn slack_link_test() {
     let s = SlackLink {
-        text: SlackText("moo <&> moo".to_string()),
-        url: "http://google.com".to_string()
+        text  : SlackText("moo <&> moo".to_string()),
+        url   : "http://google.com".to_string()
     };
     assert_eq!(format!("{}",s), "<http://google.com|moo &lt;&amp;&gt; moo>".to_string());
 }
