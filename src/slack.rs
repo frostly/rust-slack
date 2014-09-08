@@ -14,6 +14,7 @@ impl Slack {
     }
     pub fn send(&self, payload: &Payload) -> Result<(), String> {
         debug!("sending payload, {}", payload);
+        debug!("JSON payload, {}", &json::encode(payload));
         let resp = http::handle()
           .post(self.incoming_url.as_slice(), &json::encode(payload))
           .exec().unwrap();
