@@ -36,7 +36,7 @@ pub struct Payload {
     pub username     : Option<String>,
     pub icon_url     : Option<String>,
     pub icon_emoji   : Option<String>,
-    pub attachments  : Option<Attachment>,
+    pub attachments  : Option<Vec<Attachment>>,
     pub unfurl_links : Option<u8>,
     pub link_names   : Option<u8>
 }
