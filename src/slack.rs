@@ -1,7 +1,7 @@
 use std::fmt;
 use curl::http;
 use std::str;
-use serialize::{json, Encodable};
+use serialize::{json, Encodable, Encoder};
 
 pub struct Slack {
     incoming_url : String
@@ -91,7 +91,6 @@ pub struct Field {
     pub short : Option<bool>
 }
 
-#[deriving(Encodable)]
 pub struct SlackText(String);
 
 impl fmt::Show for SlackText {
@@ -107,7 +106,13 @@ impl fmt::Show for SlackText {
     }
 }
 
-#[deriving(Encodable)]
+impl <S: Encoder<E>, E> Encodable<S, E> for SlackText {
+  fn encode(&self, encoder: &mut S) -> Result<(), E> {
+      let text = format!("{}", &self);
+      encoder.emit_str(text.as_slice())
+  }
+}
+
 pub struct SlackLink {
     pub url  : String,
     pub text : SlackText,
@@ -126,6 +131,13 @@ impl fmt::Show for SlackLink {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f , "<{}|{}>" , self.url , self.text)
     }
+}
+
+impl <S: Encoder<E>, E> Encodable<S, E> for SlackLink {
+  fn encode(&self, encoder: &mut S) -> Result<(), E> {
+      let text = format!("{}", &self);
+      encoder.emit_str(text.as_slice())
+  }
 }
 
 #[test]
@@ -147,4 +159,13 @@ fn slack_link_test() {
         url   : "http://google.com".to_string()
     };
     assert_eq!(format!("{}",s), "<http://google.com|moo &lt;&amp;&gt; moo>".to_string());
+}
+
+#[test]
+fn json_test() {
+    let s = SlackLink {
+        text  : SlackText("moo <&> moo".to_string()),
+        url   : "http://google.com".to_string()
+    };
+    assert_eq!(json::encode(&s).to_string(), "\"<http://google.com|moo &lt;&amp;&gt; moo>\"".to_string())
 }
