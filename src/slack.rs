@@ -30,19 +30,19 @@ impl Slack {
 }
 
 #[deriving(Encodable, Show)]
-pub struct Payload {
+pub struct Payload<'a> {
     pub channel      : String,
     pub text         : SlackText,
     pub username     : Option<String>,
     pub icon_url     : Option<String>,
     pub icon_emoji   : Option<String>,
-    pub attachments  : Option<Vec<Attachment>>,
+    pub attachments  : Option<&'a[Attachment]>,
     pub unfurl_links : Option<u8>,
     pub link_names   : Option<u8>
 }
 
-impl Payload {
-    pub fn new(channel: String, text: String, username: Option<String>, icon_url: Option<String>, icon_emoji: Option<String>, attachments: Option<Attachment>, unfurl_links: Option<u8>, link_names: Option<u8>) -> Payload {
+impl<'a> Payload<'a> {
+    pub fn new(channel: String, text: String, username: Option<String>, icon_url: Option<String>, icon_emoji: Option<String>, attachments: Option<&'a[Attachment]>, unfurl_links: Option<u8>, link_names: Option<u8>) -> Payload {
         return Payload {
             channel      : channel,
             text         : SlackText(text),
