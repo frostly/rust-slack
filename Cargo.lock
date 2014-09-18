@@ -1,0 +1,28 @@
+[root]
+name = "slack"
+version = "0.0.1"
+dependencies = [
+ "curl 0.0.1 (git+https://github.com/carllerche/curl-rust#a98f429071e09d8c61b1b8b946f605ef5aba3ab9)",
+]
+
+[[package]]
+name = "curl"
+version = "0.0.1"
+source = "git+https://github.com/carllerche/curl-rust#a98f429071e09d8c61b1b8b946f605ef5aba3ab9"
+dependencies = [
+ "url 0.1.0 (git+https://github.com/servo/rust-url#bfdf809365600a7941a77524f9bb065886de3379)",
+]
+
+[[package]]
+name = "encoding"
+version = "0.1.0"
+source = "git+https://github.com/lifthrasiir/rust-encoding#35f0d70f65f73ba16f296f9ec675eddee661ba79"
+
+[[package]]
+name = "url"
+version = "0.1.0"
+source = "git+https://github.com/servo/rust-url#bfdf809365600a7941a77524f9bb065886de3379"
+dependencies = [
+ "encoding 0.1.0 (git+https://github.com/lifthrasiir/rust-encoding#35f0d70f65f73ba16f296f9ec675eddee661ba79)",
+]
+

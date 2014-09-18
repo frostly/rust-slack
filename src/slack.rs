@@ -30,19 +30,19 @@ impl Slack {
 }
 
 #[deriving(Encodable, Show)]
-pub struct Payload<'a> {
+pub struct Payload {
     pub channel      : String,
     pub text         : SlackText,
     pub username     : Option<String>,
     pub icon_url     : Option<String>,
     pub icon_emoji   : Option<String>,
-    pub attachments  : Option<&'a[Attachment]>,
+    pub attachments  : Option<Vec<Attachment>>,
     pub unfurl_links : Option<u8>,
     pub link_names   : Option<u8>
 }
 
-impl<'a> Payload<'a> {
-    pub fn new(channel: String, text: String, username: Option<String>, icon_url: Option<String>, icon_emoji: Option<String>, attachments: Option<&'a[Attachment]>, unfurl_links: Option<u8>, link_names: Option<u8>) -> Payload {
+impl Payload {
+    pub fn new(channel: String, text: String, username: Option<String>, icon_url: Option<String>, icon_emoji: Option<String>, attachments: Option<Vec<Attachment>>, unfurl_links: Option<u8>, link_names: Option<u8>) -> Payload {
         return Payload {
             channel      : channel,
             text         : SlackText(text),
@@ -172,7 +172,7 @@ fn json_slacklink_test() {
 
 #[test]
 fn json_payload_test() {
-    let a = [Attachment::new(
+    let a = vec![Attachment::new(
         "fallback <&>".to_string(),
         Some("text <&>".to_string()),
         None,
@@ -185,7 +185,7 @@ fn json_payload_test() {
         Some("Bot".to_string()),
         None,
         Some(":chart_with_upwards_trend:".to_string()),
-        Some(a.as_slice()),
+        Some(a),
         Some(0),
         Some(0));
 
