@@ -140,54 +140,60 @@ impl <S: Encoder<E>, E> Encodable<S, E> for SlackLink {
   }
 }
 
-#[test]
-fn slack_incoming_url_test() {
-    let s = Slack::new("hello.com".to_string(), "secret".to_string());
-    assert_eq!(s.incoming_url, "https://hello.com.slack.com/services/hooks/incoming-webhook?token=secret".to_string());
-}
+#[cfg(test)]
+mod test {
+    use slack::{Slack, SlackLink, SlackText, Payload, Attachment};
+    use serialize::{json};
 
-#[test]
-fn slack_text_test() {
-    let s = SlackText("moo <&> moo".to_string());
-    assert_eq!(format!("{}",s), "moo &lt;&amp;&gt; moo".to_string());
-}
+    #[test]
+    fn slack_incoming_url_test() {
+        let s = Slack::new("hello.com".to_string(), "secret".to_string());
+        assert_eq!(s.incoming_url, "https://hello.com.slack.com/services/hooks/incoming-webhook?token=secret".to_string());
+    }
 
-#[test]
-fn slack_link_test() {
-    let s = SlackLink {
-        text  : SlackText("moo <&> moo".to_string()),
-        url   : "http://google.com".to_string()
-    };
-    assert_eq!(format!("{}",s), "<http://google.com|moo &lt;&amp;&gt; moo>".to_string());
-}
+    #[test]
+    fn slack_text_test() {
+        let s = SlackText("moo <&> moo".to_string());
+        assert_eq!(format!("{}",s), "moo &lt;&amp;&gt; moo".to_string());
+    }
 
-#[test]
-fn json_slacklink_test() {
-    let s = SlackLink {
-        text  : SlackText("moo <&> moo".to_string()),
-        url   : "http://google.com".to_string()
-    };
-    assert_eq!(json::encode(&s).to_string(), "\"<http://google.com|moo &lt;&amp;&gt; moo>\"".to_string())
-}
+    #[test]
+    fn slack_link_test() {
+        let s = SlackLink {
+            text  : SlackText("moo <&> moo".to_string()),
+            url   : "http://google.com".to_string()
+        };
+        assert_eq!(format!("{}",s), "<http://google.com|moo &lt;&amp;&gt; moo>".to_string());
+    }
 
-#[test]
-fn json_payload_test() {
-    let a = vec![Attachment::new(
-        "fallback <&>".to_string(),
-        Some("text <&>".to_string()),
-        None,
-        "#6800e8".to_string(),
-        None)];
+    #[test]
+    fn json_slacklink_test() {
+        let s = SlackLink {
+            text  : SlackText("moo <&> moo".to_string()),
+            url   : "http://google.com".to_string()
+        };
+        assert_eq!(json::encode(&s).to_string(), "\"<http://google.com|moo &lt;&amp;&gt; moo>\"".to_string())
+    }
 
-    let p = Payload::new(
-        "#abc".to_string(),
-        "test message".to_string(),
-        Some("Bot".to_string()),
-        None,
-        Some(":chart_with_upwards_trend:".to_string()),
-        Some(a),
-        Some(0),
-        Some(0));
+    #[test]
+    fn json_payload_test() {
+        let a = vec![Attachment::new(
+            "fallback <&>".to_string(),
+            Some("text <&>".to_string()),
+            None,
+            "#6800e8".to_string(),
+            None)];
 
-    assert_eq!(json::encode(&p).to_string(), r##"{"channel":"#abc","text":"test message","username":"Bot","icon_url":null,"icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","pretext":null,"color":"#6800e8","fields":null}],"unfurl_links":0,"link_names":0}"##.to_string())
+        let p = Payload::new(
+            "#abc".to_string(),
+            "test message".to_string(),
+            Some("Bot".to_string()),
+            None,
+            Some(":chart_with_upwards_trend:".to_string()),
+            Some(a),
+            Some(0),
+            Some(0));
+
+        assert_eq!(json::encode(&p).to_string(), r##"{"channel":"#abc","text":"test message","username":"Bot","icon_url":null,"icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","pretext":null,"color":"#6800e8","fields":null}],"unfurl_links":0,"link_names":0}"##.to_string())
+    }
 }
