@@ -8,8 +8,7 @@ pub struct Slack {
 }
 
 impl Slack {
-    pub fn new(domain: String, token: String) -> Slack {
-        let url = format!("https://{}.slack.com/services/hooks/incoming-webhook?token={}", domain, token);
+    pub fn new(url: String) -> Slack {
         Slack {incoming_url: url}
     }
     pub fn send(&self, payload: &Payload) -> Result<(), String> {
@@ -147,8 +146,8 @@ mod test {
 
     #[test]
     fn slack_incoming_url_test() {
-        let s = Slack::new("hello.com".to_string(), "secret".to_string());
-        assert_eq!(s.incoming_url, "https://hello.com.slack.com/services/hooks/incoming-webhook?token=secret".to_string());
+        let s = Slack::new("https://hooks.slack.com/services/abc/123/45z".to_string());
+        assert_eq!(s.incoming_url, "https://hooks.slack.com/services/abc/123/45z".to_string());
     }
 
     #[test]

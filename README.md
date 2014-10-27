@@ -25,7 +25,7 @@ Add your slack integration:
 
 ```rust
 fn main() {
-    let slack = Slack::new("my-slack-domain".to_string(), "my-secret-token-1234".to_string());
+    let slack = Slack::new("https://hooks.slack.com/services/abc/123/45z".to_string());
     let p = Payload {
       channel: "#testing".to_string(),
       text: "test message".to_string(),
