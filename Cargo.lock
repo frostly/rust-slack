@@ -2,27 +2,27 @@
 name = "slack"
 version = "0.0.1"
 dependencies = [
- "curl 0.0.1 (git+https://github.com/carllerche/curl-rust#f574d177895d5817e4b84cf41a2fd5f201ec96d3)",
+ "curl 0.0.1 (git+https://github.com/carllerche/curl-rust)",
 ]
 
 [[package]]
 name = "curl"
 version = "0.0.1"
-source = "git+https://github.com/carllerche/curl-rust#f574d177895d5817e4b84cf41a2fd5f201ec96d3"
+source = "git+https://github.com/carllerche/curl-rust#6fe45af9bf15c3ed60db61eb36bb070869769bba"
 dependencies = [
- "url 0.1.0 (git+https://github.com/servo/rust-url#7f1991d847fb8cf8648def2ff121bae90b89131f)",
+ "url 0.1.0 (git+https://github.com/servo/rust-url)",
 ]
 
 [[package]]
 name = "encoding"
 version = "0.1.0"
-source = "git+https://github.com/lifthrasiir/rust-encoding#dd6183298e20b038fcd1cc4ab91405b3c72e49db"
+source = "git+https://github.com/lifthrasiir/rust-encoding#d5f3d71614542c57527b361c20c13fa5b009b605"
 
 [[package]]
 name = "url"
 version = "0.1.0"
-source = "git+https://github.com/servo/rust-url#7f1991d847fb8cf8648def2ff121bae90b89131f"
+source = "git+https://github.com/servo/rust-url#9142b86a812ac5bc886f76235585557d8e002246"
 dependencies = [
- "encoding 0.1.0 (git+https://github.com/lifthrasiir/rust-encoding#dd6183298e20b038fcd1cc4ab91405b3c72e49db)",
+ "encoding 0.1.0 (git+https://github.com/lifthrasiir/rust-encoding)",
 ]
 
