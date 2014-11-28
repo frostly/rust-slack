@@ -94,14 +94,23 @@ pub struct SlackText(String);
 
 impl fmt::Show for SlackText {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f , "{}" , self.get_escaped_text())
+    }
+}
+
+impl SlackText {
+    fn get_escaped_text(&self) -> String {
         let SlackText(ref text) = *self;
-        let mut re = regex!("&");
-        let mut t2 = re.replace_all(text.as_slice(), "&amp;");
-        re = regex!("<");
-        t2 = re.replace_all(t2.as_slice(), "&lt;");
-        re = regex!(">");
-        t2 = re.replace_all(t2.as_slice(), "&gt;");
-        write!(f , "{}" , t2)
+        let mut escaped_text = String::new();
+        for c in text.chars() {
+            match c {
+                '&' => escaped_text.push_str("&amp;"),
+                '<' => escaped_text.push_str("&lt;"),
+                '>' => escaped_text.push_str("&gt;"),
+                _ => escaped_text.push(c)
+            }
+        }
+        escaped_text
     }
 }
 
@@ -141,6 +150,7 @@ impl <S: Encoder<E>, E> Encodable<S, E> for SlackLink {
 
 #[cfg(test)]
 mod test {
+    use test::Bencher;
     use slack::{Slack, SlackLink, SlackText, Payload, Attachment};
     use serialize::{json};
 
@@ -194,5 +204,13 @@ mod test {
             Some(0));
 
         assert_eq!(json::encode(&p).to_string(), r##"{"channel":"#abc","text":"test message","username":"Bot","icon_url":null,"icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","pretext":null,"color":"#6800e8","fields":null}],"unfurl_links":0,"link_names":0}"##.to_string())
+    }
+
+    #[bench]
+    fn bench_get_escaped_text(b: &mut Bencher) {
+        let st = SlackText("moo < > & o".to_string());
+        b.iter(|| {
+            st.get_escaped_text()
+        })
     }
 }
