@@ -12,18 +12,8 @@ Add the crate to your existing project:
 
 ```rust
 extern crate slack;
-```
+use slack::{Slack, Payload, Attachment};
 
-Use the components you need:
-
-```rust
-use slack::{Slack, Payload, Attachment, Attachments};
-```
-
-
-Add your slack integration:
-
-```rust
 fn main() {
     let slack = Slack::new("https://hooks.slack.com/services/abc/123/45z".to_string());
     let p = Payload {
