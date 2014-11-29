@@ -2,6 +2,12 @@
 name = "slack"
 version = "0.0.1"
 authors = [ "brickley@gmail.com" ]
+description = "A rust crate for sending messages to Slack via webhooks."
+homepage = "https://github.com/frostly/rust-slack"
+repository = "https://github.com/frostly/rust-slack"
+license = "MIT/Apache-2.0"
+readme = "README.md"
+keywords = ["slack"]
 
 [dependencies.curl]
 git = "https://github.com/carllerche/curl-rust"
