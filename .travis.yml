@@ -1,1 +1,6 @@
 language: rust
+notifications:
+  slack:
+    secure: TkDnUuFH2gOQTLavAtpH2biJIZzsKawZgtsih+rXCn8hujDSXVSZ/TZqjIbnkjD7DLfQO6HIOI4IX/5lRnVitLCjfoo5FJUr9vnMKqRvneBUMEuvOgKQZ86FkGVHcTlSNOhgAKGFMgm0h9epMh+81AN5ExUyofXRFEaHcy7zeMo=
+  email:
+    on_success: never
