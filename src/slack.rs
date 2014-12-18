@@ -2,9 +2,10 @@ use std::fmt;
 use curl::http;
 use std::str;
 use serialize::{json, Encodable, Encoder};
+use self::PayloadTemplate::*;
 
 pub struct Slack {
-    incoming_url : String
+    incoming_url: String
 }
 
 impl Slack {
@@ -30,8 +31,8 @@ impl Slack {
 
 #[deriving(Encodable, Show)]
 pub struct Payload {
-    pub channel      : String,
     pub text         : SlackText,
+    pub channel      : Option<String>,
     pub username     : Option<String>,
     pub icon_url     : Option<String>,
     pub icon_emoji   : Option<String>,
@@ -40,18 +41,69 @@ pub struct Payload {
     pub link_names   : Option<u8>
 }
 
+pub enum PayloadTemplate<'a> {
+    Complete {
+        text: &'a str,
+        channel: Option<&'a str>,
+        username: Option<&'a str>,
+        icon_url: Option<&'a str>,
+        icon_emoji: Option<&'a str>,
+        attachments: Option<Vec<Attachment>>,
+        unfurl_links: Option<bool>,
+        link_names: Option<bool>
+    },
+    Message {
+        text: &'a str
+    }
+}
 impl Payload {
-    pub fn new(channel: String, text: String, username: Option<String>, icon_url: Option<String>, icon_emoji: Option<String>, attachments: Option<Vec<Attachment>>, unfurl_links: Option<u8>, link_names: Option<u8>) -> Payload {
-        return Payload {
-            channel      : channel,
-            text         : SlackText(text),
-            username     : username,
-            icon_url     : icon_url,
-            icon_emoji   : icon_emoji,
-            attachments  : attachments,
-            unfurl_links : unfurl_links,
-            link_names   : link_names
+    pub fn new(t: PayloadTemplate) -> Payload {
+        match t {
+            Complete {
+                text,
+                channel,
+                username,
+                icon_url,
+                icon_emoji,
+                attachments,
+                unfurl_links,
+                link_names
+            } => Payload {
+                text         : SlackText(text.to_string()),
+                channel      : opt_str_to_string(&channel),
+                username     : opt_str_to_string(&username),
+                icon_url     : opt_str_to_string(&icon_url),
+                icon_emoji   : opt_str_to_string(&icon_emoji),
+                attachments  : attachments,
+                unfurl_links : opt_bool_to_u8(&unfurl_links),
+                link_names   : opt_bool_to_u8(&link_names)
+            },
+            Message { text } => Payload {
+                text: SlackText(text.to_string()),
+                channel: None,
+                username: None,
+                icon_url: None,
+                icon_emoji: None,
+                attachments: None,
+                unfurl_links: None,
+                link_names: None
+            }
         }
+    }
+}
+
+fn opt_bool_to_u8(opt: &Option<bool>) -> Option<u8> {
+    match *opt {
+        Some(true) => Some(1u8),
+        Some(false) => Some(0u8),
+        _ => None
+    }
+}
+
+fn opt_str_to_string(opt: &Option<&str>) -> Option<String> {
+    match *opt {
+        Some(x) => Some(x.to_string()),
+        _ => None
     }
 }
 
@@ -65,6 +117,7 @@ pub struct Attachment {
 }
 
 impl Attachment {
+    // TODO: use template for new
     pub fn new(fallback: String, text: Option<String>, pretext: Option<String>, color: String, fields: Option<Vec<Field>>) -> Attachment {
         return Attachment {
             fallback : SlackText(fallback),
@@ -84,6 +137,7 @@ fn some_slacktext(opt: Option<String>) -> Option<SlackText> {
 }
 
 #[deriving(Encodable, Show)]
+// TODO: add new fn
 pub struct Field {
     pub title : String,
     pub value : SlackText,
@@ -127,6 +181,7 @@ pub struct SlackLink {
 }
 
 impl SlackLink {
+    // TODO: pass as &str
     pub fn new(url: String, text: String) -> SlackLink {
         return SlackLink {
             url  : url,
@@ -152,6 +207,7 @@ impl <S: Encoder<E>, E> Encodable<S, E> for SlackLink {
 mod test {
     use test::Bencher;
     use slack::{Slack, SlackLink, SlackText, Payload, Attachment};
+    use slack::PayloadTemplate::*;
     use serialize::{json};
 
     #[test]
@@ -185,7 +241,7 @@ mod test {
     }
 
     #[test]
-    fn json_payload_test() {
+    fn json_complete_payload_test() {
         let a = vec![Attachment::new(
             "fallback <&>".to_string(),
             Some("text <&>".to_string()),
@@ -193,17 +249,27 @@ mod test {
             "#6800e8".to_string(),
             None)];
 
-        let p = Payload::new(
-            "#abc".to_string(),
-            "test message".to_string(),
-            Some("Bot".to_string()),
-            None,
-            Some(":chart_with_upwards_trend:".to_string()),
-            Some(a),
-            Some(0),
-            Some(0));
+        let p = Payload::new(Complete {
+                text: "test message",
+                channel: Some("#abc"),
+                username: Some("Bot"),
+                icon_url: None,
+                icon_emoji: Some(":chart_with_upwards_trend:"),
+                attachments: Some(a),
+                unfurl_links: Some(false),
+                link_names: Some(false)
+            });
 
-        assert_eq!(json::encode(&p).to_string(), r##"{"channel":"#abc","text":"test message","username":"Bot","icon_url":null,"icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","pretext":null,"color":"#6800e8","fields":null}],"unfurl_links":0,"link_names":0}"##.to_string())
+        assert_eq!(json::encode(&p).to_string(), r##"{"text":"test message","channel":"#abc","username":"Bot","icon_url":null,"icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","pretext":null,"color":"#6800e8","fields":null}],"unfurl_links":0,"link_names":0}"##.to_string())
+    }
+
+    #[test]
+    fn json_message_payload_test() {
+        let p = Payload::new(Message {
+                text: "test message",
+            });
+
+        assert_eq!(json::encode(&p).to_string(), r##"{"text":"test message","channel":null,"username":null,"icon_url":null,"icon_emoji":null,"attachments":null,"unfurl_links":null,"link_names":null}"##.to_string())
     }
 
     #[bench]
