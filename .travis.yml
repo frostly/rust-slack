@@ -5,7 +5,7 @@ script:
   - cargo build --verbose
   - cargo test --verbose
   - cargo bench --verbose
-  - rustdoc --test README.md -L target
+  - rustdoc --test README.md -L target/deps -L target
   - cargo doc
 after_success: |
   [ $TRAVIS_BRANCH = master ] &&
