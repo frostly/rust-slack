@@ -4,7 +4,7 @@ use std::str;
 use serialize::{json, Encodable, Encoder};
 
 pub struct Slack {
-    incoming_url: String
+    incoming_url: String,
 }
 
 impl Slack {
@@ -23,7 +23,7 @@ impl Slack {
         match body {
             Some("ok") => Ok(()),
             Some(x)    => Err(x.to_string()),
-            None       => Err("no response given".to_string())
+            None       => Err("no response given".to_string()),
         }
     }
 }
@@ -37,7 +37,7 @@ pub struct Payload {
     pub icon_emoji   : Option<String>,
     pub attachments  : Option<Vec<Attachment>>,
     pub unfurl_links : Option<u8>,
-    pub link_names   : Option<u8>
+    pub link_names   : Option<u8>,
 }
 
 pub enum PayloadTemplate<'a> {
@@ -49,10 +49,10 @@ pub enum PayloadTemplate<'a> {
         icon_emoji: Option<&'a str>,
         attachments: Option<Vec<Attachment>>,
         unfurl_links: Option<bool>,
-        link_names: Option<bool>
+        link_names: Option<bool>,
     },
     Message {
-        text: &'a str
+        text: &'a str,
     },
 }
 impl Payload {
@@ -66,7 +66,7 @@ impl Payload {
                 icon_emoji,
                 attachments,
                 unfurl_links,
-                link_names
+                link_names,
             } => Payload {
                 text         : SlackText(text.to_string()),
                 channel      : opt_str_to_string(&channel),
@@ -75,7 +75,7 @@ impl Payload {
                 icon_emoji   : opt_str_to_string(&icon_emoji),
                 attachments  : attachments,
                 unfurl_links : opt_bool_to_u8(&unfurl_links),
-                link_names   : opt_bool_to_u8(&link_names)
+                link_names   : opt_bool_to_u8(&link_names),
             },
             PayloadTemplate::Message { text } => Payload {
                 text: SlackText(text.to_string()),
@@ -85,8 +85,8 @@ impl Payload {
                 icon_emoji: None,
                 attachments: None,
                 unfurl_links: None,
-                link_names: None
-            }
+                link_names: None,
+            },
         }
     }
 }
@@ -95,14 +95,14 @@ fn opt_bool_to_u8(opt: &Option<bool>) -> Option<u8> {
     match *opt {
         Some(true) => Some(1u8),
         Some(false) => Some(0u8),
-        _ => None
+        _ => None,
     }
 }
 
 fn opt_str_to_string(opt: &Option<&str>) -> Option<String> {
     match *opt {
         Some(x) => Some(x.to_string()),
-        _ => None
+        _ => None,
     }
 }
 
@@ -112,7 +112,7 @@ pub struct Attachment {
     pub text     : Option<SlackText>,
     pub pretext  : Option<SlackText>,
     pub color    : String,
-    pub fields   : Option<Vec<Field>>
+    pub fields   : Option<Vec<Field>>,
 }
 pub enum AttachmentTemplate<'a> {
     Complete {
@@ -120,7 +120,7 @@ pub enum AttachmentTemplate<'a> {
         text: Option<&'a str>,
         pretext: Option<&'a str>,
         color: &'a str,
-        fields: Option<Vec<Field>>
+        fields: Option<Vec<Field>>,
     }
 }
 impl Attachment {
@@ -134,7 +134,7 @@ impl Attachment {
                     text     : opt_str_to_slacktext(&text),
                     pretext  : opt_str_to_slacktext(&pretext),
                     color    : color.to_string(),
-                    fields   : fields
+                    fields   : fields,
             }
         }
     }
@@ -143,7 +143,7 @@ impl Attachment {
 fn opt_str_to_slacktext(opt: &Option<&str>) -> Option<SlackText> {
     match *opt {
         Some(opt) => Some(SlackText(opt.to_string())),
-        _         => None
+        _         => None,
     }
 }
 
@@ -151,7 +151,7 @@ fn opt_str_to_slacktext(opt: &Option<&str>) -> Option<SlackText> {
 pub struct Field {
     pub title : String,
     pub value : SlackText,
-    pub short : Option<bool>
+    pub short : Option<bool>,
 }
 
 impl Field {
@@ -159,7 +159,7 @@ impl Field {
         Field {
             title: title.to_string(),
             value: SlackText(value.to_string()),
-            short: short
+            short: short,
         }
     }
 }
@@ -187,7 +187,7 @@ impl SlackText {
                 '&' => escaped_text.push_str("&amp;"),
                 '<' => escaped_text.push_str("&lt;"),
                 '>' => escaped_text.push_str("&gt;"),
-                _ => escaped_text.push(c)
+                _ => escaped_text.push(c),
             }
         }
         escaped_text
@@ -249,8 +249,8 @@ mod test {
     #[test]
     fn slack_link_test() {
         let s = SlackLink {
-            url   : "http://google.com".to_string()
             text  : SlackText::new("moo <&> moo"),
+            url   : "http://google.com".to_string(),
         };
         assert_eq!(format!("{}",s), "<http://google.com|moo &lt;&amp;&gt; moo>".to_string());
     }
@@ -258,8 +258,8 @@ mod test {
     #[test]
     fn json_slacklink_test() {
         let s = SlackLink {
-            url   : "http://google.com".to_string()
             text  : SlackText::new("moo <&> moo"),
+            url   : "http://google.com".to_string(),
         };
         assert_eq!(json::encode(&s).to_string(), "\"<http://google.com|moo &lt;&amp;&gt; moo>\"".to_string())
     }
@@ -271,7 +271,8 @@ mod test {
             text: Some("text <&>"),
             pretext: None,
             color: "#6800e8",
-            fields: Some(vec![Field::new("title", "value", None)])})];
+            fields: Some(vec![Field::new("title", "value", None)]),
+        })];
 
         let p = Payload::new(PayloadTemplate::Complete {
                 text: "test message",
@@ -281,7 +282,7 @@ mod test {
                 icon_emoji: Some(":chart_with_upwards_trend:"),
                 attachments: Some(a),
                 unfurl_links: Some(false),
-                link_names: Some(false)
+                link_names: Some(false),
             });
 
         assert_eq!(json::encode(&p).to_string(), r##"{"text":"test message","channel":"#abc","username":"Bot","icon_url":null,"icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","pretext":null,"color":"#6800e8","fields":[{"title":"title","value":"value","short":null}]}],"unfurl_links":0,"link_names":0}"##.to_string())
