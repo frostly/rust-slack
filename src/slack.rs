@@ -2,15 +2,14 @@ use std::fmt;
 use curl::http;
 use std::str;
 use serialize::{json, Encodable, Encoder};
-use self::PayloadTemplate::*;
 
 pub struct Slack {
     incoming_url: String
 }
 
 impl Slack {
-    pub fn new(url: String) -> Slack {
-        Slack {incoming_url: url}
+    pub fn new(url: &str) -> Slack {
+        Slack {incoming_url: url.to_string()}
     }
     pub fn send(&self, payload: &Payload) -> Result<(), String> {
         debug!("sending payload, {}", payload);
@@ -54,12 +53,12 @@ pub enum PayloadTemplate<'a> {
     },
     Message {
         text: &'a str
-    }
+    },
 }
 impl Payload {
     pub fn new(t: PayloadTemplate) -> Payload {
         match t {
-            Complete {
+            PayloadTemplate::Complete {
                 text,
                 channel,
                 username,
@@ -78,7 +77,7 @@ impl Payload {
                 unfurl_links : opt_bool_to_u8(&unfurl_links),
                 link_names   : opt_bool_to_u8(&link_names)
             },
-            Message { text } => Payload {
+            PayloadTemplate::Message { text } => Payload {
                 text: SlackText(text.to_string()),
                 channel: None,
                 username: None,
@@ -115,36 +114,63 @@ pub struct Attachment {
     pub color    : String,
     pub fields   : Option<Vec<Field>>
 }
-
+pub enum AttachmentTemplate<'a> {
+    Complete {
+        fallback: &'a str,
+        text: Option<&'a str>,
+        pretext: Option<&'a str>,
+        color: &'a str,
+        fields: Option<Vec<Field>>
+    }
+}
 impl Attachment {
-    // TODO: use template for new
-    pub fn new(fallback: String, text: Option<String>, pretext: Option<String>, color: String, fields: Option<Vec<Field>>) -> Attachment {
-        return Attachment {
-            fallback : SlackText(fallback),
-            text     : some_slacktext(text),
-            pretext  : some_slacktext(pretext),
-            color    : color,
-            fields   : fields
+    pub fn new(t: AttachmentTemplate) -> Attachment {
+        match t {
+            AttachmentTemplate::Complete {
+                fallback, text,
+                pretext, color,
+                fields } => Attachment {
+                    fallback : SlackText(fallback.to_string()),
+                    text     : opt_str_to_slacktext(&text),
+                    pretext  : opt_str_to_slacktext(&pretext),
+                    color    : color.to_string(),
+                    fields   : fields
+            }
         }
     }
 }
 
-fn some_slacktext(opt: Option<String>) -> Option<SlackText> {
-    return match opt {
-        Some(opt) => Some(SlackText(opt)),
+fn opt_str_to_slacktext(opt: &Option<&str>) -> Option<SlackText> {
+    match *opt {
+        Some(opt) => Some(SlackText(opt.to_string())),
         _         => None
     }
 }
 
 #[deriving(Encodable, Show)]
-// TODO: add new fn
 pub struct Field {
     pub title : String,
     pub value : SlackText,
     pub short : Option<bool>
 }
 
+impl Field {
+    pub fn new(title: &str, value: &str, short: Option<bool>) -> Field {
+        Field {
+            title: title.to_string(),
+            value: SlackText(value.to_string()),
+            short: short
+        }
+    }
+}
+
 pub struct SlackText(String);
+
+impl SlackText {
+    pub fn new(text: &str) -> SlackText {
+        SlackText(text.to_string())
+    }
+}
 
 impl fmt::Show for SlackText {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -181,11 +207,10 @@ pub struct SlackLink {
 }
 
 impl SlackLink {
-    // TODO: pass as &str
-    pub fn new(url: String, text: String) -> SlackLink {
+    pub fn new(url: &str, text: &str) -> SlackLink {
         return SlackLink {
-            url  : url,
-            text : SlackText(text)
+            url  : url.to_string(),
+            text : SlackText(text.to_string())
         }
     }
 }
@@ -206,13 +231,12 @@ impl <S: Encoder<E>, E> Encodable<S, E> for SlackLink {
 #[cfg(test)]
 mod test {
     use test::Bencher;
-    use slack::{Slack, SlackLink, SlackText, Payload, Attachment};
-    use slack::PayloadTemplate::*;
+    use slack::{Slack, SlackLink, SlackText, Payload, Attachment, PayloadTemplate, AttachmentTemplate, Field};
     use serialize::{json};
 
     #[test]
     fn slack_incoming_url_test() {
-        let s = Slack::new("https://hooks.slack.com/services/abc/123/45z".to_string());
+        let s = Slack::new("https://hooks.slack.com/services/abc/123/45z");
         assert_eq!(s.incoming_url, "https://hooks.slack.com/services/abc/123/45z".to_string());
     }
 
@@ -242,14 +266,14 @@ mod test {
 
     #[test]
     fn json_complete_payload_test() {
-        let a = vec![Attachment::new(
-            "fallback <&>".to_string(),
-            Some("text <&>".to_string()),
-            None,
-            "#6800e8".to_string(),
-            None)];
+        let a = vec![Attachment::new(AttachmentTemplate::Complete {
+            fallback: "fallback <&>",
+            text: Some("text <&>"),
+            pretext: None,
+            color: "#6800e8",
+            fields: Some(vec![Field::new("title", "value", None)])})];
 
-        let p = Payload::new(Complete {
+        let p = Payload::new(PayloadTemplate::Complete {
                 text: "test message",
                 channel: Some("#abc"),
                 username: Some("Bot"),
@@ -260,12 +284,12 @@ mod test {
                 link_names: Some(false)
             });
 
-        assert_eq!(json::encode(&p).to_string(), r##"{"text":"test message","channel":"#abc","username":"Bot","icon_url":null,"icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","pretext":null,"color":"#6800e8","fields":null}],"unfurl_links":0,"link_names":0}"##.to_string())
+        assert_eq!(json::encode(&p).to_string(), r##"{"text":"test message","channel":"#abc","username":"Bot","icon_url":null,"icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","pretext":null,"color":"#6800e8","fields":[{"title":"title","value":"value","short":null}]}],"unfurl_links":0,"link_names":0}"##.to_string())
     }
 
     #[test]
     fn json_message_payload_test() {
-        let p = Payload::new(Message {
+        let p = Payload::new(PayloadTemplate::Message {
                 text: "test message",
             });
 
