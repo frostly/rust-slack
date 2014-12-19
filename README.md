@@ -35,6 +35,10 @@ fn main() {
 }
 ```
 
+# Documentation
+
+[rust-slack documentation](http://open.frostly.com/rust-slack)
+
 # License
 
 This library is distributed under similar terms to Rust: dual licensed under the MIT license and the Apache license (version 2.0).
