@@ -210,7 +210,7 @@ impl SlackLink {
     pub fn new(url: &str, text: &str) -> SlackLink {
         return SlackLink {
             url  : url.to_string(),
-            text : SlackText(text.to_string())
+            text : SlackText::new(text),
         }
     }
 }
@@ -242,15 +242,15 @@ mod test {
 
     #[test]
     fn slack_text_test() {
-        let s = SlackText("moo <&> moo".to_string());
+        let s = SlackText::new("moo <&> moo");
         assert_eq!(format!("{}",s), "moo &lt;&amp;&gt; moo".to_string());
     }
 
     #[test]
     fn slack_link_test() {
         let s = SlackLink {
-            text  : SlackText("moo <&> moo".to_string()),
             url   : "http://google.com".to_string()
+            text  : SlackText::new("moo <&> moo"),
         };
         assert_eq!(format!("{}",s), "<http://google.com|moo &lt;&amp;&gt; moo>".to_string());
     }
@@ -258,8 +258,8 @@ mod test {
     #[test]
     fn json_slacklink_test() {
         let s = SlackLink {
-            text  : SlackText("moo <&> moo".to_string()),
             url   : "http://google.com".to_string()
+            text  : SlackText::new("moo <&> moo"),
         };
         assert_eq!(json::encode(&s).to_string(), "\"<http://google.com|moo &lt;&amp;&gt; moo>\"".to_string())
     }
@@ -298,7 +298,7 @@ mod test {
 
     #[bench]
     fn bench_get_escaped_text(b: &mut Bencher) {
-        let st = SlackText("moo < > & o".to_string());
+        let st = SlackText::new("moo <&> moo");
         b.iter(|| {
             st.get_escaped_text()
         })
