@@ -1,7 +1,7 @@
 use std::fmt;
 use curl::http;
 use std::str;
-use serialize::{json, Encodable, Encoder};
+use rustc_serialize::{json, Encodable, Encoder};
 
 pub struct Slack {
     incoming_url: String,
@@ -28,7 +28,7 @@ impl Slack {
     }
 }
 
-#[deriving(Encodable, Show)]
+#[deriving(RustcEncodable, Show)]
 pub struct Payload {
     pub text         : SlackText,
     pub channel      : Option<String>,
@@ -106,7 +106,7 @@ fn opt_str_to_string(opt: &Option<&str>) -> Option<String> {
     }
 }
 
-#[deriving(Encodable, Show)]
+#[deriving(RustcEncodable, Show)]
 pub struct Attachment {
     pub fallback : SlackText,
     pub text     : Option<SlackText>,
@@ -147,7 +147,7 @@ fn opt_str_to_slacktext(opt: &Option<&str>) -> Option<SlackText> {
     }
 }
 
-#[deriving(Encodable, Show)]
+#[deriving(RustcEncodable, Show)]
 pub struct Field {
     pub title : String,
     pub value : SlackText,
@@ -232,7 +232,7 @@ impl <S: Encoder<E>, E> Encodable<S, E> for SlackLink {
 mod test {
     use test::Bencher;
     use slack::{Slack, SlackLink, SlackText, Payload, Attachment, PayloadTemplate, AttachmentTemplate, Field};
-    use serialize::{json};
+    use rustc_serialize::{json};
 
     #[test]
     fn slack_incoming_url_test() {

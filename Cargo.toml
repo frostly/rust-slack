@@ -9,6 +9,9 @@ license = "MIT/Apache-2.0"
 readme = "README.md"
 keywords = ["slack"]
 
+[dependencies]
+rustc-serialize = "*"
+
 [dependencies.curl]
 git = "https://github.com/carllerche/curl-rust"
 
