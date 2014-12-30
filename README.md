@@ -11,8 +11,8 @@ A rust crate for sending messages to Slack via webhooks.
 Add the crate to your existing project:
 
 ```rust
-extern crate slack;
-use slack::{Slack, Payload, PayloadTemplate};
+extern crate slackhook;
+use slackhook::{Slack, Payload, PayloadTemplate};
 
 fn main() {
     let slack = Slack::new("https://hooks.slack.com/services/abc/123/45z");

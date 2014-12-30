@@ -1,4 +1,4 @@
-#![crate_name = "slack"]
+#![crate_name = "slackhook"]
 #![feature(macro_rules)]
 #![feature(phase, globs)]
 #[phase(plugin, link)] extern crate log;
