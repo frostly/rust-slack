@@ -2,6 +2,7 @@ use std::fmt;
 use curl::http;
 use std::str;
 use rustc_serialize::{json, Encodable, Encoder};
+use types::{SlackResult, ErrSlackResp};
 
 pub struct Slack {
     incoming_url: String,
@@ -11,7 +12,8 @@ impl Slack {
     pub fn new(url: &str) -> Slack {
         Slack {incoming_url: url.to_string()}
     }
-    pub fn send(&self, payload: &Payload) -> Result<(), String> {
+
+    pub fn send(&self, payload: &Payload) -> SlackResult<()> {
         debug!("sending payload, {}", payload);
         debug!("JSON payload, {}", &json::encode(payload));
         let resp = http::handle()
@@ -19,11 +21,11 @@ impl Slack {
           .exec().unwrap();
         debug!("slack response, {}", resp);
 
-        let body = str::from_utf8(resp.get_body());
+        let body = try!(str::from_utf8(resp.get_body()));
+
         match body {
-            Some("ok") => Ok(()),
-            Some(x)    => Err(x.to_string()),
-            None       => Err("no response given".to_string()),
+            "ok" => Ok(()),
+            x => fail!((ErrSlackResp, x)),
         }
     }
 }
