@@ -32,7 +32,7 @@ impl Slack {
 
 #[deriving(RustcEncodable, Show)]
 pub struct Payload {
-    pub text         : SlackText,
+    pub text         : Option<SlackText>,
     pub channel      : Option<String>,
     pub username     : Option<String>,
     pub icon_url     : Option<String>,
@@ -44,7 +44,7 @@ pub struct Payload {
 
 pub enum PayloadTemplate<'a> {
     Complete {
-        text: &'a str,
+        text: Option<&'a str>,
         channel: Option<&'a str>,
         username: Option<&'a str>,
         icon_url: Option<&'a str>,
@@ -70,7 +70,7 @@ impl Payload {
                 unfurl_links,
                 link_names,
             } => Payload {
-                text         : SlackText(text.to_string()),
+                text         : opt_str_to_slacktext(&text),
                 channel      : opt_str_to_string(&channel),
                 username     : opt_str_to_string(&username),
                 icon_url     : opt_str_to_string(&icon_url),
@@ -80,7 +80,7 @@ impl Payload {
                 link_names   : opt_bool_to_u8(&link_names),
             },
             PayloadTemplate::Message { text } => Payload {
-                text: SlackText(text.to_string()),
+                text: Some(SlackText(text.to_string())),
                 channel: None,
                 username: None,
                 icon_url: None,
@@ -104,6 +104,13 @@ fn opt_bool_to_u8(opt: &Option<bool>) -> Option<u8> {
 fn opt_str_to_string(opt: &Option<&str>) -> Option<String> {
     match opt {
         &Some(x) => Some(x.to_string()),
+        _ => None,
+    }
+}
+
+fn opt_str_to_slacktext(opt: &Option<&str>) -> Option<SlackText> {
+    match opt {
+        &Some(x) => Some(SlackText(x.to_string())),
         _ => None,
     }
 }
@@ -139,13 +146,6 @@ impl Attachment {
                     fields   : fields,
             }
         }
-    }
-}
-
-fn opt_str_to_slacktext(opt: &Option<&str>) -> Option<SlackText> {
-    match opt {
-        &Some(opt) => Some(SlackText(opt.to_string())),
-        _         => None,
     }
 }
 
@@ -277,7 +277,7 @@ mod test {
         })];
 
         let p = Payload::new(PayloadTemplate::Complete {
-                text: "test message",
+                text: Some("test message"),
                 channel: Some("#abc"),
                 username: Some("Bot"),
                 icon_url: None,

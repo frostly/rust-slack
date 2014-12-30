@@ -17,7 +17,7 @@ use slackhook::{Slack, Payload, PayloadTemplate};
 fn main() {
     let slack = Slack::new("https://hooks.slack.com/services/abc/123/45z");
     let p = Payload::new(PayloadTemplate::Complete {
-      text: "test message",
+      text: Some("test message"),
       channel: Some("#testing"),
       username: Some("My Bot"),
       icon_url: None,
