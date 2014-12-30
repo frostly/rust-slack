@@ -26,7 +26,7 @@ impl error::FromError<str::Utf8Error> for SlackError {
     fn from_error(err: str::Utf8Error) -> SlackError {
         SlackError {
             kind: ErrUtf8(err),
-            desc:  "uft8 error".to_string(),
+            desc:  "utf8 error".to_string(),
             detail: None,
         }
     }
