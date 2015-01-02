@@ -279,7 +279,7 @@ mod test {
             pretext: None,
             color: "#6800e8",
             fields: Some(vec![Field::new("title", "value", None)]),
-        })];
+        }).unwrap()];
 
         let p = Payload::new(PayloadTemplate::Complete {
                 text: Some("test message"),
