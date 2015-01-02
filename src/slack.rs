@@ -33,6 +33,7 @@ impl Slack {
 
 #[deriving(RustcEncodable, Show)]
 pub struct Payload {
+    /// despite `text` stated as required, it does not seem to be
     pub text         : Option<SlackText>,
     pub channel      : Option<String>,
     pub username     : Option<String>,
