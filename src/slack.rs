@@ -58,6 +58,9 @@ pub enum PayloadTemplate<'a> {
     Message {
         text: &'a str,
     },
+    Attachment {
+        attachment: Attachment,
+    },
 }
 impl Payload {
     pub fn new(t: PayloadTemplate) -> Payload {
@@ -88,6 +91,16 @@ impl Payload {
                 icon_url: None,
                 icon_emoji: None,
                 attachments: None,
+                unfurl_links: None,
+                link_names: None,
+            },
+            PayloadTemplate::Attachment { attachment } => Payload {
+                text: None,
+                channel: None,
+                username: None,
+                icon_url: None,
+                icon_emoji: None,
+                attachments: Some(vec![attachment]),
                 unfurl_links: None,
                 link_names: None,
             },
@@ -132,7 +145,11 @@ pub enum AttachmentTemplate<'a> {
         pretext: Option<&'a str>,
         color: &'a str,
         fields: Option<Vec<Field>>,
-    }
+    },
+    Text {
+        text: &'a str,
+        color: &'a str,
+    },
 }
 impl Attachment {
     pub fn new(t: AttachmentTemplate) -> SlackResult<Attachment> {
@@ -149,6 +166,18 @@ impl Attachment {
                     pretext  : opt_str_to_slacktext(&pretext),
                     color    : c,
                     fields   : fields,
+                })
+            },
+            AttachmentTemplate::Text {
+                text, color
+            } => {
+                let c = try!(HexColorT::new(color));
+                Ok(Attachment {
+                    fallback: SlackText(text.to_string()),
+                    text: Some(SlackText(text.to_string())),
+                    pretext: None,
+                    color: c,
+                    fields: None
                 })
             },
         }

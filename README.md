@@ -35,6 +35,24 @@ fn main() {
 }
 ```
 
+## Attachments
+
+To create a payload with just an attachment:
+
+```rust
+extern crate slackhook;
+use slackhook::{Payload, PayloadTemplate, Attachment, AttachmentTemplate};
+
+fn main() {
+  let p = Payload::new(PayloadTemplate::Attachment {
+    attachment: Attachment::new(AttachmentTemplate::Text {
+      text: "my text",
+      color: "#b13d41",
+    }).unwrap(),
+  });
+}
+```
+
 # Documentation
 
 [rust-slack documentation](http://open.frostly.com/rust-slack)
