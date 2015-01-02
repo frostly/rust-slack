@@ -3,6 +3,7 @@ use curl::http;
 use std::str;
 use rustc_serialize::{json, Encodable, Encoder};
 use types::{SlackResult, ErrSlackResp};
+use hex::{HexColorT, HexColor};
 
 pub struct Slack {
     incoming_url: String,
@@ -120,7 +121,7 @@ pub struct Attachment {
     pub fallback : SlackText,
     pub text     : Option<SlackText>,
     pub pretext  : Option<SlackText>,
-    pub color    : String,
+    pub color    : HexColor,
     pub fields   : Option<Vec<Field>>,
 }
 pub enum AttachmentTemplate<'a> {
@@ -133,18 +134,22 @@ pub enum AttachmentTemplate<'a> {
     }
 }
 impl Attachment {
-    pub fn new(t: AttachmentTemplate) -> Attachment {
+    pub fn new(t: AttachmentTemplate) -> SlackResult<Attachment> {
         match t {
             AttachmentTemplate::Complete {
                 fallback, text,
                 pretext, color,
-                fields } => Attachment {
+                fields
+            } => {
+                let c = try!(HexColorT::new(color));
+                Ok(Attachment {
                     fallback : SlackText(fallback.to_string()),
                     text     : opt_str_to_slacktext(&text),
                     pretext  : opt_str_to_slacktext(&pretext),
-                    color    : color.to_string(),
+                    color    : c,
                     fields   : fields,
-            }
+                })
+            },
         }
     }
 }

@@ -1,6 +1,7 @@
 #![crate_name = "slackhook"]
 #![feature(macro_rules)]
 #![feature(phase, globs)]
+#![feature(associated_types)]
 #[phase(plugin, link)] extern crate log;
 extern crate curl;
 extern crate "rustc-serialize" as rustc_serialize;
@@ -17,4 +18,5 @@ pub use types::{
 mod macros;
 mod types;
 
+mod hex;
 mod slack;
