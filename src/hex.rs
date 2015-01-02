@@ -15,6 +15,7 @@ pub struct HexColor(String);
 /// Can either be one of 'good', 'warning', 'danger', or any hex color code
 /// See: https://api.slack.com/docs/attachments
 #[allow(dead_code)]
+#[deriving(Copy)]
 pub enum SlackColor {
     Good,
     Warning,
@@ -115,7 +116,8 @@ impl<'a> IntoHexColor for &'a str {
 
 #[cfg(test)]
 mod test {
-    use hex::{HexColorT, SlackColor};
+    use hex::{HexColor, HexColorT, SlackColor};
+    use types::{SlackError};
     use std::error::Error;
 
     #[test]

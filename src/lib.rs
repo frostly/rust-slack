@@ -27,6 +27,10 @@ pub use types::{
     ErrorKind,
 };
 
+pub use hex::{
+    SlackColor,
+};
+
 mod macros;
 mod types;
 mod hex;
