@@ -15,7 +15,7 @@ pub struct HexColor(String);
 /// Can either be one of 'good', 'warning', 'danger', or any hex color code
 /// See: https://api.slack.com/docs/attachments
 #[allow(dead_code)]
-#[deriving(Copy)]
+#[derive(Copy)]
 pub enum SlackColor {
     Good,
     Warning,
@@ -24,7 +24,7 @@ pub enum SlackColor {
 
 // can't seem to convert enum to slice despite trait being implemented
 // need this to support passing in the string directly
-const SLACK_COLORS: [&'static str, ..3] = [
+const SLACK_COLORS : [&'static str; 3] = [
     // SlackColor::Good.as_slice(),
     "good",
     "warning",
@@ -117,48 +117,54 @@ impl<'a> IntoHexColor for &'a str {
 #[cfg(test)]
 mod test {
     use hex::{HexColor, HexColorT, SlackColor};
-    use types::{SlackError};
+    use types::{SlackResult};
     use std::error::Error;
 
     #[test]
     fn test_hex_color_too_short() {
-        let h = HexColorT::new("abc").unwrap_err();
+        let h1: SlackResult<HexColor> =  HexColorT::new("abc");
+        let h = h1.unwrap_err();
         assert_eq!(h.desc, "Must be 7 characters long (including #)".to_string());
     }
 
     #[test]
     fn test_hex_color_missing_hash() {
-        let h = HexColorT::new("1234567").unwrap_err();
+        let h1: SlackResult<HexColor> = HexColorT::new("1234567");
+        let h = h1.unwrap_err();
         assert_eq!(h.desc, "No leading #".to_string());
     }
 
     #[test]
     fn test_hex_color_invalid_hex_fmt() {
-        let h = HexColorT::new("#abc12z").unwrap_err();
+        let h1: SlackResult<HexColor> = HexColorT::new("#abc12z");
+        let h = h1.unwrap_err();
         assert_eq!(h.desc, "Invalid character 'z' at position 5".to_string());
     }
 
     #[test]
     fn test_hex_color_error_impl() {
-        let h = HexColorT::new("#abc12z").unwrap_err();
+        let h1: SlackResult<HexColor> = HexColorT::new("#abc12z");
+        let h = h1.unwrap_err();
         assert_eq!(h.description(), "invalid character".to_string());
     }
 
     #[test]
     fn test_hex_color_good() {
-        let h = HexColorT::new(&SlackColor::Good);
+        let h: HexColor = HexColorT::new(&SlackColor::Good);
         assert_eq!(format!("{}",h), "good".to_string());
     }
 
     #[test]
     fn test_hex_color_danger_str() {
-        let h = HexColorT::new("danger").unwrap();
+        let h1: SlackResult<HexColor> = HexColorT::new("danger");
+        let h = h1.unwrap();
         assert_eq!(format!("{}", h), "danger".to_string());
     }
 
     #[test]
     fn test_hex_color_bad_str() {
-        let h = HexColorT::new("bad").unwrap_err();
+        let h1: SlackResult<HexColor> = HexColorT::new("bad");
+        let h = h1.unwrap_err();
         assert_eq!(h.desc, "Must be 7 characters long (including #)".to_string());
     }
 }

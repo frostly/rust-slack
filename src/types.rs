@@ -11,7 +11,7 @@ pub use self::ErrorKind::{
 
 pub type SlackResult<T> = Result<T, SlackError>;
 
-#[deriving(Copy, Show)]
+#[derive(Copy, Show)]
 pub enum ErrorKind {
     ErrSlackResp,
     ErrUtf8(str::Utf8Error),
@@ -19,7 +19,7 @@ pub enum ErrorKind {
     ErrHexColor,
 }
 
-#[deriving(Show)]
+#[derive(Show)]
 pub struct SlackError {
     pub kind: ErrorKind,
     pub desc: String,

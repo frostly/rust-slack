@@ -3,7 +3,7 @@ use slack::{SlackText};
 use attachment::Attachment;
 include!("helper.rs");
 
-#[deriving(RustcEncodable, Show)]
+#[derive(RustcEncodable, Show)]
 pub struct Payload {
     /// despite `text` stated as required, it does not seem to be
     pub text         : Option<SlackText>,

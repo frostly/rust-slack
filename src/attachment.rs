@@ -4,7 +4,7 @@ use types::{SlackResult};
 use hex::{HexColor, HexColorT};
 include!("helper.rs");
 
-#[deriving(RustcEncodable, Show)]
+#[derive(RustcEncodable, Show)]
 pub struct Attachment {
     pub fallback : SlackText,
     pub text     : Option<SlackText>,
@@ -58,7 +58,7 @@ impl Attachment {
     }
 }
 
-#[deriving(RustcEncodable, Show)]
+#[derive(RustcEncodable, Show)]
 pub struct Field {
     pub title : String,
     pub value : SlackText,
