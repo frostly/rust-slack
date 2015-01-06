@@ -34,11 +34,7 @@ const SLACK_COLORS : [&'static str; 3] = [
 
 impl ToString for SlackColor {
     fn to_string(&self) -> String {
-        match *self {
-            SlackColor::Good => "good".to_string(),
-            SlackColor::Warning => "warning".to_string(),
-            SlackColor::Danger => "danger".to_string()
-        }
+        self.as_slice().to_string()
     }
 }
 
