@@ -30,6 +30,7 @@ pub use types::{
 
 pub use hex::{
     SlackColor,
+    HexColor,
 };
 
 mod macros;
