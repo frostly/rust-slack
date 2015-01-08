@@ -4,15 +4,15 @@ use rustc_serialize::hex::{FromHex};
 use rustc_serialize::json::{ToJson, Json};
 use rustc_serialize::{Encodable, Encoder};
 
-/// can be one of:
-/// 1) "good", "warning", "danger"
-/// 2) the built-in enums: SlackColor::Good, etc.
-/// 3) a hex color code, "#b13d41"
+/// The HexColor string can be one of:
+///
+/// 1. "good", "warning", "danger"
+/// 2. The built-in enums: SlackColor::Good, etc.
+/// 3. Any valid hex color code: "#b13d41"
 /// hex color codes will be checked to ensure a valid hex number is provided
 pub struct HexColor(String);
 
 /// Default slack colors built-in to the API
-/// Can either be one of 'good', 'warning', 'danger', or any hex color code
 /// See: https://api.slack.com/docs/attachments
 #[allow(dead_code)]
 #[derive(Copy)]
