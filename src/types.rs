@@ -31,7 +31,7 @@ impl error::FromError<str::Utf8Error> for SlackError {
     fn from_error(err: str::Utf8Error) -> SlackError {
         SlackError {
             kind: ErrUtf8(err),
-            desc:  format!("{}",err),
+            desc:  format!("{:?}",err),
             detail: None,
         }
     }
@@ -42,7 +42,7 @@ impl error::FromError<FromHexError> for SlackError {
     fn from_error(err: FromHexError) -> SlackError {
         SlackError {
             kind: ErrFromHex(err),
-            desc:  format!("{}",err),
+            desc:  format!("{:?}",err),
             detail: None,
         }
     }

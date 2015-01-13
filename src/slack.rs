@@ -15,8 +15,8 @@ impl Slack {
     }
 
     pub fn send(&self, payload: &Payload) -> SlackResult<()> {
-        debug!("sending payload, {}", payload);
-        debug!("JSON payload, {}", &json::encode(payload));
+        debug!("sending payload, {:?}", payload);
+        debug!("JSON payload, {:?}", &json::encode(payload));
         let resp = http::handle()
           .post(self.incoming_url.as_slice(), &json::encode(payload))
           .exec().unwrap();
@@ -61,9 +61,9 @@ impl SlackText {
     }
 }
 
-impl <S: Encoder<E>, E> Encodable<S, E> for SlackText {
-  fn encode(&self, encoder: &mut S) -> Result<(), E> {
-      let text = format!("{}", &self);
+impl Encodable for SlackText {
+  fn encode<S: Encoder>(&self, encoder: &mut S) -> Result<(), S::Error> {
+      let text = format!("{:?}", &self);
       encoder.emit_str(text.as_slice())
   }
 }
@@ -84,13 +84,13 @@ impl SlackLink {
 
 impl fmt::Show for SlackLink {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f , "<{}|{}>" , self.url , self.text)
+        write!(f , "<{}|{:?}>" , self.url , self.text)
     }
 }
 
-impl <S: Encoder<E>, E> Encodable<S, E> for SlackLink {
-  fn encode(&self, encoder: &mut S) -> Result<(), E> {
-      let text = format!("{}", &self);
+impl Encodable for SlackLink {
+  fn encode<S: Encoder>(&self, encoder: &mut S) -> Result<(), S::Error> {
+      let text = format!("{:?}", &self);
       encoder.emit_str(text.as_slice())
   }
 }
@@ -112,7 +112,7 @@ mod test {
     #[test]
     fn slack_text_test() {
         let s = SlackText::new("moo <&> moo");
-        assert_eq!(format!("{}",s), "moo &lt;&amp;&gt; moo".to_string());
+        assert_eq!(format!("{:?}",s), "moo &lt;&amp;&gt; moo".to_string());
     }
 
     #[test]
@@ -121,7 +121,7 @@ mod test {
             text  : SlackText::new("moo <&> moo"),
             url   : "http://google.com".to_string(),
         };
-        assert_eq!(format!("{}",s), "<http://google.com|moo &lt;&amp;&gt; moo>".to_string());
+        assert_eq!(format!("{:?}",s), "<http://google.com|moo &lt;&amp;&gt; moo>".to_string());
     }
 
     #[test]

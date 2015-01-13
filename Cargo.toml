@@ -12,6 +12,7 @@ keywords = ["slack", "webhook"]
 [dependencies]
 rustc-serialize = "*"
 curl = "*"
+log = "*"
 
 [lib]
 name = "slackhook"

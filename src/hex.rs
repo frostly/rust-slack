@@ -56,7 +56,7 @@ impl fmt::Show for HexColor {
 }
 
 pub trait HexColorT {
-    type Sized? T;
+    type T: ?Sized;
     fn new(t: &Self::T) -> Self;
 }
 
@@ -77,13 +77,13 @@ impl HexColorT for HexColor {
 
 impl ToJson for HexColor {
     fn to_json(&self) -> Json {
-        Json::String(format!("{}", &self))
+        Json::String(format!("{:?}", &self))
     }
 }
 
-impl <S: Encoder<E>, E> Encodable<S, E> for HexColor {
-  fn encode(&self, encoder: &mut S) -> Result<(), E> {
-      encoder.emit_str(format!("{}", &self).as_slice())
+impl Encodable for HexColor {
+  fn encode<S: Encoder>(&self, encoder: &mut S) -> Result<(), S::Error> {
+      encoder.emit_str(format!("{:?}", &self).as_slice())
   }
 }
 
@@ -97,7 +97,7 @@ impl<'a> IntoHexColor for &'a str {
         if SLACK_COLORS.contains(&self) {
             return Ok(HexColor(self.to_string()));
         }
-        if self.chars().count() != 7u {
+        if self.chars().count() != 7 {
             return fail!((ErrHexColor, "Must be 7 characters long (including #)"));
         }
         if self.char_at(0) != '#' {
@@ -147,14 +147,14 @@ mod test {
     #[test]
     fn test_hex_color_good() {
         let h: HexColor = HexColorT::new(&SlackColor::Good);
-        assert_eq!(format!("{}",h), "good".to_string());
+        assert_eq!(format!("{:?}",h), "good".to_string());
     }
 
     #[test]
     fn test_hex_color_danger_str() {
         let h1: SlackResult<HexColor> = HexColorT::new("danger");
         let h = h1.unwrap();
-        assert_eq!(format!("{}", h), "danger".to_string());
+        assert_eq!(format!("{:?}", h), "danger".to_string());
     }
 
     #[test]
