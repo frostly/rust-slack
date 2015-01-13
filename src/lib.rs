@@ -30,6 +30,7 @@ pub use hex::{
     HexColor,
 };
 
+mod helper;
 mod macros;
 mod types;
 mod hex;

@@ -1,7 +1,11 @@
 use rustc_serialize::{Encodable, Encoder};
 use slack::{SlackText};
 use attachment::Attachment;
-include!("helper.rs");
+use helper::{
+    opt_str_to_slacktext,
+    opt_str_to_string,
+    opt_bool_to_u8,
+};
 
 #[derive(RustcEncodable, Show)]
 pub struct Payload {

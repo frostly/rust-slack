@@ -2,7 +2,9 @@ use rustc_serialize::{Encodable, Encoder};
 use slack::{SlackText};
 use types::{SlackResult};
 use hex::{HexColor, HexColorT};
-include!("helper.rs");
+use helper::{
+    opt_str_to_slacktext,
+};
 
 #[derive(RustcEncodable, Show)]
 pub struct Attachment {
