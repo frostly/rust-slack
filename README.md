@@ -30,7 +30,7 @@ fn main() {
     let res = slack.send(&p);
     match res {
         Ok(()) => println!("ok"),
-        Err(x) => println!("ERR: {}",x)
+        Err(x) => println!("ERR: {:?}",x)
     }
 }
 ```
