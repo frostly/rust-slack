@@ -163,4 +163,18 @@ mod test {
         let h = h1.unwrap_err();
         assert_eq!(h.desc, "Must be 7 characters long (including #)".to_string());
     }
+
+    #[test]
+    fn test_hex_color_valid_upper_hex() {
+        let h1: SlackResult<HexColor> = HexColorT::new("#103D18");
+        let h = h1.unwrap();
+        assert_eq!(format!("{:?}", h), "#103D18".to_string());
+    }
+
+    #[test]
+    fn test_hex_color_valid_lower_hex() {
+      let h1: SlackResult<HexColor> = HexColorT::new("#103d18");
+      let h = h1.unwrap();
+      assert_eq!(format!("{:?}", h), "#103d18".to_string());
+    }
 }
