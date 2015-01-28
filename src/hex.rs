@@ -48,7 +48,7 @@ impl Str for SlackColor {
     }
 }
 
-impl fmt::Show for HexColor {
+impl fmt::Debug for HexColor {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let HexColor(ref text) = *self;
         write!(f , "{}" , text)
@@ -103,7 +103,7 @@ impl<'a> IntoHexColor for &'a str {
         if self.char_at(0) != '#' {
             return fail!((ErrHexColor, "No leading #"));
         }
-        match self.slice_from(1).from_hex() {
+        match self[1..].from_hex() {
             Ok(_) => Ok(HexColor(self.to_string())),
             Err(e) => Err(::std::error::FromError::from_error(e)),
         }
@@ -112,13 +112,13 @@ impl<'a> IntoHexColor for &'a str {
 
 #[cfg(test)]
 mod test {
-    use hex::{HexColor, HexColorT, SlackColor};
-    use types::{SlackResult};
+    use hex::*;
+    use types::{SlackResult, SlackError};
     use std::error::Error;
 
     #[test]
     fn test_hex_color_too_short() {
-        let h1: SlackResult<HexColor> =  HexColorT::new("abc");
+        let h1: Result<HexColor, SlackError> = HexColorT::new("abc");
         let h = h1.unwrap_err();
         assert_eq!(h.desc, "Must be 7 characters long (including #)".to_string());
     }

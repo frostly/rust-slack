@@ -6,7 +6,7 @@ use helper::{
     opt_str_to_slacktext,
 };
 
-#[derive(RustcEncodable, Show)]
+#[derive(RustcEncodable, Debug)]
 pub struct Attachment {
     pub fallback : SlackText,
     pub text     : Option<SlackText>,
@@ -31,9 +31,11 @@ impl Attachment {
     pub fn new(t: AttachmentTemplate) -> SlackResult<Attachment> {
         match t {
             AttachmentTemplate::Complete {
-                fallback, text,
-                pretext, color,
-                fields
+                fallback,
+                text,
+                pretext,
+                color,
+                fields,
             } => {
                 let c = try!(HexColorT::new(color));
                 Ok(Attachment {

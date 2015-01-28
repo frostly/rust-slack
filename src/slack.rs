@@ -16,10 +16,11 @@ impl Slack {
 
     pub fn send(&self, payload: &Payload) -> SlackResult<()> {
         debug!("sending payload, {:?}", payload);
-        debug!("JSON payload, {:?}", &json::encode(payload));
-        let resp = http::handle()
-          .post(self.incoming_url.as_slice(), &json::encode(payload))
-          .exec().unwrap();
+        let encoded = try!(json::encode(payload));
+        debug!("JSON payload, {:?}", encoded);
+        let resp = try!(http::handle()
+            .post(self.incoming_url.as_slice(), encoded.as_slice())
+            .exec());
         debug!("slack response, {}", resp);
 
         let body = try!(str::from_utf8(resp.get_body()));
@@ -39,7 +40,7 @@ impl SlackText {
     }
 }
 
-impl fmt::Show for SlackText {
+impl fmt::Debug for SlackText {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f , "{}" , self.get_escaped_text())
     }
@@ -82,7 +83,7 @@ impl SlackLink {
     }
 }
 
-impl fmt::Show for SlackLink {
+impl fmt::Debug for SlackLink {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f , "<{}|{:?}>" , self.url , self.text)
     }
@@ -130,7 +131,7 @@ mod test {
             text  : SlackText::new("moo <&> moo"),
             url   : "http://google.com".to_string(),
         };
-        assert_eq!(json::encode(&s).to_string(), "\"<http://google.com|moo &lt;&amp;&gt; moo>\"".to_string())
+        assert_eq!(json::encode(&s).unwrap().to_string(), "\"<http://google.com|moo &lt;&amp;&gt; moo>\"".to_string())
     }
 
     #[test]
@@ -154,7 +155,7 @@ mod test {
                 link_names: Some(false),
             });
 
-        assert_eq!(json::encode(&p).to_string(), r##"{"text":"test message","channel":"#abc","username":"Bot","icon_url":null,"icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","pretext":null,"color":"#6800e8","fields":[{"title":"title","value":"value","short":null}]}],"unfurl_links":0,"link_names":0}"##.to_string())
+        assert_eq!(json::encode(&p).unwrap().to_string(), r##"{"text":"test message","channel":"#abc","username":"Bot","icon_url":null,"icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","pretext":null,"color":"#6800e8","fields":[{"title":"title","value":"value","short":null}]}],"unfurl_links":0,"link_names":0}"##.to_string())
     }
 
     #[test]
@@ -163,7 +164,7 @@ mod test {
                 text: "test message",
             });
 
-        assert_eq!(json::encode(&p).to_string(), r##"{"text":"test message","channel":null,"username":null,"icon_url":null,"icon_emoji":null,"attachments":null,"unfurl_links":null,"link_names":null}"##.to_string())
+        assert_eq!(json::encode(&p).unwrap().to_string(), r##"{"text":"test message","channel":null,"username":null,"icon_url":null,"icon_emoji":null,"attachments":null,"unfurl_links":null,"link_names":null}"##.to_string())
     }
 
     #[bench]

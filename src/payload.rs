@@ -7,7 +7,7 @@ use helper::{
     opt_bool_to_u8,
 };
 
-#[derive(RustcEncodable, Show)]
+#[derive(RustcEncodable, Debug)]
 pub struct Payload {
     /// despite `text` stated as required, it does not seem to be
     pub text         : Option<SlackText>,
@@ -84,4 +84,3 @@ impl Payload {
         }
     }
 }
-
