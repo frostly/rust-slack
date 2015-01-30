@@ -1,6 +1,7 @@
 #![crate_name = "slackhook"]
-#![allow(unstable)]
-#[macro_use] extern crate log;
+#![feature(core)]
+#![feature(collections)
+]#[macro_use] extern crate log;
 extern crate curl;
 extern crate "rustc-serialize" as rustc_serialize;
 #[cfg(test)] extern crate test;
