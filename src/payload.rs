@@ -7,39 +7,73 @@ use helper::{
     opt_bool_to_u8,
 };
 
+/// payload to send to slack
+/// https://api.slack.com/incoming-webhooks
+/// https://api.slack.com/methods/chat.postMessage
 #[derive(RustcEncodable, Debug)]
 pub struct Payload {
+    /// text to send
     /// despite `text` stated as required, it does not seem to be
     pub text         : Option<SlackText>,
+    /// channel to send payload to
+    /// note: if not provided, this will default to channel
+    /// setup in slack
     pub channel      : Option<String>,
+    /// username override
     pub username     : Option<String>,
+    /// specific url for icon
     pub icon_url     : Option<String>,
+    /// emjoi for icon
+    /// https://api.slack.com/methods/emoji.list
     pub icon_emoji   : Option<String>,
+    /// attachments to send
     pub attachments  : Option<Vec<Attachment>>,
+    /// whether slack will try to fetch links and create an attachment
+    /// https://api.slack.com/docs/unfurling
     pub unfurl_links : Option<u8>,
+    /// find and link channel names and usernames
     pub link_names   : Option<u8>,
 }
 
+/// templates to support common payload use cases
 pub enum PayloadTemplate<'a> {
+    /// specify the entire payload
     Complete {
+        /// text to send
         text: Option<&'a str>,
+        /// channel to send payload to
+        /// note: if not provided, this will default to channel
+        /// setup in slack
         channel: Option<&'a str>,
+        /// username override
         username: Option<&'a str>,
+        /// specific url for icon
         icon_url: Option<&'a str>,
+        /// emjoi for icon
+        /// https://api.slack.com/methods/emoji.list
         icon_emoji: Option<&'a str>,
+        /// attachments to send
         attachments: Option<Vec<Attachment>>,
+        /// whether slack will try to fetch links and create an attachment
+        /// https://api.slack.com/docs/unfurling
         unfurl_links: Option<bool>,
+        /// find and link channel names and usernames
         link_names: Option<bool>,
     },
+    /// simple payload with just a message
     Message {
+        /// text to send
         text: &'a str,
     },
+    /// attachment-only payload
     Attachment {
+        /// provide a single attachment
         attachment: Attachment,
     },
 }
 
 impl Payload {
+    /// construct a new Payload from a template
     pub fn new(t: PayloadTemplate) -> Payload {
         match t {
             PayloadTemplate::Complete {

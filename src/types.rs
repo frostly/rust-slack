@@ -5,21 +5,32 @@ use curl;
 
 pub use self::ErrorKind::*;
 
+/// Result alias to save typing
 pub type SlackResult<T> = Result<T, SlackError>;
 
+/// Different kinds of errors handled
 #[derive(Copy, Debug)]
 pub enum ErrorKind {
+    /// slack response failed
     ErrSlackResp,
+    /// slack response should be in utf8
     ErrUtf8(str::Utf8Error),
+    /// couldn't convert value to Hex
     ErrFromHex(FromHexError),
+    /// failed other hex color validations for input
     ErrHexColor,
+    /// failed to encode payload
     ErrEncoder(EncoderError),
+    /// curl error
     ErrCurl(curl::ErrCode),
 }
 
+/// main Slack library error
 #[derive(Debug)]
 pub struct SlackError {
+    /// kind of error
     pub kind: ErrorKind,
+    /// description of error
     pub desc: String,
 }
 

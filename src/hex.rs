@@ -17,8 +17,11 @@ pub struct HexColor(String);
 #[allow(dead_code)]
 #[derive(Copy)]
 pub enum SlackColor {
+    /// green
     Good,
+    /// orange
     Warning,
+    /// red
     Danger,
 }
 
@@ -55,8 +58,11 @@ impl fmt::Debug for HexColor {
     }
 }
 
+/// trait to support constructing HexColors via different types
 pub trait HexColorT {
+    /// &T is input type for constructor
     type T: ?Sized;
+    /// construct new instance of Self for type T
     fn new(t: &Self::T) -> Self;
 }
 
@@ -88,11 +94,14 @@ impl Encodable for HexColor {
 }
 
 
+/// A trait for turning self into a `HexColor`
 trait IntoHexColor {
+    /// function to attempt to make a `HexColor` from `self`
     fn into_hex_color(self) -> SlackResult<HexColor>;
 }
 
 impl<'a> IntoHexColor for &'a str {
+    /// attempt to convert a &str into a `HexColor`
     fn into_hex_color(self) -> SlackResult<HexColor> {
         if SLACK_COLORS.contains(&self) {
             return Ok(HexColor(self.to_string()));
@@ -103,6 +112,7 @@ impl<'a> IntoHexColor for &'a str {
         if self.char_at(0) != '#' {
             return fail!((ErrHexColor, "No leading #"));
         }
+        // see if the remaining part of the string is actually hex
         match self[1..].from_hex() {
             Ok(_) => Ok(HexColor(self.to_string())),
             Err(e) => Err(::std::error::FromError::from_error(e)),

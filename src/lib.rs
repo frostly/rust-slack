@@ -1,25 +1,36 @@
 #![crate_name = "slackhook"]
-#![feature(core)]
-#![feature(collections)
-]#[macro_use] extern crate log;
+#![feature(core, collections)]
+#![deny(missing_docs)]
+#![cfg_attr(test, deny(warnings))]
+#![cfg_attr(test, feature(test))]
+
+//! Library to send messages to slack rooms
+//! supports entire messaging API, including attachements and fields
+//! also support for built-in colors as well as any hex colors
+
+#[macro_use] extern crate log;
+#[cfg(test)] extern crate test;
+
 extern crate curl;
 extern crate "rustc-serialize" as rustc_serialize;
-#[cfg(test)] extern crate test;
 
 pub use slack::{
     Slack,
     SlackText,
     SlackLink
 };
+
 pub use payload::{
     Payload,
     PayloadTemplate
 };
+
 pub use attachment::{
     Attachment,
     AttachmentTemplate,
     Field
 };
+
 pub use types::{
     SlackError,
     SlackResult,
