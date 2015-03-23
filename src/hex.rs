@@ -109,7 +109,7 @@ impl<'a> IntoHexColor for &'a str {
         if self.chars().count() != 7 {
             return fail!((ErrHexColor, "Must be 7 characters long (including #)"));
         }
-        if self.char_at(0) != '#' {
+        if self.chars().next().unwrap() != '#' {
             return fail!((ErrHexColor, "No leading #"));
         }
         // see if the remaining part of the string is actually hex
