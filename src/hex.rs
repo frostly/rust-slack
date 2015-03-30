@@ -37,12 +37,12 @@ const SLACK_COLORS : [&'static str; 3] = [
 
 impl ToString for SlackColor {
     fn to_string(&self) -> String {
-        self.as_slice().to_string()
+        self.as_ref().to_string()
     }
 }
 
-impl Str for SlackColor {
-    fn as_slice(&self) -> &str {
+impl AsRef<str> for SlackColor {
+    fn as_ref(&self) -> &str {
         match *self {
             SlackColor::Good => "good",
             SlackColor::Warning => "warning",
@@ -89,7 +89,7 @@ impl ToJson for HexColor {
 
 impl Encodable for HexColor {
   fn encode<S: Encoder>(&self, encoder: &mut S) -> Result<(), S::Error> {
-      encoder.emit_str(format!("{:?}", &self).as_slice())
+      encoder.emit_str(format!("{:?}", &self).as_ref())
   }
 }
 

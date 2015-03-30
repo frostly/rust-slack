@@ -93,7 +93,7 @@ impl error::Error for SlackError {
         match self.kind {
             ErrUtf8(ref err) => err.description(),
             ErrFromHex(ref err) => err.description(),
-            _ => self.desc.as_slice(),
+            _ => &self.desc[..],
         }
     }
 

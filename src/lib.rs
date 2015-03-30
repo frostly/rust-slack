@@ -1,5 +1,5 @@
 #![crate_name = "slackhook"]
-#![feature(core)]
+#![feature(core, convert)]
 #![deny(missing_docs)]
 #![cfg_attr(test, deny(warnings))]
 #![cfg_attr(test, feature(test))]
@@ -12,7 +12,7 @@
 #[cfg(test)] extern crate test;
 
 extern crate curl;
-extern crate "rustc-serialize" as rustc_serialize;
+extern crate rustc_serialize;
 
 pub use slack::{
     Slack,

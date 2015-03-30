@@ -24,7 +24,7 @@ impl Slack {
         let encoded = try!(json::encode(payload));
         debug!("JSON payload, {:?}", encoded);
         let resp = try!(http::handle()
-            .post(self.incoming_url.as_slice(), encoded.as_slice())
+            .post(&self.incoming_url[..], &encoded)
             .exec());
         debug!("slack response, {}", resp);
 
@@ -75,7 +75,7 @@ impl SlackText {
 impl Encodable for SlackText {
   fn encode<S: Encoder>(&self, encoder: &mut S) -> Result<(), S::Error> {
       let text = format!("{:?}", &self);
-      encoder.emit_str(text.as_slice())
+      encoder.emit_str(&text)
   }
 }
 
@@ -106,7 +106,7 @@ impl fmt::Debug for SlackLink {
 impl Encodable for SlackLink {
   fn encode<S: Encoder>(&self, encoder: &mut S) -> Result<(), S::Error> {
       let text = format!("{:?}", &self);
-      encoder.emit_str(text.as_slice())
+      encoder.emit_str(&text)
   }
 }
 
