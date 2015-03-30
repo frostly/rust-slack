@@ -7,12 +7,9 @@ homepage = "https://github.com/frostly/rust-slack"
 repository = "https://github.com/frostly/rust-slack"
 license = "MIT/Apache-2.0"
 readme = "README.md"
-keywords = ["slack", "webhook"]
+keywords = ["slack", "webhook", "hook"]
 
 [dependencies]
 rustc-serialize = "*"
 curl = "*"
 log = "*"
-
-[lib]
-name = "slackhook"

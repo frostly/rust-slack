@@ -8,11 +8,18 @@ A rust crate for sending messages to Slack via webhooks.
 
 # Usage
 
+Add this to your `Cargo.toml`:
+
+```toml
+[dependencies]
+slack-hook = "*"
+```
+
 Add the crate to your existing project:
 
 ```rust
-extern crate slackhook;
-use slackhook::{Slack, Payload, PayloadTemplate};
+extern crate slack_hook;
+use slack_hook::{Slack, Payload, PayloadTemplate};
 
 fn main() {
     let slack = Slack::new("https://hooks.slack.com/services/abc/123/45z");
@@ -40,8 +47,8 @@ fn main() {
 To create a payload with just an attachment:
 
 ```rust
-extern crate slackhook;
-use slackhook::{Payload, PayloadTemplate, Attachment, AttachmentTemplate};
+extern crate slack_hook;
+use slack_hook::{Payload, PayloadTemplate, Attachment, AttachmentTemplate};
 
 fn main() {
   let p = Payload::new(PayloadTemplate::Attachment {
