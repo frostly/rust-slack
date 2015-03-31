@@ -6,54 +6,54 @@ use helper::{
     opt_str_to_slacktext,
 };
 
-/// slack allows for attachments to be added to messages
-/// https://api.slack.com/docs/attachments
+/// Slack allows for attachments to be added to messages. See
+/// https://api.slack.com/docs/attachments for more information.
 #[derive(RustcEncodable, Debug)]
 pub struct Attachment {
-    /// required text for attachment
-    /// slack will use to display on devices that don't support markup
+    /// Required text for attachment.
+    /// Slack will use this text to display on devices that don't support markup.
     pub fallback : SlackText,
-    /// optional text for other devices, markup supported
+    /// Optional text for other devices, markup supported
     pub text     : Option<SlackText>,
-    /// optional text that appears above attachment
+    /// Optional text that appears above attachment
     pub pretext  : Option<SlackText>,
-    /// color of attachment
+    /// Color of attachment
     pub color    : HexColor,
     /// Fields are defined as an array, and hashes contained within it will be
     /// displayed in a table inside the message attachment.
     pub fields   : Option<Vec<Field>>,
 }
 
-/// attachment template to simplify constructing attachments
-/// for common use cases
+/// Attachment template to simplify constructing attachments
+/// for common use cases.
 pub enum AttachmentTemplate<'a> {
-    /// specify all attributes of attachment
+    /// Specify all attributes of attachment
     Complete {
-        /// required text for attachment
-        /// slack will use to display on devices that don't support markup
+        /// Required text for attachment.
+        /// Slack will use this text to display on devices that don't support markup.
         fallback: &'a str,
-        /// optional primary text of attachment
+        /// Optional primary text of attachment
         text: Option<&'a str>,
-        /// optional text that appears above attachment
+        /// Optional text that appears above attachment
         pretext: Option<&'a str>,
-        /// color string can be any hex code starting with #
+        /// Color string can be any hex code starting with #
         color: &'a str,
         /// Fields are defined as an array, and hashes contained within it will
         /// be displayed in a table inside the message attachment.
         fields: Option<Vec<Field>>,
     },
-    /// provide only text and color for attachemnt
+    /// Provide only text and color for attachment
     /// other values will be defaulted
     Text {
-        /// text to send
+        /// Text to send
         text: &'a str,
-        /// color string can be any hex code starting with #
+        /// Color string can be any hex code starting with #
         color: &'a str,
     },
 }
 
 impl Attachment {
-    /// construct new attachment based on template provided
+    /// Construct new attachment based on template provided
     pub fn new(t: AttachmentTemplate) -> SlackResult<Attachment> {
         match t {
             AttachmentTemplate::Complete {

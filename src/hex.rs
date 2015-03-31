@@ -58,7 +58,7 @@ impl fmt::Debug for HexColor {
     }
 }
 
-/// trait to support constructing HexColors via different types
+/// Trait to support constructing HexColors via different types
 pub trait HexColorT {
     /// &T is input type for constructor
     type T: ?Sized;
@@ -101,7 +101,7 @@ trait IntoHexColor {
 }
 
 impl<'a> IntoHexColor for &'a str {
-    /// attempt to convert a &str into a `HexColor`
+    /// Attempt to convert a &str into a `HexColor`
     fn into_hex_color(self) -> SlackResult<HexColor> {
         if SLACK_COLORS.contains(&self) {
             return Ok(HexColor(self.to_string()));

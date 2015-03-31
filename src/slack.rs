@@ -5,20 +5,20 @@ use rustc_serialize::{json, Encodable, Encoder};
 use types::{SlackResult, ErrSlackResp};
 use payload::{Payload};
 
-/// handles sending messages to slack
+/// Handles sending messages to slack
 pub struct Slack {
-    /// url provided by slack interface for incoming webhook
+    /// Url provided by slack interface for incoming webhook
     incoming_url: String,
 }
 
 impl Slack {
-    /// construct a new instance of slack for a specific
+    /// Construct a new instance of slack for a specific
     /// incoming url endopoint
     pub fn new(url: &str) -> Slack {
         Slack {incoming_url: url.to_string()}
     }
 
-    /// send payload to slack service
+    /// Send payload to slack service
     pub fn send(&self, payload: &Payload) -> SlackResult<()> {
         debug!("sending payload, {:?}", payload);
         let encoded = try!(json::encode(payload));
@@ -37,12 +37,12 @@ impl Slack {
     }
 }
 
-/// represent ation of any text sent through slack
+/// Representation of any text sent through slack
 /// the text must be processed to escape specific characters
 pub struct SlackText(String);
 
 impl SlackText {
-    /// construct slack text
+    /// Construct slack text
     pub fn new(text: &str) -> SlackText {
         SlackText(text.to_string())
     }
@@ -55,7 +55,7 @@ impl fmt::Debug for SlackText {
 }
 
 impl SlackText {
-    /// escape &, <, and > in any slack text
+    /// Escape &, <, and > in any slack text
     /// https://api.slack.com/docs/formatting
     fn get_escaped_text(&self) -> String {
         let SlackText(ref text) = *self;
@@ -83,7 +83,7 @@ impl Encodable for SlackText {
 pub struct SlackLink {
     /// URL for link
     pub url  : String,
-    /// anchor text for link
+    /// Anchor text for link
     pub text : SlackText,
 }
 
