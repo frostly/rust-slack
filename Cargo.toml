@@ -1,6 +1,6 @@
 [package]
 name = "slack-hook"
-version = "0.0.3"
+version = "0.1.0"
 authors = ["Christopher Brickley <brickley@gmail.com>"]
 description = "A rust crate for sending messages to Slack via webhooks."
 homepage = "https://github.com/frostly/rust-slack"
