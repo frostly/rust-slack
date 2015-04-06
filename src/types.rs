@@ -2,6 +2,7 @@ use std::{error, fmt, str};
 use rustc_serialize::hex::FromHexError;
 use rustc_serialize::json::EncoderError;
 use curl;
+use std::convert::From;
 
 pub use self::ErrorKind::*;
 
@@ -9,7 +10,7 @@ pub use self::ErrorKind::*;
 pub type SlackResult<T> = Result<T, SlackError>;
 
 /// Different kinds of errors handled
-#[derive(Copy, Debug)]
+#[derive(Copy, Clone, Debug)]
 pub enum ErrorKind {
     /// slack response failed
     ErrSlackResp,
@@ -34,8 +35,8 @@ pub struct SlackError {
     pub desc: String,
 }
 
-impl error::FromError<str::Utf8Error> for SlackError {
-    fn from_error(err: str::Utf8Error) -> SlackError {
+impl From<str::Utf8Error> for SlackError {
+    fn from(err: str::Utf8Error) -> SlackError {
         SlackError {
             kind: ErrUtf8(err),
             desc: format!("{:?}", err),
@@ -43,8 +44,8 @@ impl error::FromError<str::Utf8Error> for SlackError {
     }
 }
 
-impl error::FromError<EncoderError> for SlackError {
-    fn from_error(err: EncoderError) -> SlackError {
+impl From<EncoderError> for SlackError {
+    fn from(err: EncoderError) -> SlackError {
         SlackError {
             kind: ErrEncoder(err),
             desc: format!("{:?}", err),
@@ -52,8 +53,8 @@ impl error::FromError<EncoderError> for SlackError {
     }
 }
 
-impl error::FromError<curl::ErrCode> for SlackError {
-    fn from_error(err: curl::ErrCode) -> SlackError {
+impl From<curl::ErrCode> for SlackError {
+    fn from(err: curl::ErrCode) -> SlackError {
         SlackError {
             kind: ErrCurl(err),
             desc: format!("{:?}", err),
@@ -61,8 +62,8 @@ impl error::FromError<curl::ErrCode> for SlackError {
     }
 }
 
-impl error::FromError<FromHexError> for SlackError {
-    fn from_error(err: FromHexError) -> SlackError {
+impl From<FromHexError> for SlackError {
+    fn from(err: FromHexError) -> SlackError {
         SlackError {
             kind: ErrFromHex(err),
             desc: format!("{:?}", err),
@@ -70,8 +71,8 @@ impl error::FromError<FromHexError> for SlackError {
     }
 }
 
-impl <'a>error::FromError<(ErrorKind, &'a str)> for SlackError {
-    fn from_error((kind, desc): (ErrorKind, &'a str)) -> SlackError {
+impl<'a> From<(ErrorKind, &'a str)> for SlackError {
+    fn from((kind, desc): (ErrorKind, &'a str)) -> SlackError {
         SlackError {
             kind: kind,
             desc: desc.to_string(),

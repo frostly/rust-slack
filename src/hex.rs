@@ -15,7 +15,7 @@ pub struct HexColor(String);
 /// Default slack colors built-in to the API
 /// See: https://api.slack.com/docs/attachments
 #[allow(dead_code)]
-#[derive(Copy)]
+#[derive(Copy, Clone)]
 pub enum SlackColor {
     /// green
     Good,
@@ -115,7 +115,7 @@ impl<'a> IntoHexColor for &'a str {
         // see if the remaining part of the string is actually hex
         match self[1..].from_hex() {
             Ok(_) => Ok(HexColor(self.to_string())),
-            Err(e) => Err(::std::error::FromError::from_error(e)),
+            Err(e) => fail!(e),
         }
     }
 }
