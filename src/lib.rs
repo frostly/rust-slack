@@ -1,3 +1,4 @@
+#![feature(core)]
 #![deny(missing_docs)]
 #![cfg_attr(test, deny(warnings))]
 #![cfg_attr(test, feature(test))]
