@@ -1,4 +1,4 @@
-use std::{error, fmt, str};
+use std::{error, fmt};
 use rustc_serialize::hex::FromHexError;
 use rustc_serialize::json::EncoderError;
 use curl;
@@ -15,7 +15,7 @@ pub enum ErrorKind {
     /// slack response failed
     ErrSlackResp,
     /// slack response should be in utf8
-    ErrUtf8(str::Utf8Error),
+    // ErrUtf8(str::Utf8Error),
     /// couldn't convert value to Hex
     ErrFromHex(FromHexError),
     /// failed other hex color validations for input
@@ -35,14 +35,15 @@ pub struct SlackError {
     pub desc: String,
 }
 
-impl From<str::Utf8Error> for SlackError {
-    fn from(err: str::Utf8Error) -> SlackError {
-        SlackError {
-            kind: ErrUtf8(err),
-            desc: format!("{:?}", err),
-        }
-    }
-}
+// https://github.com/rust-lang/rust/issues/24028
+// impl From<str::Utf8Error> for SlackError {
+//     fn from(err: str::Utf8Error) -> SlackError {
+//         SlackError {
+//             kind: ErrUtf8(err),
+//             desc: format!("{:?}", err),
+//         }
+//     }
+// }
 
 impl From<EncoderError> for SlackError {
     fn from(err: EncoderError) -> SlackError {
@@ -92,7 +93,7 @@ impl fmt::Display for SlackError {
 impl error::Error for SlackError {
     fn description(&self) -> &str {
         match self.kind {
-            ErrUtf8(ref err) => err.description(),
+            // ErrUtf8(ref err) => err.description(),
             ErrFromHex(ref err) => err.description(),
             _ => &self.desc[..],
         }
@@ -100,7 +101,7 @@ impl error::Error for SlackError {
 
     fn cause(&self) -> Option<&error::Error> {
         match self.kind {
-            ErrUtf8(ref err) => Some(err as &error::Error),
+            // ErrUtf8(ref err) => Some(err as &error::Error),
             ErrFromHex(ref err) => Some(err as &error::Error),
             _ => None,
         }
