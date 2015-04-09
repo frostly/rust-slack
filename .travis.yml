@@ -1,6 +1,10 @@
 language: rust
 sudo: false
 
+rust:
+  - nightly
+  - 1.0.0-beta
+
 script:
   - rustc --version
   - cargo --version
