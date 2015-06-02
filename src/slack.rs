@@ -28,10 +28,7 @@ impl Slack {
             .exec());
         debug!("slack response, {}", resp);
 
-        // Waiting on https://github.com/rust-lang/rust/issues/24028 for str::Utf8Eror to stablize
-        // let body = try!(str::from_utf8(resp.get_body()));
-
-        let body = str::from_utf8(resp.get_body()).unwrap_or("non-utf8 slack response");
+        let body = try!(str::from_utf8(resp.get_body()));
 
         match body {
             "ok" => Ok(()),
