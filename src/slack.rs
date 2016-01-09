@@ -113,6 +113,7 @@ impl Encodable for SlackLink {
 
 #[cfg(test)]
 mod test {
+    #[cfg(feature = "unstable")]
     use test::Bencher;
     use slack::{Slack, SlackLink, SlackText};
     use payload::{Payload, PayloadTemplate};
@@ -184,6 +185,7 @@ mod test {
         assert_eq!(json::encode(&p).unwrap().to_string(), r##"{"text":"test message","channel":null,"username":null,"icon_url":null,"icon_emoji":null,"attachments":null,"unfurl_links":null,"link_names":null}"##.to_string())
     }
 
+    #[cfg(feature = "unstable")]
     #[bench]
     fn bench_get_escaped_text(b: &mut Bencher) {
         let st = SlackText::new("moo <&> moo");

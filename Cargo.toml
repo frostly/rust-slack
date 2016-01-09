@@ -13,3 +13,8 @@ keywords = ["slack", "webhook", "hook"]
 rustc-serialize = "*"
 curl = "*"
 log = "*"
+[dependencies.clippy]
+optional = true
+version = "^0.0"
+[features]
+unstable = []
