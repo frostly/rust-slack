@@ -1,27 +1,30 @@
-language: rust
 sudo: false
-
+language: rust
+addons:
+  apt:
+    packages:
+    - libcurl4-openssl-dev
+    - libelf-dev
+    - libdw-dev
+    - binutils-dev
 rust:
-  - nightly
-
+- nightly
+- beta
+- stable
+before_script:
+- |
+  pip install 'travis-cargo<0.2' --user &&
+  export PATH=$HOME/.local/bin:$PATH
 script:
-  - rustc --version
-  - cargo --version
-  - cargo build --verbose
-  - cargo test --verbose
-  - cargo bench --verbose
-  - rustdoc --test README.md -L target/debug/deps -L target/debug
-  - cargo doc
-after_success: |
-  [ $TRAVIS_BRANCH = master ] &&
-  [ $TRAVIS_PULL_REQUEST = false ] &&
-  echo '<meta http-equiv=refresh content=0;url=slack_hook/index.html>' > target/doc/index.html &&
-  pip install ghp-import --user $USER &&
-  $HOME/.local/bin/ghp-import -n target/doc &&
-  git push -fq https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git gh-pages &&
-  rm target/doc/index.html &&
-  mv target/doc . &&
-  (curl http://www.rust-ci.org/artifacts/put?t=$RUSTCI_TOKEN | sh)
+- |
+  travis-cargo build &&
+  travis-cargo test &&
+  travis-cargo bench &&
+  rustdoc --test README.md -L target/debug/deps -L target/debug
+  travis-cargo --only stable doc
+after_success:
+- travis-cargo --only stable doc-upload
+- travis-cargo coveralls --no-sudo --verify
 notifications:
   slack:
     secure: TkDnUuFH2gOQTLavAtpH2biJIZzsKawZgtsih+rXCn8hujDSXVSZ/TZqjIbnkjD7DLfQO6HIOI4IX/5lRnVitLCjfoo5FJUr9vnMKqRvneBUMEuvOgKQZ86FkGVHcTlSNOhgAKGFMgm0h9epMh+81AN5ExUyofXRFEaHcy7zeMo=
@@ -29,7 +32,5 @@ notifications:
     on_success: never
 env:
   global:
-# RUSTCI_TOKEN
-  - secure: PM56iFjQm0/9y2ekPNYiGj3VzvqnaRGPZmm4gOgvwWuVD9nWJt9Rs/A2Io16Yuuv+X/zUrvBb4yCafwPp8l+6vA0dRIWwJ3UF3FdQI5ocKT2lxQSVh27XTnYfd5o3kjs4/RGRgQbuOwL4d69xTrMh2QkqLeAhKlIVwEt24t3JK0=
-# GH_TOKEN
-  - secure: SuZ87xbxZZa9KJSFiAelJSIHg+7/ae60WNqAHRpAEmQGqOihERlpal9H6o5fgVb4VcvvYqYN1CKRVb2aX60mJocB+XAPGRGAzIxyEAEQ/pUYob209Dk9fCZpk28tQvAHJNHenx8WkUJUUtuSxfg8NC9ttZrPzPk02itYP1R9Em8=
+    - TRAVIS_CARGO_NIGHTLY_FEATURE="clippy unstable"
+    - secure: SuZ87xbxZZa9KJSFiAelJSIHg+7/ae60WNqAHRpAEmQGqOihERlpal9H6o5fgVb4VcvvYqYN1CKRVb2aX60mJocB+XAPGRGAzIxyEAEQ/pUYob209Dk9fCZpk28tQvAHJNHenx8WkUJUUtuSxfg8NC9ttZrPzPk02itYP1R9Em8=
