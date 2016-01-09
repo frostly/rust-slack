@@ -75,7 +75,7 @@ impl<'a> From<(ErrorKind, &'a str)> for SlackError {
     fn from((kind, desc): (ErrorKind, &'a str)) -> SlackError {
         SlackError {
             kind: kind,
-            desc: desc.to_string(),
+            desc: desc.to_owned(),
         }
     }
 }
@@ -83,8 +83,7 @@ impl<'a> From<(ErrorKind, &'a str)> for SlackError {
 impl fmt::Display for SlackError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            _ =>
-                write!(f, "Invalid character '{}' at position {}", "ch", "idx"),
+            _ => write!(f, "Invalid character '{}' at position {}", "ch", "idx"),
         }
     }
 }
@@ -92,7 +91,7 @@ impl fmt::Display for SlackError {
 impl error::Error for SlackError {
     fn description(&self) -> &str {
         match self.kind {
-            // ErrUtf8(ref err) => err.description(),
+            ErrUtf8(ref err) => err.description(),
             ErrFromHex(ref err) => err.description(),
             _ => &self.desc[..],
         }
@@ -100,8 +99,8 @@ impl error::Error for SlackError {
 
     fn cause(&self) -> Option<&error::Error> {
         match self.kind {
-            // ErrUtf8(ref err) => Some(err as &error::Error),
-            ErrFromHex(ref err) => Some(err as &error::Error),
+            ErrUtf8(ref err) => err.cause(),
+            ErrFromHex(ref err) => err.cause(),
             _ => None,
         }
     }
