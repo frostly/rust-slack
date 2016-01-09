@@ -83,8 +83,7 @@ impl<'a> From<(ErrorKind, &'a str)> for SlackError {
 impl fmt::Display for SlackError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            _ =>
-                write!(f, "Invalid character '{}' at position {}", "ch", "idx"),
+            _ => write!(f, "Invalid character '{}' at position {}", "ch", "idx"),
         }
     }
 }

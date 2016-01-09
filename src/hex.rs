@@ -1,6 +1,6 @@
 use std::fmt;
 use types::{SlackResult, ErrHexColor};
-use rustc_serialize::hex::{FromHex};
+use rustc_serialize::hex::FromHex;
 use rustc_serialize::json::{ToJson, Json};
 use rustc_serialize::{Encodable, Encoder};
 
@@ -26,12 +26,10 @@ pub enum SlackColor {
 
 // can't seem to convert enum to slice despite trait being implemented
 // need this to support passing in the string directly
-const SLACK_COLORS : [&'static str; 3] = [
-    // SlackColor::Good.as_slice(),
-    "good",
-    "warning",
-    "danger",
-];
+const SLACK_COLORS: [&'static str; 3] = [// SlackColor::Good.as_slice(),
+                                         "good",
+                                         "warning",
+                                         "danger"];
 
 
 impl ToString for SlackColor {
@@ -45,7 +43,7 @@ impl AsRef<str> for SlackColor {
         match *self {
             SlackColor::Good => "good",
             SlackColor::Warning => "warning",
-            SlackColor::Danger => "danger"
+            SlackColor::Danger => "danger",
         }
     }
 }
@@ -53,7 +51,7 @@ impl AsRef<str> for SlackColor {
 impl fmt::Debug for HexColor {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let HexColor(ref text) = *self;
-        write!(f , "{}" , text)
+        write!(f, "{}", text)
     }
 }
 
@@ -87,9 +85,9 @@ impl ToJson for HexColor {
 }
 
 impl Encodable for HexColor {
-  fn encode<S: Encoder>(&self, encoder: &mut S) -> Result<(), S::Error> {
-      encoder.emit_str(format!("{:?}", &self).as_ref())
-  }
+    fn encode<S: Encoder>(&self, encoder: &mut S) -> Result<(), S::Error> {
+        encoder.emit_str(format!("{:?}", &self).as_ref())
+    }
 }
 
 
@@ -129,7 +127,8 @@ mod test {
     fn test_hex_color_too_short() {
         let h1: Result<HexColor, SlackError> = HexColorT::new("abc");
         let h = h1.unwrap_err();
-        assert_eq!(h.desc, "Must be 7 characters long (including #)".to_string());
+        assert_eq!(h.desc,
+                   "Must be 7 characters long (including #)".to_string());
     }
 
     #[test]
@@ -156,7 +155,7 @@ mod test {
     #[test]
     fn test_hex_color_good() {
         let h: HexColor = HexColorT::new(&SlackColor::Good);
-        assert_eq!(format!("{:?}",h), "good".to_string());
+        assert_eq!(format!("{:?}", h), "good".to_string());
     }
 
     #[test]
@@ -170,7 +169,8 @@ mod test {
     fn test_hex_color_bad_str() {
         let h1: SlackResult<HexColor> = HexColorT::new("bad");
         let h = h1.unwrap_err();
-        assert_eq!(h.desc, "Must be 7 characters long (including #)".to_string());
+        assert_eq!(h.desc,
+                   "Must be 7 characters long (including #)".to_string());
     }
 
     #[test]
@@ -182,8 +182,8 @@ mod test {
 
     #[test]
     fn test_hex_color_valid_lower_hex() {
-      let h1: SlackResult<HexColor> = HexColorT::new("#103d18");
-      let h = h1.unwrap();
-      assert_eq!(format!("{:?}", h), "#103d18".to_string());
+        let h1: SlackResult<HexColor> = HexColorT::new("#103d18");
+        let h = h1.unwrap();
+        assert_eq!(format!("{:?}", h), "#103d18".to_string());
     }
 }
