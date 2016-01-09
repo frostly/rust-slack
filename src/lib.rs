@@ -6,7 +6,7 @@
         unstable_features,
         unused_import_braces,
         unused_qualifications)]
-#![cfg_attr(all(test, feature = "unstable"), feature(test))]
+#![cfg_attr(all(test, feature = "unstable"), feature(test))] // add feature test when testing and unstable feature is provided
 #![cfg_attr(test, deny(warnings))]
 #![cfg_attr(any(feature = "clippy", feature = "unstable"), allow(unstable_features))]
 #![cfg_attr(feature = "clippy", feature(plugin))]
@@ -18,7 +18,7 @@
 //! also support for built-in colors as well as any hex colors
 
 #[macro_use] extern crate log;
-#[cfg(all(test, feature="unstable"))] extern crate test;
+#[cfg(all(test, feature="unstable"))] extern crate test; // needed for benchmarking
 
 extern crate curl;
 extern crate rustc_serialize;
