@@ -29,7 +29,5 @@ notifications:
     on_success: never
 env:
   global:
-# RUSTCI_TOKEN
-  - secure: PM56iFjQm0/9y2ekPNYiGj3VzvqnaRGPZmm4gOgvwWuVD9nWJt9Rs/A2Io16Yuuv+X/zUrvBb4yCafwPp8l+6vA0dRIWwJ3UF3FdQI5ocKT2lxQSVh27XTnYfd5o3kjs4/RGRgQbuOwL4d69xTrMh2QkqLeAhKlIVwEt24t3JK0=
 # GH_TOKEN
   - secure: SuZ87xbxZZa9KJSFiAelJSIHg+7/ae60WNqAHRpAEmQGqOihERlpal9H6o5fgVb4VcvvYqYN1CKRVb2aX60mJocB+XAPGRGAzIxyEAEQ/pUYob209Dk9fCZpk28tQvAHJNHenx8WkUJUUtuSxfg8NC9ttZrPzPk02itYP1R9Em8=
