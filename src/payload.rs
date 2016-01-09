@@ -36,6 +36,7 @@ pub struct Payload {
 }
 
 /// Templates to support common payload use cases
+#[derive(Debug)]
 pub enum PayloadTemplate<'a> {
     /// Specify the entire payload
     Complete {

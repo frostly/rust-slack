@@ -6,6 +6,7 @@ use types::{SlackResult, ErrSlackResp};
 use payload::{Payload};
 
 /// Handles sending messages to slack
+#[derive(Debug)]
 pub struct Slack {
     /// Url provided by slack interface for incoming webhook
     incoming_url: String,

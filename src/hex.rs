@@ -14,8 +14,7 @@ pub struct HexColor(String);
 
 /// Default slack colors built-in to the API
 /// See: https://api.slack.com/docs/attachments
-#[allow(dead_code)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub enum SlackColor {
     /// green
     Good,

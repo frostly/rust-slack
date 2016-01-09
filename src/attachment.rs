@@ -26,6 +26,7 @@ pub struct Attachment {
 
 /// Attachment template to simplify constructing attachments
 /// for common use cases.
+#[derive(Debug)]
 pub enum AttachmentTemplate<'a> {
     /// Specify all attributes of attachment
     Complete {
