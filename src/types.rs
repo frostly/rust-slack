@@ -75,7 +75,7 @@ impl<'a> From<(ErrorKind, &'a str)> for SlackError {
     fn from((kind, desc): (ErrorKind, &'a str)) -> SlackError {
         SlackError {
             kind: kind,
-            desc: desc.to_string(),
+            desc: desc.to_owned(),
         }
     }
 }

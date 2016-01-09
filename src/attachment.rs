@@ -106,7 +106,7 @@ impl Field {
     /// Construct a new field
     pub fn new(title: &str, value: &str, short: Option<bool>) -> Field {
         Field {
-            title: title.to_string(),
+            title: title.to_owned(),
             value: SlackText::new(value),
             short: short,
         }

@@ -5,7 +5,8 @@
         unsafe_code,
         unstable_features,
         unused_import_braces,
-        unused_qualifications)]
+        unused_qualifications,
+        unused_results)]
 #![cfg_attr(all(test, feature = "unstable"), feature(test))] // add feature test when testing and unstable feature is provided
 #![cfg_attr(test, deny(warnings))]
 #![cfg_attr(any(feature = "clippy", feature = "unstable"), allow(unstable_features))]

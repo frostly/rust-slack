@@ -16,7 +16,7 @@ impl Slack {
     /// Construct a new instance of slack for a specific
     /// incoming url endopoint
     pub fn new(url: &str) -> Slack {
-        Slack { incoming_url: url.to_string() }
+        Slack { incoming_url: url.to_owned() }
     }
 
     /// Send payload to slack service
@@ -45,7 +45,7 @@ pub struct SlackText(String);
 impl SlackText {
     /// Construct slack text
     pub fn new(text: &str) -> SlackText {
-        SlackText(text.to_string())
+        SlackText(text.to_owned())
     }
 }
 
@@ -91,10 +91,10 @@ pub struct SlackLink {
 impl SlackLink {
     /// Construct new SlackLink with string slices
     pub fn new(url: &str, text: &str) -> SlackLink {
-        return SlackLink {
-            url: url.to_string(),
+        SlackLink {
+            url: url.to_owned(),
             text: SlackText::new(text),
-        };
+        }
     }
 }
 
@@ -124,33 +124,33 @@ mod test {
     fn slack_incoming_url_test() {
         let s = Slack::new("https://hooks.slack.com/services/abc/123/45z");
         assert_eq!(s.incoming_url,
-                   "https://hooks.slack.com/services/abc/123/45z".to_string());
+                   "https://hooks.slack.com/services/abc/123/45z".to_owned());
     }
 
     #[test]
     fn slack_text_test() {
         let s = SlackText::new("moo <&> moo");
-        assert_eq!(format!("{:?}", s), "moo &lt;&amp;&gt; moo".to_string());
+        assert_eq!(format!("{:?}", s), "moo &lt;&amp;&gt; moo".to_owned());
     }
 
     #[test]
     fn slack_link_test() {
         let s = SlackLink {
             text: SlackText::new("moo <&> moo"),
-            url: "http://google.com".to_string(),
+            url: "http://google.com".to_owned(),
         };
         assert_eq!(format!("{:?}", s),
-                   "<http://google.com|moo &lt;&amp;&gt; moo>".to_string());
+                   "<http://google.com|moo &lt;&amp;&gt; moo>".to_owned());
     }
 
     #[test]
     fn json_slacklink_test() {
         let s = SlackLink {
             text: SlackText::new("moo <&> moo"),
-            url: "http://google.com".to_string(),
+            url: "http://google.com".to_owned(),
         };
-        assert_eq!(json::encode(&s).unwrap().to_string(),
-                   "\"<http://google.com|moo &lt;&amp;&gt; moo>\"".to_string())
+        assert_eq!(json::encode(&s).unwrap().to_owned(),
+                   "\"<http://google.com|moo &lt;&amp;&gt; moo>\"".to_owned())
     }
 
     #[test]
@@ -175,14 +175,14 @@ mod test {
             link_names: Some(false),
         });
 
-        assert_eq!(json::encode(&p).unwrap().to_string(), r##"{"text":"test message","channel":"#abc","username":"Bot","icon_url":null,"icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","pretext":null,"color":"#6800e8","fields":[{"title":"title","value":"value","short":null}]}],"unfurl_links":0,"link_names":0}"##.to_string())
+        assert_eq!(json::encode(&p).unwrap().to_owned(), r##"{"text":"test message","channel":"#abc","username":"Bot","icon_url":null,"icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","pretext":null,"color":"#6800e8","fields":[{"title":"title","value":"value","short":null}]}],"unfurl_links":0,"link_names":0}"##.to_owned())
     }
 
     #[test]
     fn json_message_payload_test() {
         let p = Payload::new(PayloadTemplate::Message { text: "test message" });
 
-        assert_eq!(json::encode(&p).unwrap().to_string(), r##"{"text":"test message","channel":null,"username":null,"icon_url":null,"icon_emoji":null,"attachments":null,"unfurl_links":null,"link_names":null}"##.to_string())
+        assert_eq!(json::encode(&p).unwrap().to_owned(), r##"{"text":"test message","channel":null,"username":null,"icon_url":null,"icon_emoji":null,"attachments":null,"unfurl_links":null,"link_names":null}"##.to_owned())
     }
 
     #[cfg(feature = "unstable")]
