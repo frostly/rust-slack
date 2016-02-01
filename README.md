@@ -16,12 +16,12 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-slack-hook = "*"
+slack-hook = "0.1"
 ```
 
 Add the crate to your existing project:
 
-```rust
+```rust,no_run
 extern crate slack_hook;
 use slack_hook::{Slack, Payload, PayloadTemplate};
 
