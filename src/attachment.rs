@@ -1,4 +1,3 @@
-use rustc_serialize::{Encodable, Encoder};
 use slack::SlackText;
 use types::SlackResult;
 use hex::{HexColor, HexColorT};
