@@ -72,16 +72,14 @@ impl Payload {
     /// Construct a new Payload from a template
     pub fn new(t: PayloadTemplate) -> Payload {
         match t {
-            PayloadTemplate::Complete {
-                text,
-                channel,
-                username,
-                icon_url,
-                icon_emoji,
-                attachments,
-                unfurl_links,
-                link_names,
-            } => {
+            PayloadTemplate::Complete { text,
+                                        channel,
+                                        username,
+                                        icon_url,
+                                        icon_emoji,
+                                        attachments,
+                                        unfurl_links,
+                                        link_names } => {
                 Payload {
                     text: opt_str_to_slacktext(&text),
                     channel: opt_str_to_string(&channel),

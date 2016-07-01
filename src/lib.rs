@@ -7,7 +7,8 @@
         unused_import_braces,
         unused_qualifications,
         unused_results)]
-#![cfg_attr(all(test, feature = "unstable"), feature(test))] // add feature test when testing and unstable feature is provided
+// add feature test when testing and unstable feature is provided
+#![cfg_attr(all(test, feature = "unstable"), feature(test))]
 #![cfg_attr(test, deny(warnings))]
 #![cfg_attr(any(feature = "clippy", feature = "unstable"), allow(unstable_features))]
 #![cfg_attr(feature = "clippy", feature(plugin))]
@@ -15,42 +16,26 @@
 #![cfg_attr(feature = "clippy", deny(clippy))]
 
 //! Library to send messages to slack rooms
-//! supports entire messaging API, including attachements and fields
+//! supports entire messaging API, including attachments and fields
 //! also support for built-in colors as well as any hex colors
 
-#[macro_use] extern crate log;
-#[cfg(all(test, feature="unstable"))] extern crate test; // needed for benchmarking
+#[macro_use]
+extern crate log;
+#[cfg(all(test, feature="unstable"))]
+extern crate test; // needed for benchmarking
 
 extern crate curl;
 extern crate rustc_serialize;
 
-pub use slack::{
-    Slack,
-    SlackText,
-    SlackLink
-};
+pub use slack::{Slack, SlackText, SlackLink};
 
-pub use payload::{
-    Payload,
-    PayloadTemplate
-};
+pub use payload::{Payload, PayloadTemplate};
 
-pub use attachment::{
-    Attachment,
-    AttachmentTemplate,
-    Field
-};
+pub use attachment::{Attachment, AttachmentTemplate, Field};
 
-pub use types::{
-    SlackError,
-    SlackResult,
-    ErrorKind,
-};
+pub use types::{SlackError, SlackResult, ErrorKind};
 
-pub use hex::{
-    SlackColor,
-    HexColor,
-};
+pub use hex::{SlackColor, HexColor};
 
 mod helper;
 mod macros;

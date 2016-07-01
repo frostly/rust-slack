@@ -54,13 +54,7 @@ impl Attachment {
     /// Construct new attachment based on template provided
     pub fn new(t: AttachmentTemplate) -> SlackResult<Attachment> {
         match t {
-            AttachmentTemplate::Complete {
-                fallback,
-                text,
-                pretext,
-                color,
-                fields,
-            } => {
+            AttachmentTemplate::Complete { fallback, text, pretext, color, fields } => {
                 let c = try!(HexColorT::new(color));
                 Ok(Attachment {
                     fallback: SlackText::new(fallback),
@@ -70,9 +64,7 @@ impl Attachment {
                     fields: fields,
                 })
             }
-            AttachmentTemplate::Text {
-                text, color
-            } => {
+            AttachmentTemplate::Text { text, color } => {
                 let c = try!(HexColorT::new(color));
                 Ok(Attachment {
                     fallback: SlackText::new(text),
