@@ -1,9 +1,10 @@
 use std::fmt;
-use curl::http;
+use curl::easy::Easy;
 use std::str;
 use rustc_serialize::{json, Encodable, Encoder};
 use types::{SlackResult, ErrSlackResp};
 use payload::Payload;
+use std::io::Read;
 
 /// Handles sending messages to slack
 #[derive(Debug)]
@@ -24,16 +25,33 @@ impl Slack {
         debug!("sending payload, {:?}", payload);
         let encoded = try!(json::encode(payload));
         debug!("JSON payload, {:?}", encoded);
-        let resp = try!(http::handle()
-                            .post(&self.incoming_url[..], &encoded)
-                            .exec());
+        let mut easy = Easy::new();
+        let _ = easy.url(&self.incoming_url[..]);
+        easy.post(true).unwrap();
+        easy.post_field_size(encoded.len() as u64).unwrap();
+
+        let mut data = Vec::new();
+
+        {
+            let mut transfer = easy.transfer();
+            transfer.read_function(|buf| {
+                Ok(encoded.as_bytes().read(buf).unwrap_or(0))
+            }).unwrap();
+            transfer.write_function(|dt| {
+                data.extend_from_slice(dt);
+                Ok(dt.len())
+            }).unwrap();
+            transfer.perform().unwrap();
+        }
+
+        let resp = easy.response_code().unwrap();
         debug!("slack response, {}", resp);
 
-        let body = try!(str::from_utf8(resp.get_body()));
+        let body = try!(str::from_utf8(&data[..]));
 
-        match body {
-            "ok" => Ok(()),
-            x => fail!((ErrSlackResp, x)),
+        match (resp, body) {
+            (200, _) => Ok(()),
+            (_, x) => fail!((ErrSlackResp, x)),
         }
     }
 }

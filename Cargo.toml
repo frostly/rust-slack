@@ -1,5 +1,5 @@
 [package]
-authors = ["Christopher Brickley <brickley@gmail.com>"]
+authors = ["Christopher Brickley <brickley@gmail.com>, Forked by Drazen Urch <github@drazenur.ch>"]
 description = "A rust crate for sending messages to Slack via webhooks."
 homepage = "https://github.com/frostly/rust-slack"
 keywords = ["slack", "webhook", "hook", "messaging"]
@@ -10,9 +10,9 @@ repository = "https://github.com/frostly/rust-slack"
 version = "0.1.2"
 
 [dependencies]
-curl = "0.2.15"
-log = "0.3.4"
-rustc-serialize = "0.3.16"
+curl = "0.3.0"
+log = "0.3.6"
+rustc-serialize = "0.3.19"
 
 [dependencies.clippy]
 optional = true
