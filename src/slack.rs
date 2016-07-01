@@ -27,16 +27,12 @@ impl Slack {
         debug!("JSON payload, {:?}", encoded);
         let mut easy = Easy::new();
         let _ = easy.url(&self.incoming_url[..]);
-        easy.post_field_size(encoded.len() as u64).unwrap();
 
         try!(easy.post(true));
+        try!(easy.post_fields_copy(encoded.as_bytes()));
         let mut data = Vec::new();
         {
             let mut transfer = easy.transfer();
-            transfer.read_function(|buf| {
-                Ok(encoded.as_bytes().read(buf).unwrap_or(0))
-            }).unwrap();
-            transfer.write_function(|dt| {
             try!(transfer.write_function(|dt| {
                 data.extend_from_slice(dt);
                 Ok(dt.len())
