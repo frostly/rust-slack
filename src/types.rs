@@ -10,7 +10,7 @@ pub use self::ErrorKind::*;
 pub type SlackResult<T> = Result<T, SlackError>;
 
 /// Different kinds of errors handled
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 pub enum ErrorKind {
     /// slack response failed
     ErrSlackResp,
@@ -23,7 +23,7 @@ pub enum ErrorKind {
     /// failed to encode payload
     ErrEncoder(EncoderError),
     /// curl error
-    ErrCurl(curl::ErrCode),
+    ErrCurl(curl::Error),
 }
 
 /// main Slack library error
@@ -53,10 +53,10 @@ impl From<EncoderError> for SlackError {
     }
 }
 
-impl From<curl::ErrCode> for SlackError {
-    fn from(err: curl::ErrCode) -> SlackError {
+impl From<curl::Error> for SlackError {
+    fn from(err: curl::Error) -> SlackError {
         SlackError {
-            kind: ErrCurl(err),
+            kind: ErrCurl(err.clone()),
             desc: format!("{:?}", err),
         }
     }

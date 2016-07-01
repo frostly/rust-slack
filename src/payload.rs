@@ -1,4 +1,3 @@
-use rustc_serialize::{Encodable, Encoder};
 use slack::SlackText;
 use attachment::Attachment;
 use helper::{opt_str_to_slacktext, opt_str_to_string, opt_bool_to_u8};
@@ -73,16 +72,14 @@ impl Payload {
     /// Construct a new Payload from a template
     pub fn new(t: PayloadTemplate) -> Payload {
         match t {
-            PayloadTemplate::Complete {
-                text,
-                channel,
-                username,
-                icon_url,
-                icon_emoji,
-                attachments,
-                unfurl_links,
-                link_names,
-            } => {
+            PayloadTemplate::Complete { text,
+                                        channel,
+                                        username,
+                                        icon_url,
+                                        icon_emoji,
+                                        attachments,
+                                        unfurl_links,
+                                        link_names } => {
                 Payload {
                     text: opt_str_to_slacktext(&text),
                     channel: opt_str_to_string(&channel),
