@@ -4,11 +4,11 @@ use rustc_serialize::hex::FromHex;
 use rustc_serialize::json::{ToJson, Json};
 use rustc_serialize::{Encodable, Encoder};
 
-/// The HexColor string can be one of:
+/// The `HexColor` string can be one of:
 ///
-/// 1. "good", "warning", "danger"
-/// 2. The built-in enums: SlackColor::Good, etc.
-/// 3. Any valid hex color code: "#b13d41"
+/// 1. `good`, `warning`, `danger`
+/// 2. The built-in enums: `SlackColor::Good`, etc.
+/// 3. Any valid hex color code: `#b13d41`
 /// hex color codes will be checked to ensure a valid hex number is provided
 pub struct HexColor(String);
 
@@ -55,7 +55,7 @@ impl fmt::Debug for HexColor {
     }
 }
 
-/// Trait to support constructing HexColors via different types
+/// Trait to support constructing `HexColors` via different types
 pub trait HexColorT {
     /// &T is input type for constructor
     type T: ?Sized;
