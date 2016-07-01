@@ -4,7 +4,6 @@ use std::str;
 use rustc_serialize::{json, Encodable, Encoder};
 use types::{SlackResult, ErrSlackResp};
 use payload::Payload;
-use std::io::Read;
 
 /// Handles sending messages to slack
 #[derive(Debug)]
