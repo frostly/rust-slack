@@ -1,5 +1,5 @@
 [package]
-authors = ["Christopher Brickley <brickley@gmail.com>, Forked by Drazen Urch <github@drazenur.ch>"]
+authors = ["Christopher Brickley <brickley@gmail.com>"]
 description = "A rust crate for sending messages to Slack via webhooks."
 homepage = "https://github.com/frostly/rust-slack"
 keywords = ["slack", "webhook", "hook", "messaging"]
