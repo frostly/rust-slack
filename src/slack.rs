@@ -174,8 +174,16 @@ mod test {
                          pretext: None,
                          color: "#6800e8",
                          fields: Some(vec![Field::new("title", "value", None)]),
-                     })
-                         .unwrap()];
+                         author_name: Some("Author"),
+                         author_link: Some("https://author.com"),
+                         author_icon: Some("https://author.com/icon"),
+                         title: Some("Title"),
+                         title_link: Some("https://title.com"),
+                         image_url: Some("https://title.com/image"),
+                         thumb_url: Some("https://title.com/thumb"),
+                         footer: Some("Footer"),
+                         footer_icon: Some("https://footer.com/icon"),
+                     }).unwrap()];
 
         let p = Payload::new(PayloadTemplate::Complete {
             text: Some("test message"),
@@ -188,7 +196,7 @@ mod test {
             link_names: Some(false),
         });
 
-        assert_eq!(json::encode(&p).unwrap().to_owned(), r##"{"text":"test message","channel":"#abc","username":"Bot","icon_url":null,"icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","pretext":null,"color":"#6800e8","fields":[{"title":"title","value":"value","short":null}]}],"unfurl_links":0,"link_names":0}"##.to_owned())
+        assert_eq!(json::encode(&p).unwrap().to_owned(), r##"{"text":"test message","channel":"#abc","username":"Bot","icon_url":null,"icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","pretext":null,"color":"#6800e8","fields":[{"title":"title","value":"value","short":null}],"author_name":"Author","author_link":"https://author.com","author_icon":"https://author.com/icon","title":"Title","title_link":"https://title.com","image_url":"https://title.com/image","thumb_url":"https://title.com/thumb","footer":"Footer","footer_icon":"https://footer.com/icon"}],"unfurl_links":0,"link_names":0}"##.to_owned())
     }
 
     #[test]
