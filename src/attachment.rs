@@ -19,6 +19,26 @@ pub struct Attachment {
     /// Fields are defined as an array, and hashes contained within it will be
     /// displayed in a table inside the message attachment.
     pub fields: Option<Vec<Field>>,
+    /// Optional text that appears above the attachment block
+    pub author_name: Option<SlackText>,
+    /// Optional link to the author
+    pub author_link: Option<SlackText>,
+    /// Optional icon for the author
+    pub author_icon: Option<SlackText>,
+    /// Optional larger, bolder text above the main body
+    pub title: Option<SlackText>,
+    /// Optional URL to link to from the title
+    pub title_link: Option<SlackText>,
+    /// Optional URL to an image that will be displayed in the body
+    pub image_url: Option<SlackText>,
+    /// Optional URL to an image that will be displayed as a thumbnail to the
+    /// right of the body
+    pub thumb_url: Option<SlackText>,
+    /// Optional text that will appear at the bottom of the attachment
+    pub footer: Option<SlackText>,
+    /// Optional URL to an image that will be displayed at the bottom of the
+    /// attachment
+    pub footer_icon: Option<SlackText>,
 }
 
 /// Attachment template to simplify constructing attachments
@@ -39,6 +59,26 @@ pub enum AttachmentTemplate<'a> {
         /// Fields are defined as an array, and hashes contained within it will
         /// be displayed in a table inside the message attachment.
         fields: Option<Vec<Field>>,
+        /// Optional text that appears above the attachment block
+        author_name: Option<&'a str>,
+        /// Optional link to the author
+        author_link: Option<&'a str>,
+        /// Optional icon for the author
+        author_icon: Option<&'a str>,
+        /// Optional larger, bolder text above the main body
+        title: Option<&'a str>,
+        /// Optional URL to link to from the title
+        title_link: Option<&'a str>,
+        /// Optional URL to an image that will be displayed in the body
+        image_url: Option<&'a str>,
+        /// Optional URL to an image that will be displayed as a thumbnail to the
+        /// right of the body
+        thumb_url: Option<&'a str>,
+        /// Optional text that will appear at the bottom of the attachment
+        footer: Option<&'a str>,
+        /// Optional URL to an image that will be displayed at the bottom of the
+        /// attachment
+        footer_icon: Option<&'a str>,
     },
     /// Provide only text and color for attachment
     /// other values will be defaulted
@@ -54,7 +94,11 @@ impl Attachment {
     /// Construct new attachment based on template provided
     pub fn new(t: AttachmentTemplate) -> SlackResult<Attachment> {
         match t {
-            AttachmentTemplate::Complete { fallback, text, pretext, color, fields } => {
+            AttachmentTemplate::Complete {
+                fallback, text, pretext, color, fields, author_name,
+                author_link, author_icon, title, title_link, image_url,
+                thumb_url, footer, footer_icon
+            } => {
                 let c = try!(HexColorT::new(color));
                 Ok(Attachment {
                     fallback: SlackText::new(fallback),
@@ -62,6 +106,15 @@ impl Attachment {
                     pretext: opt_str_to_slacktext(&pretext),
                     color: c,
                     fields: fields,
+                    author_name: opt_str_to_slacktext(&author_name),
+                    author_link: opt_str_to_slacktext(&author_link),
+                    author_icon: opt_str_to_slacktext(&author_icon),
+                    title: opt_str_to_slacktext(&title),
+                    title_link: opt_str_to_slacktext(&title_link),
+                    image_url: opt_str_to_slacktext(&image_url),
+                    thumb_url: opt_str_to_slacktext(&thumb_url),
+                    footer: opt_str_to_slacktext(&footer),
+                    footer_icon: opt_str_to_slacktext(&footer_icon),
                 })
             }
             AttachmentTemplate::Text { text, color } => {
@@ -72,6 +125,15 @@ impl Attachment {
                     pretext: None,
                     color: c,
                     fields: None,
+                    author_name: None,
+                    author_link: None,
+                    author_icon: None,
+                    title: None,
+                    title_link: None,
+                    image_url: None,
+                    thumb_url: None,
+                    footer: None,
+                    footer_icon: None,
                 })
             }
         }
