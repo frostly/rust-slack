@@ -169,12 +169,12 @@ mod test {
     #[test]
     fn json_complete_payload_test() {
         let a = vec![Attachment::new(AttachmentTemplate::Complete {
-                         fallback: "fallback <&>",
-                         text: Some("text <&>"),
-                         pretext: None,
-                         color: "#6800e8",
-                         fields: Some(vec![Field::new("title", "value", None)]),
-                     })
+                             fallback: "fallback <&>",
+                             text: Some("text <&>"),
+                             pretext: None,
+                             color: "#6800e8",
+                             fields: Some(vec![Field::new("title", "value", None)]),
+                         })
                          .unwrap()];
 
         let p = Payload::new(PayloadTemplate::Complete {
