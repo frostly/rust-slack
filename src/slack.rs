@@ -57,8 +57,8 @@ pub struct SlackText(String);
 
 impl SlackText {
     /// Construct slack text
-    pub fn new(text: &str) -> SlackText {
-        SlackText(text.to_owned())
+    pub fn new<S: Into<String>>(text: S) -> SlackText {
+        SlackText(text.into())
     }
 }
 
