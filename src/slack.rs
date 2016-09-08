@@ -62,6 +62,14 @@ impl SlackText {
     }
 }
 
+impl<S> From<S> for SlackText
+    where S: Into<String>
+{
+    fn from(s: S) -> SlackText {
+        SlackText::new(s.into())
+    }
+}
+
 impl fmt::Debug for SlackText {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.get_escaped_text())

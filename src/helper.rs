@@ -20,7 +20,7 @@ pub fn opt_str_to_string(opt: &Option<&str>) -> Option<String> {
 /// Convert an `Option<&str>` to a `Option<SlackText>`
 pub fn opt_str_to_slacktext(opt: &Option<&str>) -> Option<SlackText> {
     match *opt {
-        Some(x) => Some(SlackText::new(x)),
+        Some(x) => Some(x.into()),
         _ => None,
     }
 }
