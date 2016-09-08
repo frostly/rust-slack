@@ -2,7 +2,7 @@ use std::fmt;
 use curl::easy::Easy;
 use std::str;
 use rustc_serialize::{json, Encodable, Encoder};
-use types::{SlackResult, ErrSlackResp};
+use error::{Result, Error};
 use payload::Payload;
 
 /// Handles sending messages to slack
@@ -20,7 +20,7 @@ impl Slack {
     }
 
     /// Send payload to slack service
-    pub fn send(&self, payload: &Payload) -> SlackResult<()> {
+    pub fn send(&self, payload: &Payload) -> Result<()> {
         debug!("sending payload, {:?}", payload);
         let encoded = try!(json::encode(payload));
         debug!("JSON payload, {:?}", encoded);
@@ -46,7 +46,7 @@ impl Slack {
 
         match (resp, body) {
             (200, _) => Ok(()),
-            (_, x) => fail!((ErrSlackResp, x)),
+            (_, x) => Err(Error::Slack(x.into())),
         }
     }
 }
@@ -57,8 +57,16 @@ pub struct SlackText(String);
 
 impl SlackText {
     /// Construct slack text
-    pub fn new(text: &str) -> SlackText {
-        SlackText(text.to_owned())
+    pub fn new<S: Into<String>>(text: S) -> SlackText {
+        SlackText(text.into())
+    }
+}
+
+impl<S> From<S> for SlackText
+    where S: Into<String>
+{
+    fn from(s: S) -> SlackText {
+        SlackText::new(s.into())
     }
 }
 
@@ -87,7 +95,7 @@ impl SlackText {
 }
 
 impl Encodable for SlackText {
-    fn encode<S: Encoder>(&self, encoder: &mut S) -> Result<(), S::Error> {
+    fn encode<S: Encoder>(&self, encoder: &mut S) -> ::std::result::Result<(), S::Error> {
         let text = format!("{:?}", &self);
         encoder.emit_str(&text)
     }
@@ -118,7 +126,7 @@ impl fmt::Debug for SlackLink {
 }
 
 impl Encodable for SlackLink {
-    fn encode<S: Encoder>(&self, encoder: &mut S) -> Result<(), S::Error> {
+    fn encode<S: Encoder>(&self, encoder: &mut S) -> ::std::result::Result<(), S::Error> {
         let text = format!("{:?}", &self);
         encoder.emit_str(&text)
     }
@@ -169,12 +177,12 @@ mod test {
     #[test]
     fn json_complete_payload_test() {
         let a = vec![Attachment::new(AttachmentTemplate::Complete {
-                         fallback: "fallback <&>",
-                         text: Some("text <&>"),
-                         pretext: None,
-                         color: "#6800e8",
-                         fields: Some(vec![Field::new("title", "value", None)]),
-                     })
+                             fallback: "fallback <&>",
+                             text: Some("text <&>"),
+                             pretext: None,
+                             color: "#6800e8",
+                             fields: Some(vec![Field::new("title", "value", None)]),
+                         })
                          .unwrap()];
 
         let p = Payload::new(PayloadTemplate::Complete {

@@ -1,5 +1,5 @@
 use std::fmt;
-use types::{SlackResult, ErrHexColor};
+use error::{Result, Error};
 use rustc_serialize::hex::FromHex;
 use rustc_serialize::json::{ToJson, Json};
 use rustc_serialize::{Encodable, Encoder};
@@ -59,13 +59,13 @@ impl fmt::Debug for HexColor {
 pub trait HexColorT {
     /// &T is input type for constructor
     type T: ?Sized;
-    /// construct new instance of Self for type T
+    /// construct new instance of `Self` for `T`
     fn new(t: &Self::T) -> Self;
 }
 
-impl HexColorT for SlackResult<HexColor> {
+impl HexColorT for Result<HexColor> {
     type T = str;
-    fn new(s: &str) -> SlackResult<HexColor> {
+    fn new(s: &str) -> Result<HexColor> {
         Ok(try!(s.into_hex_color()))
     }
 }
@@ -85,7 +85,7 @@ impl ToJson for HexColor {
 }
 
 impl Encodable for HexColor {
-    fn encode<S: Encoder>(&self, encoder: &mut S) -> Result<(), S::Error> {
+    fn encode<S: Encoder>(&self, encoder: &mut S) -> ::std::result::Result<(), S::Error> {
         encoder.emit_str(format!("{:?}", &self).as_ref())
     }
 }
@@ -94,25 +94,25 @@ impl Encodable for HexColor {
 /// A trait for turning self into a `HexColor`
 trait IntoHexColor {
     /// function to attempt to make a `HexColor` from `self`
-    fn into_hex_color(self) -> SlackResult<HexColor>;
+    fn into_hex_color(self) -> Result<HexColor>;
 }
 
 impl<'a> IntoHexColor for &'a str {
     /// Attempt to convert a &str into a `HexColor`
-    fn into_hex_color(self) -> SlackResult<HexColor> {
+    fn into_hex_color(self) -> Result<HexColor> {
         if SLACK_COLORS.contains(&self) {
             return Ok(HexColor(self.to_owned()));
         }
         if self.chars().count() != 7 {
-            return fail!((ErrHexColor, "Must be 7 characters long (including #)"));
+            return Err(Error::HexColor("Must be 7 characters long (including #)".to_string()));
         }
         if self.chars().next().unwrap() != '#' {
-            return fail!((ErrHexColor, "No leading #"));
+            return Err(Error::HexColor("No leading #".to_string()));
         }
         // see if the remaining part of the string is actually hex
         match self[1..].from_hex() {
             Ok(_) => Ok(HexColor(self.to_owned())),
-            Err(e) => fail!(e),
+            Err(e) => Err(e.into()),
         }
     }
 }
@@ -120,35 +120,28 @@ impl<'a> IntoHexColor for &'a str {
 #[cfg(test)]
 mod test {
     use hex::*;
-    use types::{SlackResult, SlackError};
-    use std::error::Error;
+    use error::Result;
 
     #[test]
     fn test_hex_color_too_short() {
-        let h1: Result<HexColor, SlackError> = HexColorT::new("abc");
-        let h = h1.unwrap_err();
-        assert_eq!(h.desc, "Must be 7 characters long (including #)".to_owned());
+        let err = <Result<HexColor> as HexColorT>::new("abc").unwrap_err();
+        assert_eq!(format!("{}", err),
+                   "hex color parsing error: Must be 7 characters long (including #)".to_owned());
     }
 
     #[test]
     fn test_hex_color_missing_hash() {
-        let h1: SlackResult<HexColor> = HexColorT::new("1234567");
-        let h = h1.unwrap_err();
-        assert_eq!(h.desc, "No leading #".to_owned());
+        let err = <Result<HexColor> as HexColorT>::new("1234567").unwrap_err();
+        assert_eq!(format!("{}", err),
+                   "hex color parsing error: No leading #".to_owned());
     }
 
     #[test]
     fn test_hex_color_invalid_hex_fmt() {
-        let h1: SlackResult<HexColor> = HexColorT::new("#abc12z");
-        let h = h1.unwrap_err();
-        assert_eq!(h.desc, "Invalid character 'z' at position 5".to_owned());
-    }
-
-    #[test]
-    fn test_hex_color_error_impl() {
-        let h1: SlackResult<HexColor> = HexColorT::new("#abc12z");
-        let h = h1.unwrap_err();
-        assert_eq!(h.description(), "invalid character".to_owned());
+        let err = <Result<HexColor> as HexColorT>::new("#abc12z").unwrap_err();
+        assert_eq!(format!("{}", err),
+                   "rustc_serialize::hex::FromHexError: Invalid character 'z' at position 5"
+                       .to_owned());
     }
 
     #[test]
@@ -159,29 +152,19 @@ mod test {
 
     #[test]
     fn test_hex_color_danger_str() {
-        let h1: SlackResult<HexColor> = HexColorT::new("danger");
-        let h = h1.unwrap();
-        assert_eq!(format!("{:?}", h), "danger".to_owned());
-    }
-
-    #[test]
-    fn test_hex_color_bad_str() {
-        let h1: SlackResult<HexColor> = HexColorT::new("bad");
-        let h = h1.unwrap_err();
-        assert_eq!(h.desc, "Must be 7 characters long (including #)".to_owned());
+        let ok = <Result<HexColor> as HexColorT>::new("danger").unwrap();
+        assert_eq!(format!("{:?}", ok), "danger".to_owned());
     }
 
     #[test]
     fn test_hex_color_valid_upper_hex() {
-        let h1: SlackResult<HexColor> = HexColorT::new("#103D18");
-        let h = h1.unwrap();
-        assert_eq!(format!("{:?}", h), "#103D18".to_owned());
+        let ok = <Result<HexColor> as HexColorT>::new("#103D18").unwrap();
+        assert_eq!(format!("{:?}", ok), "#103D18".to_owned());
     }
 
     #[test]
     fn test_hex_color_valid_lower_hex() {
-        let h1: SlackResult<HexColor> = HexColorT::new("#103d18");
-        let h = h1.unwrap();
-        assert_eq!(format!("{:?}", h), "#103d18".to_owned());
+        let ok = <Result<HexColor> as HexColorT>::new("#103d18").unwrap();
+        assert_eq!(format!("{:?}", ok), "#103d18".to_owned());
     }
 }

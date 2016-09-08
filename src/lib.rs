@@ -26,6 +26,8 @@ extern crate test; // needed for benchmarking
 
 extern crate curl;
 extern crate rustc_serialize;
+#[macro_use]
+extern crate quick_error;
 
 pub use slack::{Slack, SlackText, SlackLink};
 
@@ -33,13 +35,12 @@ pub use payload::{Payload, PayloadTemplate};
 
 pub use attachment::{Attachment, AttachmentTemplate, Field};
 
-pub use types::{SlackError, SlackResult, ErrorKind};
+pub use error::{Error, Result};
 
 pub use hex::{SlackColor, HexColor};
 
 mod helper;
-mod macros;
-mod types;
+mod error;
 mod hex;
 mod payload;
 mod attachment;

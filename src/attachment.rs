@@ -1,5 +1,5 @@
 use slack::SlackText;
-use types::SlackResult;
+use error::Result;
 use hex::{HexColor, HexColorT};
 use helper::opt_str_to_slacktext;
 
@@ -52,7 +52,7 @@ pub enum AttachmentTemplate<'a> {
 
 impl Attachment {
     /// Construct new attachment based on template provided
-    pub fn new(t: AttachmentTemplate) -> SlackResult<Attachment> {
+    pub fn new(t: AttachmentTemplate) -> Result<Attachment> {
         match t {
             AttachmentTemplate::Complete { fallback, text, pretext, color, fields } => {
                 let c = try!(HexColorT::new(color));
