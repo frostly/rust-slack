@@ -1,11 +1,12 @@
 use slack::SlackText;
 use attachment::Attachment;
-use helper::{opt_str_to_slacktext, opt_str_to_string, opt_bool_to_u8};
+use helper::bool_to_u8;
+use error::Result;
 
 /// Payload to send to slack
 /// https://api.slack.com/incoming-webhooks
 /// https://api.slack.com/methods/chat.postMessage
-#[derive(RustcEncodable, Debug)]
+#[derive(RustcEncodable, Debug, Default)]
 pub struct Payload {
     /// text to send
     /// despite `text` stated as required, it does not seem to be
@@ -25,96 +26,122 @@ pub struct Payload {
     pub attachments: Option<Vec<Attachment>>,
     /// whether slack will try to fetch links and create an attachment
     /// https://api.slack.com/docs/unfurling
-    pub unfurl_links: Option<u8>,
+    pub unfurl_links: Option<bool>,
+    /// Pass false to disable unfurling of media content
+    pub unfurl_media: Option<bool>,
     /// find and link channel names and usernames
     pub link_names: Option<u8>,
 }
 
-/// Templates to support common payload use cases
+/// `PayloadBuilder` is used to build a `Payload`
 #[derive(Debug)]
-pub enum PayloadTemplate<'a> {
-    /// Specify the entire payload
-    Complete {
-        /// Text to send
-        text: Option<&'a str>,
-        /// Channel to send payload to
-        /// note: if not provided, this will default to channel
-        /// setup in slack
-        channel: Option<&'a str>,
-        /// Username override
-        username: Option<&'a str>,
-        /// Specific url for icon
-        icon_url: Option<&'a str>,
-        /// Emjoi for icon
-        /// https://api.slack.com/methods/emoji.list
-        icon_emoji: Option<&'a str>,
-        /// Attachments to send
-        attachments: Option<Vec<Attachment>>,
-        /// Whether slack will try to fetch links and create an attachment
-        /// https://api.slack.com/docs/unfurling
-        unfurl_links: Option<bool>,
-        /// Find and link channel names and usernames
-        link_names: Option<bool>,
-    },
-    /// Simple payload with just a message
-    Message {
-        /// Text to send
-        text: &'a str,
-    },
-    /// Attachment-only payload
-    Attachment {
-        /// Provide a single attachment
-        attachment: Attachment,
-    },
+pub struct PayloadBuilder {
+    inner: Result<Payload>,
 }
 
-impl Payload {
-    /// Construct a new Payload from a template
-    pub fn new(t: PayloadTemplate) -> Payload {
-        match t {
-            PayloadTemplate::Complete { text,
-                                        channel,
-                                        username,
-                                        icon_url,
-                                        icon_emoji,
-                                        attachments,
-                                        unfurl_links,
-                                        link_names } => {
-                Payload {
-                    text: opt_str_to_slacktext(&text),
-                    channel: opt_str_to_string(&channel),
-                    username: opt_str_to_string(&username),
-                    icon_url: opt_str_to_string(&icon_url),
-                    icon_emoji: opt_str_to_string(&icon_emoji),
-                    attachments: attachments,
-                    unfurl_links: opt_bool_to_u8(&unfurl_links),
-                    link_names: opt_bool_to_u8(&link_names),
-                }
+impl Default for PayloadBuilder {
+    fn default() -> PayloadBuilder {
+        PayloadBuilder { inner: Ok(Default::default()) }
+    }
+}
+
+impl PayloadBuilder {
+    /// Make a new `PayloadBuilder`
+    pub fn new() -> PayloadBuilder {
+        Default::default()
+    }
+
+    /// Set the text
+    pub fn text<S: Into<SlackText>>(self, text: S) -> PayloadBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.text = Some(text.into());
+                PayloadBuilder { inner: Ok(inner) }
             }
-            PayloadTemplate::Message { text } => {
-                Payload {
-                    text: Some(SlackText::new(text)),
-                    channel: None,
-                    username: None,
-                    icon_url: None,
-                    icon_emoji: None,
-                    attachments: None,
-                    unfurl_links: None,
-                    link_names: None,
-                }
-            }
-            PayloadTemplate::Attachment { attachment } => {
-                Payload {
-                    text: None,
-                    channel: None,
-                    username: None,
-                    icon_url: None,
-                    icon_emoji: None,
-                    attachments: Some(vec![attachment]),
-                    unfurl_links: None,
-                    link_names: None,
-                }
-            }
+            _ => self,
         }
+    }
+
+    /// Set the channel
+    pub fn channel<S: Into<String>>(self, channel: S) -> PayloadBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.channel = Some(channel.into());
+                PayloadBuilder { inner: Ok(inner) }
+            }
+            _ => self,
+        }
+    }
+
+    /// Set the username
+    pub fn username<S: Into<String>>(self, username: S) -> PayloadBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.username = Some(username.into());
+                PayloadBuilder { inner: Ok(inner) }
+            }
+            _ => self,
+        }
+    }
+
+    /// Set the icon_emoji
+    pub fn icon_emoji<S: Into<String>>(self, icon_emoji: S) -> PayloadBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.icon_emoji = Some(icon_emoji.into());
+                PayloadBuilder { inner: Ok(inner) }
+            }
+            _ => self,
+        }
+    }
+
+    /// Set the attachments
+    pub fn attachments(self, attachments: Vec<Attachment>) -> PayloadBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.attachments = Some(attachments);
+                PayloadBuilder { inner: Ok(inner) }
+            }
+            _ => self,
+        }
+    }
+
+    /// whether slack will try to fetch links and create an attachment
+    /// https://api.slack.com/docs/unfurling
+    pub fn unfurl_links(self, b: bool) -> PayloadBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.unfurl_links = Some(b);
+                PayloadBuilder { inner: Ok(inner) }
+            }
+            _ => self,
+        }
+    }
+
+    /// Pass false to disable unfurling of media content
+    pub fn unfurl_media(self, b: bool) -> PayloadBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.unfurl_media = Some(b);
+                PayloadBuilder { inner: Ok(inner) }
+            }
+            _ => self,
+        }
+    }
+
+    /// Find and link channel names and usernames.
+    pub fn link_names(self, b: bool) -> PayloadBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.link_names = Some(bool_to_u8(b));
+                PayloadBuilder { inner: Ok(inner) }
+            }
+            _ => self,
+        }
+    }
+
+    /// Attempt to build the `Payload`
+    pub fn build(self) -> Result<Payload> {
+        self.inner
     }
 }

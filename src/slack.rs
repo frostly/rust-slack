@@ -1,4 +1,3 @@
-use std::fmt;
 use curl::easy::Easy;
 use std::str;
 use rustc_serialize::{json, Encodable, Encoder};
@@ -53,6 +52,7 @@ impl Slack {
 
 /// Representation of any text sent through slack
 /// the text must be processed to escape specific characters
+#[derive(Debug, Default, Clone)]
 pub struct SlackText(String);
 
 impl SlackText {
@@ -70,8 +70,8 @@ impl<S> From<S> for SlackText
     }
 }
 
-impl fmt::Debug for SlackText {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl ::std::fmt::Display for SlackText {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         write!(f, "{}", self.get_escaped_text())
     }
 }
@@ -96,12 +96,13 @@ impl SlackText {
 
 impl Encodable for SlackText {
     fn encode<S: Encoder>(&self, encoder: &mut S) -> ::std::result::Result<(), S::Error> {
-        let text = format!("{:?}", &self);
+        let text = format!("{}", &self);
         encoder.emit_str(&text)
     }
 }
 
 /// Representation of a link sent in slack
+#[derive(Debug)]
 pub struct SlackLink {
     /// URL for link
     pub url: String,
@@ -119,15 +120,15 @@ impl SlackLink {
     }
 }
 
-impl fmt::Debug for SlackLink {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "<{}|{:?}>", self.url, self.text)
+impl ::std::fmt::Display for SlackLink {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        write!(f, "<{}|{}>", self.url, self.text)
     }
 }
 
 impl Encodable for SlackLink {
     fn encode<S: Encoder>(&self, encoder: &mut S) -> ::std::result::Result<(), S::Error> {
-        let text = format!("{:?}", &self);
+        let text = format!("{}", &self);
         encoder.emit_str(&text)
     }
 }
@@ -137,8 +138,7 @@ mod test {
     #[cfg(feature = "unstable")]
     use test::Bencher;
     use slack::{Slack, SlackLink, SlackText};
-    use payload::{Payload, PayloadTemplate};
-    use attachment::{Attachment, AttachmentTemplate, Field};
+    use {PayloadBuilder, AttachmentBuilder, Field};
     use rustc_serialize::json;
 
     #[test]
@@ -151,7 +151,7 @@ mod test {
     #[test]
     fn slack_text_test() {
         let s = SlackText::new("moo <&> moo");
-        assert_eq!(format!("{:?}", s), "moo &lt;&amp;&gt; moo".to_owned());
+        assert_eq!(format!("{}", s), "moo &lt;&amp;&gt; moo".to_owned());
     }
 
     #[test]
@@ -160,7 +160,7 @@ mod test {
             text: SlackText::new("moo <&> moo"),
             url: "http://google.com".to_owned(),
         };
-        assert_eq!(format!("{:?}", s),
+        assert_eq!(format!("{}", s),
                    "<http://google.com|moo &lt;&amp;&gt; moo>".to_owned());
     }
 
@@ -176,34 +176,32 @@ mod test {
 
     #[test]
     fn json_complete_payload_test() {
-        let a = vec![Attachment::new(AttachmentTemplate::Complete {
-                             fallback: "fallback <&>",
-                             text: Some("text <&>"),
-                             pretext: None,
-                             color: "#6800e8",
-                             fields: Some(vec![Field::new("title", "value", None)]),
-                         })
+        let a = vec![AttachmentBuilder::new("fallback <&>")
+                         .text("text <&>")
+                         .color("#6800e8")
+                         .fields(vec![Field::new("title", "value", None)])
+                         .build()
                          .unwrap()];
 
-        let p = Payload::new(PayloadTemplate::Complete {
-            text: Some("test message"),
-            channel: Some("#abc"),
-            username: Some("Bot"),
-            icon_url: None,
-            icon_emoji: Some(":chart_with_upwards_trend:"),
-            attachments: Some(a),
-            unfurl_links: Some(false),
-            link_names: Some(false),
-        });
+        let p = PayloadBuilder::new()
+            .text("test message")
+            .channel("#abc")
+            .username("Bot")
+            .icon_emoji(":chart_with_upwards_trend:")
+            .attachments(a)
+            .unfurl_links(false)
+            .link_names(false)
+            .build()
+            .unwrap();
 
-        assert_eq!(json::encode(&p).unwrap().to_owned(), r##"{"text":"test message","channel":"#abc","username":"Bot","icon_url":null,"icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","pretext":null,"color":"#6800e8","fields":[{"title":"title","value":"value","short":null}]}],"unfurl_links":0,"link_names":0}"##.to_owned())
+        assert_eq!(json::encode(&p).unwrap().to_owned(), r##"{"text":"test message","channel":"#abc","username":"Bot","icon_url":null,"icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","pretext":null,"color":"#6800e8","fields":[{"title":"title","value":"value","short":null}]}],"unfurl_links":false,"unfurl_media":null,"link_names":0}"##.to_owned())
     }
 
     #[test]
     fn json_message_payload_test() {
-        let p = Payload::new(PayloadTemplate::Message { text: "test message" });
+        let p = PayloadBuilder::new().text("test message").build().unwrap();
 
-        assert_eq!(json::encode(&p).unwrap().to_owned(), r##"{"text":"test message","channel":null,"username":null,"icon_url":null,"icon_emoji":null,"attachments":null,"unfurl_links":null,"link_names":null}"##.to_owned())
+        assert_eq!(json::encode(&p).unwrap().to_owned(), r##"{"text":"test message","channel":null,"username":null,"icon_url":null,"icon_emoji":null,"attachments":null,"unfurl_links":null,"unfurl_media":null,"link_names":null}"##.to_owned())
     }
 
     #[cfg(feature = "unstable")]

@@ -23,20 +23,17 @@ Add the crate to your existing project:
 
 ```rust,no_run
 extern crate slack_hook;
-use slack_hook::{Slack, Payload, PayloadTemplate};
+use slack_hook::{Slack, PayloadBuilder};
 
 fn main() {
     let slack = Slack::new("https://hooks.slack.com/services/abc/123/45z");
-    let p = Payload::new(PayloadTemplate::Complete {
-      text: Some("test message"),
-      channel: Some("#testing"),
-      username: Some("My Bot"),
-      icon_url: None,
-      icon_emoji: Some(":chart_with_upwards_trend:"),
-      attachments: None,
-      unfurl_links: Some(true),
-      link_names: Some(false)
-    });
+    let p = PayloadBuilder::new()
+      .text("test message")
+      .channel("#testing")
+      .username("My Bot")
+      .icon_emoji(":chart_with_upwards_trend:")
+      .build()
+      .unwrap();
 
     let res = slack.send(&p);
     match res {
@@ -52,15 +49,13 @@ To create a payload with just an attachment:
 
 ```rust
 extern crate slack_hook;
-use slack_hook::{Payload, PayloadTemplate, Attachment, AttachmentTemplate};
+use slack_hook::{PayloadBuilder, AttachmentBuilder};
 
 fn main() {
-  let p = Payload::new(PayloadTemplate::Attachment {
-    attachment: Attachment::new(AttachmentTemplate::Text {
-      text: "my text",
-      color: "#b13d41",
-    }).unwrap(),
-  });
+  let p = PayloadBuilder::new()
+    .attachments(vec![AttachmentBuilder::new("my text").color("#b13d41").build().unwrap()])
+    .build()
+    .unwrap();
 }
 ```
 
