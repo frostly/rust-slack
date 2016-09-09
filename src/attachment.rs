@@ -81,9 +81,9 @@ impl AttachmentBuilder {
     ///
     /// The color can be one of:
     ///
-    /// 1. The built-in `SlackColor` variants: `SlackColor::Good`, etc.
-    /// 1. Any valid color `String`: good`, `warning`, `danger`
-    /// 3. Any valid hex color code: `#b13d41`
+    /// 1. `String`s: `good`, `warning`, `danger`
+    /// 2. The built-in enums: `SlackColor::Good`, etc.
+    /// 3. Any valid hex color code: e.g. `#b13d41` or `#000`.
     ///
     /// hex color codes will be checked to ensure a valid hex number is provided
     pub fn color<C: TryInto<HexColor, Err = Error>>(self, color: C) -> AttachmentBuilder {

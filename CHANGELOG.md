@@ -28,8 +28,10 @@ FEATURES
  fixed.
  - `Payload`
   - Added `unfurl_media` option
+- Three character hex color codes, e.g. `#000`, are now supported.
 
 OTHER
+
  - `TryFrom` and `TryInto` traits have been added temporarily to this crate until they are
  formalized in rust proper. See https://github.com/rust-lang/rust/issues/33417 for details.
  - `HexColorT` trait removed. Conversions are used instead.

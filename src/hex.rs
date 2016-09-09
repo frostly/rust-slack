@@ -4,11 +4,10 @@ use rustc_serialize::json::{ToJson, Json};
 use rustc_serialize::{Encodable, Encoder};
 use TryFrom;
 
-/// The `HexColor` string can be one of:
+/// A `HexColor` `String` can be one of:
 ///
-/// 1. `good`, `warning`, `danger`
-/// 2. The built-in enums: `SlackColor::Good`, etc.
-/// 3. Any valid hex color code: `#b13d41`
+/// 1. `String`s: `good`, `warning`, `danger`
+/// 2. Any valid hex color code: e.g. `#b13d41` or `#000`.
 ///
 /// hex color codes will be checked to ensure a valid hex number is provided
 #[derive(Debug)]
@@ -22,7 +21,7 @@ impl HexColor {
 
 impl Default for HexColor {
     fn default() -> HexColor {
-        HexColor::new("#000000")
+        HexColor::new("#000")
     }
 }
 
@@ -82,15 +81,30 @@ impl<S> TryFrom<S> for HexColor
         if SLACK_COLORS.contains(&&s[..]) {
             return Ok(HexColor(s));
         }
-        if s.chars().count() != 7 {
-            return Err(Error::HexColor("Must be 7 characters long (including #)".to_string()));
+
+        let num_chars = s.chars().count();
+        if num_chars != 7 && num_chars != 4 {
+            return Err(Error::HexColor(format!("Must be 4 or 7 characters long (including #): \
+                                                found `{}`",
+                                               s)));
         }
         if s.chars().next().unwrap() != '#' {
-            return Err(Error::HexColor("No leading #".to_string()));
+            return Err(Error::HexColor(format!("No leading #: found `{}`", s)));
         }
+
+        let mut hex = s.clone();
+        // #d18 -> #dd1188
+        if num_chars == 4 {
+            hex = s.chars().skip(1).fold(String::from("#"), |mut s, c| {
+                s.push(c);
+                s.push(c);
+                s
+            });
+        }
+
         // see if the remaining part of the string is actually hex
-        match s[1..].from_hex() {
-            Ok(_) => Ok(HexColor(s)),
+        match hex[1..].from_hex() {
+            Ok(_) => Ok(HexColor::new(s)),
             Err(e) => Err(e.into()),
         }
     }
@@ -125,14 +139,16 @@ mod test {
     fn test_hex_color_too_short() {
         let err = HexColor::try_from("abc").unwrap_err();
         assert_eq!(format!("{}", err),
-                   "hex color parsing error: Must be 7 characters long (including #)".to_owned());
+                   "hex color parsing error: Must be 4 or 7 characters long (including #): found \
+                    `abc`"
+                       .to_owned());
     }
 
     #[test]
     fn test_hex_color_missing_hash() {
         let err = HexColor::try_from("1234567").unwrap_err();
         assert_eq!(format!("{}", err),
-                   "hex color parsing error: No leading #".to_owned());
+                   "hex color parsing error: No leading #: found `1234567`".to_owned());
     }
 
     #[test]
@@ -153,6 +169,12 @@ mod test {
     fn test_hex_color_danger_str() {
         let ok = HexColor::try_from("danger").unwrap();
         assert_eq!(format!("{}", ok), "danger".to_owned());
+    }
+
+    #[test]
+    fn test_hex_color_3_char_hex() {
+        let ok = HexColor::try_from("#d18").unwrap();
+        assert_eq!(format!("{}", ok), "#d18".to_owned());
     }
 
     #[test]
