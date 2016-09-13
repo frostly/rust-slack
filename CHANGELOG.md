@@ -29,6 +29,8 @@ FEATURES
  - `Payload`
   - Added `unfurl_media` option
 - Three character hex color codes, e.g. `#000`, are now supported.
+- Add support for sending links and text into slack, see:
+[Text with Links](README.md#text-with-links).
 
 OTHER
 

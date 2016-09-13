@@ -29,7 +29,7 @@ extern crate rustc_serialize;
 #[macro_use]
 extern crate quick_error;
 
-pub use slack::{Slack, SlackText, SlackLink};
+pub use slack::{Slack, SlackText, SlackTextContent, SlackLink};
 pub use payload::{Payload, PayloadBuilder};
 pub use attachment::{Attachment, AttachmentBuilder, Field};
 pub use hex::{SlackColor, HexColor};

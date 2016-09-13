@@ -59,6 +59,35 @@ fn main() {
 }
 ```
 
+## Text with Links
+
+Slack messaging API permits you to send links within text. However, given the different formatting
+rules, these text fragments need to be specified as follows:
+
+```rust
+extern crate slack_hook;
+use slack_hook::{PayloadBuilder, SlackTextContent, SlackLink};
+use slack_hook::SlackTextContent::{Text, Link};
+
+fn main() {
+  let p = PayloadBuilder::new()
+    .text(vec![
+      Text("Hello".into()),
+      Link(SlackLink::new("https://google.com", "Google")),
+      Text(", nice to know you.".into())
+    ].as_slice())
+    .build()
+    .unwrap();
+}
+```
+
+Sending this payload will print the following in slack (note: each element of the `Vec` has been
+space-separated):
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hello [Google](https://google.com), nice to know you.
+
+This technique can be used for any function that has the `Into<SlackText>` trait bound.
+
 # License
 
 This library is distributed under similar terms to Rust: dual licensed under the MIT license and the Apache license (version 2.0).

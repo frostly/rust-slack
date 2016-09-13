@@ -130,6 +130,9 @@ impl PayloadBuilder {
     }
 
     /// Find and link channel names and usernames.
+    // NOTE: The Slack API doesn't seem to actually require setting `link_names` to 1, any value
+    // seems to work. However, to be faithful to their spec, we will keep the `bool_to_u8` fn
+    // around.
     pub fn link_names(self, b: bool) -> PayloadBuilder {
         match self.inner {
             Ok(mut inner) => {

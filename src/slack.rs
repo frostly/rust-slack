@@ -56,41 +56,64 @@ impl Slack {
 pub struct SlackText(String);
 
 impl SlackText {
-    /// Construct slack text
+    /// Construct slack text with escaping
+    /// Escape &, <, and > in any slack text
+    /// https://api.slack.com/docs/formatting
     pub fn new<S: Into<String>>(text: S) -> SlackText {
+        let s = text.into()
+            .chars()
+            .fold(String::new(), |mut s, c| {
+                match c {
+                    '&' => s.push_str("&amp;"),
+                    '<' => s.push_str("&lt;"),
+                    '>' => s.push_str("&gt;"),
+                    _ => s.push(c),
+                }
+                s
+            });
+        SlackText(s)
+    }
+
+    fn new_raw<S: Into<String>>(text: S) -> SlackText {
         SlackText(text.into())
     }
 }
 
-impl<S> From<S> for SlackText
-    where S: Into<String>
-{
-    fn from(s: S) -> SlackText {
-        SlackText::new(s.into())
+impl<'a> From<&'a str> for SlackText {
+    fn from(s: &'a str) -> SlackText {
+        SlackText::new(String::from(s))
+    }
+}
+
+/// Enum used for constructing a text field having both `SlackText`(s) and `SlackLink`(s). The
+/// variants should be used together in a `Vec` on any function having a `Into<SlackText>` trait
+/// bound. The combined text will be space-separated.
+#[derive(Debug)]
+pub enum SlackTextContent {
+    /// Text that will be escaped via slack api rules
+    Text(SlackText),
+    /// Link
+    Link(SlackLink),
+}
+
+impl<'a> From<&'a [SlackTextContent]> for SlackText {
+    fn from(v: &[SlackTextContent]) -> SlackText {
+        let st = v.iter()
+            .map(|item| {
+                match *item {
+                    SlackTextContent::Text(ref s) => format!("{}", s),
+                    SlackTextContent::Link(ref link) => format!("{}", link),
+                }
+            })
+            .collect::<Vec<String>>()
+            .join(" ");
+        SlackText::new_raw(st)
     }
 }
 
 impl ::std::fmt::Display for SlackText {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        write!(f, "{}", self.get_escaped_text())
-    }
-}
-
-impl SlackText {
-    /// Escape &, <, and > in any slack text
-    /// https://api.slack.com/docs/formatting
-    fn get_escaped_text(&self) -> String {
-        let SlackText(ref text) = *self;
-        let mut escaped_text = String::new();
-        for c in text.chars() {
-            match c {
-                '&' => escaped_text.push_str("&amp;"),
-                '<' => escaped_text.push_str("&lt;"),
-                '>' => escaped_text.push_str("&gt;"),
-                _ => escaped_text.push(c),
-            }
-        }
-        escaped_text
+        write!(f, "{}", self.0)
     }
 }
 
@@ -202,6 +225,18 @@ mod test {
         let p = PayloadBuilder::new().text("test message").build().unwrap();
 
         assert_eq!(json::encode(&p).unwrap().to_owned(), r##"{"text":"test message","channel":null,"username":null,"icon_url":null,"icon_emoji":null,"attachments":null,"unfurl_links":null,"unfurl_media":null,"link_names":null}"##.to_owned())
+    }
+
+    #[test]
+    fn slack_text_content_test() {
+        use super::SlackTextContent;
+        use super::SlackTextContent::{Link, Text};
+        let message: Vec<SlackTextContent> = vec![Text("moo <&> moo".into()),
+                                                  Link(SlackLink::new("@USER", "M<E>")),
+                                                  Text("wow.".into())];
+        let st: SlackText = SlackText::from(&message[..]);
+        assert_eq!(format!("{}", st),
+                   "moo &lt;&amp;&gt; moo <@USER|M&lt;E&gt;> wow.");
     }
 
     #[cfg(feature = "unstable")]
