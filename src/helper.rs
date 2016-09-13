@@ -1,6 +1,3 @@
 pub fn bool_to_u8(b: bool) -> u8 {
-    match b {
-        true => 1u8,
-        false => 0u8,
-    }
+    if b { 1u8 } else { 0u8 }
 }

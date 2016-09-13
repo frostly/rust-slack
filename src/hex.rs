@@ -92,15 +92,16 @@ impl<S> TryFrom<S> for HexColor
             return Err(Error::HexColor(format!("No leading #: found `{}`", s)));
         }
 
-        let mut hex = s.clone();
         // #d18 -> #dd1188
-        if num_chars == 4 {
-            hex = s.chars().skip(1).fold(String::from("#"), |mut s, c| {
+        let hex = if num_chars == 4 {
+            s.chars().skip(1).fold(String::from("#"), |mut s, c| {
                 s.push(c);
                 s.push(c);
                 s
-            });
-        }
+            })
+        } else {
+            s.clone()
+        };
 
         // see if the remaining part of the string is actually hex
         match hex[1..].from_hex() {
