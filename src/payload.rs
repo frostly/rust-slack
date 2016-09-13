@@ -1,4 +1,4 @@
-use {Attachment, Payload, SlackText};
+use {Attachment, Payload, SlackText, Parse};
 use helper::bool_to_u8;
 use error::Result;
 
@@ -106,6 +106,17 @@ impl PayloadBuilder {
         match self.inner {
             Ok(mut inner) => {
                 inner.link_names = Some(bool_to_u8(b));
+                PayloadBuilder { inner: Ok(inner) }
+            }
+            _ => self,
+        }
+    }
+
+    /// Change how messages are treated.
+    pub fn parse(self, p: Parse) -> PayloadBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.parse = Some(p);
                 PayloadBuilder { inner: Ok(inner) }
             }
             _ => self,

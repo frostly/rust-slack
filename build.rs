@@ -1,4 +1,5 @@
 extern crate serde_codegen;
+extern crate serde;
 
 use std::env;
 use std::path::Path;

@@ -156,7 +156,7 @@ mod test {
     #[cfg(feature = "unstable")]
     use test::Bencher;
     use slack::{Slack, SlackLink};
-    use {PayloadBuilder, AttachmentBuilder, Field, SlackText, serde_json};
+    use {PayloadBuilder, AttachmentBuilder, Field, SlackText, Parse, serde_json};
 
     #[test]
     fn slack_incoming_url_test() {
@@ -208,10 +208,11 @@ mod test {
             .attachments(a)
             .unfurl_links(false)
             .link_names(true)
+            .parse(Parse::Full)
             .build()
             .unwrap();
 
-        assert_eq!(serde_json::to_string(&p).unwrap().to_owned(), r##"{"text":"test message","channel":"#abc","username":"Bot","icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","color":"#6800e8","fields":[{"title":"title","value":"value"}]}],"unfurl_links":false,"link_names":1}"##.to_owned())
+        assert_eq!(serde_json::to_string(&p).unwrap().to_owned(), r##"{"text":"test message","channel":"#abc","username":"Bot","icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","color":"#6800e8","fields":[{"title":"title","value":"value"}]}],"unfurl_links":false,"link_names":1,"parse":"full"}"##.to_owned())
     }
 
     #[test]

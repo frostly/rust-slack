@@ -1,3 +1,5 @@
+use serde::{Serialize, Serializer};
+
 /// Representation of any text sent through slack
 /// the text must be processed to escape specific characters
 #[derive(Serialize, Debug, Default, Clone)]
@@ -87,4 +89,28 @@ pub struct Payload {
     /// find and link channel names and usernames
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link_names: Option<u8>,
+    /// Change how messages are treated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parse: Option<Parse>,
+}
+
+/// Change how messages are treated.
+#[derive(Debug)]
+pub enum Parse {
+    /// Full
+    Full,
+    /// None
+    None,
+}
+
+impl Serialize for Parse {
+    fn serialize<S>(&self, serializer: &mut S) -> ::std::result::Result<(), S::Error>
+        where S: Serializer
+    {
+        let st = match *self {
+            Parse::Full => "full",
+            Parse::None => "none",
+        };
+        serializer.serialize_str(st)
+    }
 }

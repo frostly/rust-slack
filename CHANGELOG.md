@@ -32,6 +32,7 @@ FEATURES
 - Add support for sending links and text into slack, see:
 [Text with Links](README.md#text-with-links).
 - Optional fields no longer are sent in the serialized json message to slack.
+- Add `parse` option to `Payload`.
 
 OTHER
 
