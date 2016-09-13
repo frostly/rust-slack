@@ -80,6 +80,12 @@ impl<'a> From<&'a str> for SlackText {
     }
 }
 
+impl<'a> From<String> for SlackText {
+    fn from(s: String) -> SlackText {
+        SlackText::new(s)
+    }
+}
+
 /// Enum used for constructing a text field having both `SlackText`(s) and `SlackLink`(s). The
 /// variants should be used together in a `Vec` on any function having a `Into<SlackText>` trait
 /// bound. The combined text will be space-separated.
