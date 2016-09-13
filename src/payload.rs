@@ -1,6 +1,7 @@
-use {Attachment, Payload, SlackText, Parse};
+use {Attachment, Payload, SlackText, Parse, TryInto};
 use helper::bool_to_u8;
-use error::Result;
+use error::{Error, Result};
+use url::Url;
 
 /// `PayloadBuilder` is used to build a `Payload`
 #[derive(Debug)]
@@ -59,6 +60,22 @@ impl PayloadBuilder {
             Ok(mut inner) => {
                 inner.icon_emoji = Some(icon_emoji.into());
                 PayloadBuilder { inner: Ok(inner) }
+            }
+            _ => self,
+        }
+    }
+
+    /// Set the icon_url
+    pub fn icon_url<U: TryInto<Url, Err = Error>>(self, icon_url: U) -> PayloadBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                match icon_url.try_into() {
+                    Ok(url) => {
+                        inner.icon_url = Some(url);
+                        PayloadBuilder { inner: Ok(inner) }
+                    }
+                    Err(e) => PayloadBuilder { inner: Err(e) },
+                }
             }
             _ => self,
         }

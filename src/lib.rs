@@ -30,6 +30,7 @@ extern crate quick_error;
 extern crate serde;
 extern crate serde_json;
 extern crate hex as hexx;
+pub extern crate url;
 
 include!(concat!(env!("OUT_DIR"), "/serde_types.rs"));
 
@@ -38,6 +39,7 @@ pub use payload::PayloadBuilder;
 pub use attachment::AttachmentBuilder;
 pub use hex::SlackColor;
 pub use error::{Error, Result};
+use url::Url;
 
 mod helper;
 mod error;
@@ -81,5 +83,15 @@ impl<T, U> TryInto<U> for T
 
     fn try_into(self) -> ::std::result::Result<U, U::Err> {
         U::try_from(self)
+    }
+}
+
+impl<'a> TryFrom<&'a str> for Url {
+    type Err = Error;
+    fn try_from(s: &str) -> ::std::result::Result<Self, Self::Err> {
+        match Url::parse(s) {
+            Ok(u) => Ok(u),
+            Err(e) => Err(e.into()),
+        }
     }
 }

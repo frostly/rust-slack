@@ -1,21 +1,23 @@
 use curl::easy::Easy;
 use std::str;
 use error::{Result, Error};
-use {Payload, SlackText, serde_json};
+use {Payload, SlackText, TryInto, serde_json};
 use serde::{Serialize, Serializer};
+use url::Url;
 
 /// Handles sending messages to slack
 #[derive(Debug)]
 pub struct Slack {
     /// Url provided by slack interface for incoming webhook
-    incoming_url: String,
+    incoming_url: Url,
 }
 
 impl Slack {
     /// Construct a new instance of slack for a specific
     /// incoming url endopoint
-    pub fn new(url: &str) -> Slack {
-        Slack { incoming_url: url.to_owned() }
+    pub fn new<S: TryInto<Url, Err = Error>>(url: S) -> Result<Slack> {
+        let url = try!(url.try_into());
+        Ok(Slack { incoming_url: url })
     }
 
     /// Send payload to slack service
@@ -24,7 +26,7 @@ impl Slack {
         let encoded = try!(serde_json::to_string(payload));
         debug!("JSON payload, {:?}", encoded);
         let mut easy = Easy::new();
-        let _ = easy.url(&self.incoming_url[..]);
+        try!(easy.url(&self.incoming_url[..]));
 
         try!(easy.post(true));
         try!(easy.post_fields_copy(encoded.as_bytes()));
@@ -160,8 +162,8 @@ mod test {
 
     #[test]
     fn slack_incoming_url_test() {
-        let s = Slack::new("https://hooks.slack.com/services/abc/123/45z");
-        assert_eq!(s.incoming_url,
+        let s = Slack::new("https://hooks.slack.com/services/abc/123/45z").unwrap();
+        assert_eq!(s.incoming_url[..],
                    "https://hooks.slack.com/services/abc/123/45z".to_owned());
     }
 
@@ -205,6 +207,7 @@ mod test {
             .channel("#abc")
             .username("Bot")
             .icon_emoji(":chart_with_upwards_trend:")
+            .icon_url("https://example.com")
             .attachments(a)
             .unfurl_links(false)
             .link_names(true)
@@ -212,7 +215,7 @@ mod test {
             .build()
             .unwrap();
 
-        assert_eq!(serde_json::to_string(&p).unwrap().to_owned(), r##"{"text":"test message","channel":"#abc","username":"Bot","icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","color":"#6800e8","fields":[{"title":"title","value":"value"}]}],"unfurl_links":false,"link_names":1,"parse":"full"}"##.to_owned())
+        assert_eq!(serde_json::to_string(&p).unwrap().to_owned(), r##"{"text":"test message","channel":"#abc","username":"Bot","icon_url":"https://example.com/","icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","color":"#6800e8","fields":[{"title":"title","value":"value"}]}],"unfurl_links":false,"link_names":1,"parse":"full"}"##.to_owned())
     }
 
     #[test]

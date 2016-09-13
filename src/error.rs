@@ -1,6 +1,7 @@
 use hexx;
 use curl;
 use serde_json;
+use url;
 
 /// `Result` type-alias
 pub type Result<T> = ::std::result::Result<T, Error>;
@@ -46,6 +47,14 @@ quick_error! {
             description("curl error")
             display("curl error: {}", err)
             cause(err)
+        }
+        /// `Url` parsing error
+        Url(err: url::ParseError) {
+            from()
+            description("url parse error")
+            display("url parse error: {}", err)
+            cause(err)
+
         }
     }
 }

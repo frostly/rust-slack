@@ -26,7 +26,7 @@ extern crate slack_hook;
 use slack_hook::{Slack, PayloadBuilder};
 
 fn main() {
-    let slack = Slack::new("https://hooks.slack.com/services/abc/123/45z");
+    let slack = Slack::new("https://hooks.slack.com/services/abc/123/45z").unwrap();
     let p = PayloadBuilder::new()
       .text("test message")
       .channel("#testing")

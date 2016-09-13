@@ -71,7 +71,7 @@ pub struct Payload {
     pub username: Option<String>,
     /// specific url for icon
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub icon_url: Option<String>,
+    pub icon_url: Option<Url>,
     /// emjoi for icon
     /// https://api.slack.com/methods/emoji.list
     #[serde(skip_serializing_if = "Option::is_none")]

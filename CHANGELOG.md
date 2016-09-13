@@ -19,6 +19,7 @@ DEPRECATIONS/BREAKING CHANGES:
  - `SlackLink`, `SlackText`
   - The `Display` trait is now used to format strings for sending to slack rather than `Debug`.
   The `Debug` impl is derived now.
+ - `Slack::new` now returns a `Result<Slack>` as it does `Url` parsing.
 
 FEATURES
 
