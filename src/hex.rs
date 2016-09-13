@@ -1,17 +1,6 @@
 use error::Error;
-use rustc_serialize::hex::FromHex;
-use rustc_serialize::json::{ToJson, Json};
-use rustc_serialize::{Encodable, Encoder};
-use TryFrom;
-
-/// A `HexColor` `String` can be one of:
-///
-/// 1. `String`s: `good`, `warning`, `danger`
-/// 2. Any valid hex color code: e.g. `#b13d41` or `#000`.
-///
-/// hex color codes will be checked to ensure a valid hex number is provided
-#[derive(Debug)]
-pub struct HexColor(String);
+use hexx::FromHex;
+use {HexColor, TryFrom};
 
 impl HexColor {
     fn new<S: Into<String>>(s: S) -> HexColor {
@@ -104,7 +93,7 @@ impl<S> TryFrom<S> for HexColor
         };
 
         // see if the remaining part of the string is actually hex
-        match hex[1..].from_hex() {
+        match Vec::from_hex(&hex[1..]) {
             Ok(_) => Ok(HexColor::new(s)),
             Err(e) => Err(e.into()),
         }
@@ -119,22 +108,10 @@ impl TryFrom<SlackColor> for HexColor {
     }
 }
 
-impl ToJson for HexColor {
-    fn to_json(&self) -> Json {
-        Json::String(format!("{}", &self))
-    }
-}
-
-impl Encodable for HexColor {
-    fn encode<S: Encoder>(&self, encoder: &mut S) -> ::std::result::Result<(), S::Error> {
-        encoder.emit_str(format!("{}", &self).as_ref())
-    }
-}
-
 #[cfg(test)]
 mod test {
-    use hex::*;
-    use TryFrom;
+    use super::*;
+    use {HexColor, TryFrom};
 
     #[test]
     fn test_hex_color_too_short() {
@@ -156,8 +133,7 @@ mod test {
     fn test_hex_color_invalid_hex_fmt() {
         let err = HexColor::try_from("#abc12z").unwrap_err();
         assert_eq!(format!("{}", err),
-                   "rustc_serialize::hex::FromHexError: Invalid character 'z' at position 5"
-                       .to_owned());
+                   "hexx::FromHexError: Invalid character 'z' at position 5".to_owned());
     }
 
     #[test]

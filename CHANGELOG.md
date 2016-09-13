@@ -31,6 +31,7 @@ FEATURES
 - Three character hex color codes, e.g. `#000`, are now supported.
 - Add support for sending links and text into slack, see:
 [Text with Links](README.md#text-with-links).
+- Optional fields no longer are sent in the serialized json message to slack.
 
 OTHER
 

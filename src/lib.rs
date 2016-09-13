@@ -25,14 +25,18 @@ extern crate log;
 extern crate test; // needed for benchmarking
 
 extern crate curl;
-extern crate rustc_serialize;
 #[macro_use]
 extern crate quick_error;
+extern crate serde;
+extern crate serde_json;
+extern crate hex as hexx;
 
-pub use slack::{Slack, SlackText, SlackTextContent, SlackLink};
-pub use payload::{Payload, PayloadBuilder};
-pub use attachment::{Attachment, AttachmentBuilder, Field};
-pub use hex::{SlackColor, HexColor};
+include!(concat!(env!("OUT_DIR"), "/serde_types.rs"));
+
+pub use slack::{Slack, SlackTextContent, SlackLink};
+pub use payload::PayloadBuilder;
+pub use attachment::AttachmentBuilder;
+pub use hex::SlackColor;
 pub use error::{Error, Result};
 
 mod helper;

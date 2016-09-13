@@ -1,37 +1,6 @@
-use slack::SlackText;
-use attachment::Attachment;
+use {Attachment, Payload, SlackText};
 use helper::bool_to_u8;
 use error::Result;
-
-/// Payload to send to slack
-/// https://api.slack.com/incoming-webhooks
-/// https://api.slack.com/methods/chat.postMessage
-#[derive(RustcEncodable, Debug, Default)]
-pub struct Payload {
-    /// text to send
-    /// despite `text` stated as required, it does not seem to be
-    pub text: Option<SlackText>,
-    /// channel to send payload to
-    /// note: if not provided, this will default to channel
-    /// setup in slack
-    pub channel: Option<String>,
-    /// username override
-    pub username: Option<String>,
-    /// specific url for icon
-    pub icon_url: Option<String>,
-    /// emjoi for icon
-    /// https://api.slack.com/methods/emoji.list
-    pub icon_emoji: Option<String>,
-    /// attachments to send
-    pub attachments: Option<Vec<Attachment>>,
-    /// whether slack will try to fetch links and create an attachment
-    /// https://api.slack.com/docs/unfurling
-    pub unfurl_links: Option<bool>,
-    /// Pass false to disable unfurling of media content
-    pub unfurl_media: Option<bool>,
-    /// find and link channel names and usernames
-    pub link_names: Option<u8>,
-}
 
 /// `PayloadBuilder` is used to build a `Payload`
 #[derive(Debug)]

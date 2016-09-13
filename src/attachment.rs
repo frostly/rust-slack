@@ -1,40 +1,5 @@
-use slack::SlackText;
 use error::{Error, Result};
-use hex::HexColor;
-use TryInto;
-
-/// Slack allows for attachments to be added to messages. See
-/// https://api.slack.com/docs/attachments for more information.
-#[derive(RustcEncodable, Debug, Default)]
-pub struct Attachment {
-    /// Required text for attachment.
-    /// Slack will use this text to display on devices that don't support markup.
-    pub fallback: SlackText,
-    /// Optional text for other devices, markup supported
-    pub text: Option<SlackText>,
-    /// Optional text that appears above attachment
-    pub pretext: Option<SlackText>,
-    /// Optional color of attachment
-    pub color: Option<HexColor>,
-    /// Fields are defined as an array, and hashes contained within it will be
-    /// displayed in a table inside the message attachment.
-    pub fields: Option<Vec<Field>>,
-}
-
-/// Fields are defined as an array, and hashes contained within it will
-/// be displayed in a table inside the message attachment.
-#[derive(RustcEncodable, Debug)]
-pub struct Field {
-    /// Shown as a bold heading above the value text.
-    /// It cannot contain markup and will be escaped for you.
-    pub title: String,
-    /// The text value of the field. It may contain standard message markup
-    /// and must be escaped as normal. May be multi-line.
-    pub value: SlackText,
-    /// An optional flag indicating whether the value is short enough to be
-    /// displayed side-by-side with other values.
-    pub short: Option<bool>,
-}
+use {Attachment, Field, HexColor, SlackText, TryInto};
 
 impl Field {
     /// Construct a new field
