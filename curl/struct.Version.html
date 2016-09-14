@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Version` struct in crate `curl`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Version">
+
+    <title>curl::Version - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='index.html'>curl</a></p><script>window.sidebarCurrent = {name: 'Version', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>curl</a>::<wbr><a class='struct' href=''>Version</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-325' class='srclink' href='../src/curl/version.rs.html#8-10' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Version {
+    // some fields omitted
+}</pre><div class='docblock'><p>Version information about libcurl and the capabilities that it supports.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../curl/struct.Version.html' title='curl::Version'>Version</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-333' class='srclink' href='../src/curl/version.rs.html#21-228' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.num' class='method'><code>fn <a href='#method.num' class='fnname'>num</a>() -&gt; &amp;'static <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a></code></h4>
+<div class='docblock'><p>Returns the libcurl version that this library is currently linked against.</p>
+</div><h4 id='method.get' class='method'><code>fn <a href='#method.get' class='fnname'>get</a>() -&gt; <a class='struct' href='../curl/struct.Version.html' title='curl::Version'>Version</a></code></h4>
+<div class='docblock'><p>Returns the libcurl version that this library is currently linked against.</p>
+</div><h4 id='method.version' class='method'><code>fn <a href='#method.version' class='fnname'>version</a>(&amp;self) -&gt; &amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a></code></h4>
+<div class='docblock'><p>Returns the human readable version string,</p>
+</div><h4 id='method.version_num' class='method'><code>fn <a href='#method.version_num' class='fnname'>version_num</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a></code></h4>
+<div class='docblock'><p>Returns a numeric representation of the version number</p>
+
+<p>This is a 24 bit number made up of the major number, minor, and then
+patch number. For example 7.9.8 willr eturn 0x070908.</p>
+</div><h4 id='method.host' class='method'><code>fn <a href='#method.host' class='fnname'>host</a>(&amp;self) -&gt; &amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a></code></h4>
+<div class='docblock'><p>Returns a human readable string of the host libcurl is built for.</p>
+
+<p>This is discovered as part of the build environment.</p>
+</div><h4 id='method.feature_ipv6' class='method'><code>fn <a href='#method.feature_ipv6' class='fnname'>feature_ipv6</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether libcurl supports IPv6</p>
+</div><h4 id='method.feature_ssl' class='method'><code>fn <a href='#method.feature_ssl' class='fnname'>feature_ssl</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether libcurl supports SSL</p>
+</div><h4 id='method.feature_libz' class='method'><code>fn <a href='#method.feature_libz' class='fnname'>feature_libz</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether libcurl supports HTTP deflate via libz</p>
+</div><h4 id='method.feature_ntlm' class='method'><code>fn <a href='#method.feature_ntlm' class='fnname'>feature_ntlm</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether libcurl supports HTTP NTLM</p>
+</div><h4 id='method.feature_gss_negotiate' class='method'><code>fn <a href='#method.feature_gss_negotiate' class='fnname'>feature_gss_negotiate</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether libcurl supports HTTP GSSNEGOTIATE</p>
+</div><h4 id='method.feature_debug' class='method'><code>fn <a href='#method.feature_debug' class='fnname'>feature_debug</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether libcurl was built with debug capabilities</p>
+</div><h4 id='method.feature_spnego' class='method'><code>fn <a href='#method.feature_spnego' class='fnname'>feature_spnego</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether libcurl was built with SPNEGO authentication</p>
+</div><h4 id='method.feature_largefile' class='method'><code>fn <a href='#method.feature_largefile' class='fnname'>feature_largefile</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether libcurl was built with large file support</p>
+</div><h4 id='method.feature_idn' class='method'><code>fn <a href='#method.feature_idn' class='fnname'>feature_idn</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether libcurl was built with support for IDNA, domain names
+with international letters.</p>
+</div><h4 id='method.feature_sspi' class='method'><code>fn <a href='#method.feature_sspi' class='fnname'>feature_sspi</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether libcurl was built with support for SSPI.</p>
+</div><h4 id='method.feature_async_dns' class='method'><code>fn <a href='#method.feature_async_dns' class='fnname'>feature_async_dns</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether libcurl was built with asynchronous name lookups.</p>
+</div><h4 id='method.feature_conv' class='method'><code>fn <a href='#method.feature_conv' class='fnname'>feature_conv</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether libcurl was built with support for character
+conversions.</p>
+</div><h4 id='method.feature_tlsauth_srp' class='method'><code>fn <a href='#method.feature_tlsauth_srp' class='fnname'>feature_tlsauth_srp</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether libcurl was built with support for TLS-SRP.</p>
+</div><h4 id='method.feature_ntlm_wb' class='method'><code>fn <a href='#method.feature_ntlm_wb' class='fnname'>feature_ntlm_wb</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether libcurl was built with support for NTLM delegation to
+winbind helper.</p>
+</div><h4 id='method.ssl_version' class='method'><code>fn <a href='#method.ssl_version' class='fnname'>ssl_version</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;</code></h4>
+<div class='docblock'><p>Returns the version of OpenSSL that is used, or None if there is no SSL
+support.</p>
+</div><h4 id='method.libz_version' class='method'><code>fn <a href='#method.libz_version' class='fnname'>libz_version</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;</code></h4>
+<div class='docblock'><p>Returns the version of libz that is used, or None if there is no libz
+support.</p>
+</div><h4 id='method.protocols' class='method'><code>fn <a href='#method.protocols' class='fnname'>protocols</a>(&amp;self) -&gt; <a class='struct' href='../curl/struct.Protocols.html' title='curl::Protocols'>Protocols</a></code></h4>
+<div class='docblock'><p>Returns an iterator over the list of protocols that this build of
+libcurl supports.</p>
+</div><h4 id='method.ares_version' class='method'><code>fn <a href='#method.ares_version' class='fnname'>ares_version</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;</code></h4>
+<div class='docblock'><p>If available, the human readable version of ares that libcurl is linked
+against.</p>
+</div><h4 id='method.ares_version_num' class='method'><code>fn <a href='#method.ares_version_num' class='fnname'>ares_version_num</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>&gt;</code></h4>
+<div class='docblock'><p>If available, the version of ares that libcurl is linked against.</p>
+</div><h4 id='method.libidn_version' class='method'><code>fn <a href='#method.libidn_version' class='fnname'>libidn_version</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;</code></h4>
+<div class='docblock'><p>If available, the version of libidn that libcurl is linked against.</p>
+</div><h4 id='method.iconv_version_num' class='method'><code>fn <a href='#method.iconv_version_num' class='fnname'>iconv_version_num</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>&gt;</code></h4>
+<div class='docblock'><p>If available, the version of iconv libcurl is linked against.</p>
+</div><h4 id='method.libssh_version' class='method'><code>fn <a href='#method.libssh_version' class='fnname'>libssh_version</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;</code></h4>
+<div class='docblock'><p>If available, the version of iconv libcurl is linked against.</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Send.html' title='core::marker::Send'>Send</a> for <a class='struct' href='../curl/struct.Version.html' title='curl::Version'>Version</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-327' class='srclink' href='../src/curl/version.rs.html#12' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html' title='core::marker::Sync'>Sync</a> for <a class='struct' href='../curl/struct.Version.html' title='curl::Version'>Version</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-328' class='srclink' href='../src/curl/version.rs.html#13' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "curl";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    
+    <script defer src="../search-index.js"></script>
+</body>
+</html>

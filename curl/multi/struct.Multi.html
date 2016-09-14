@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Multi` struct in crate `curl`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Multi">
+
+    <title>curl::multi::Multi - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>curl</a>::<wbr><a href='index.html'>multi</a></p><script>window.sidebarCurrent = {name: 'Multi', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>curl</a>::<wbr><a href='index.html'>multi</a>::<wbr><a class='struct' href=''>Multi</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-1526' class='srclink' href='../../src/curl/multi.rs.html#31-34' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Multi {
+    // some fields omitted
+}</pre><div class='docblock'><p>A multi handle for initiating multiple connections simultaneously.</p>
+
+<p>This structure corresponds to <code>CURLM</code> in libcurl and provides the ability to
+have multiple transfers in flight simultaneously. This handle is then used
+to manage each transfer. The main purpose of a <code>CURLM</code> is for the
+<em>application</em> to drive the I/O rather than libcurl itself doing all the
+blocking. Methods like <code>action</code> allow the application to inform libcurl of
+when events have happened.</p>
+
+<p>Lots more documentation can be found on the libcurl <a href="https://curl.haxx.se/libcurl/c/libcurl-multi.html">multi tutorial</a> where
+the APIs correspond pretty closely with this crate.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../curl/multi/struct.Multi.html' title='curl::multi::Multi'>Multi</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1544' class='srclink' href='../../src/curl/multi.rs.html#79-519' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>() -&gt; <a class='struct' href='../../curl/multi/struct.Multi.html' title='curl::multi::Multi'>Multi</a></code></h4>
+<div class='docblock'><p>Creates a new multi session through which multiple HTTP transfers can be
+initiated.</p>
+</div><h4 id='method.socket_function' class='method'><code>fn <a href='#method.socket_function' class='fnname'>socket_function</a>&lt;F&gt;(&amp;mut self, f: F) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>,&nbsp;<a class='struct' href='../../curl/struct.MultiError.html' title='curl::MultiError'>MultiError</a>&gt; <span class='where'>where F: <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html' title='core::ops::FnMut'>FnMut</a>(<a class='type' href='../../curl/multi/type.Socket.html' title='curl::multi::Socket'>Socket</a>, <a class='struct' href='../../curl/multi/struct.SocketEvents.html' title='curl::multi::SocketEvents'>SocketEvents</a>, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) + <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Send.html' title='core::marker::Send'>Send</a> + 'static</span></code></h4>
+<div class='docblock'><p>Set the callback informed about what to wait for</p>
+
+<p>When the <code>action</code> function runs, it informs the application about
+updates in the socket (file descriptor) status by doing none, one, or
+multiple calls to the socket callback. The callback gets status updates
+with changes since the previous time the callback was called. See
+<code>action</code> for more details on how the callback is used and should work.</p>
+
+<p>The <code>SocketEvents</code> parameter informs the callback on the status of the
+given socket, and the methods on that type can be used to learn about
+what&#39;s going on with the socket.</p>
+
+<p>The third <code>usize</code> parameter is a custom value set by the <code>assign</code> method
+below.</p>
+</div><h4 id='method.assign' class='method'><code>fn <a href='#method.assign' class='fnname'>assign</a>(&amp;self, socket: <a class='type' href='../../curl/multi/type.Socket.html' title='curl::multi::Socket'>Socket</a>, token: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>,&nbsp;<a class='struct' href='../../curl/struct.MultiError.html' title='curl::MultiError'>MultiError</a>&gt;</code></h4>
+<div class='docblock'><p>Set data to associate with an internal socket</p>
+
+<p>This function creates an association in the multi handle between the
+given socket and a private token of the application. This is designed
+for <code>action</code> uses.</p>
+
+<p>When set, the token will be passed to all future socket callbacks for
+the specified socket.</p>
+
+<p>If the given socket isn&#39;t already in use by libcurl, this function will
+return an error.</p>
+
+<p>libcurl only keeps one single token associated with a socket, so
+calling this function several times for the same socket will make the
+last set token get used.</p>
+
+<p>The idea here being that this association (socket to token) is something
+that just about every application that uses this API will need and then
+libcurl can just as well do it since it already has an internal hash
+table lookup for this.</p>
+
+<h1 id='typical-usage' class='section-header'><a href='#typical-usage'>Typical Usage</a></h1>
+<p>In a typical application you allocate a struct or at least use some kind
+of semi-dynamic data for each socket that we must wait for action on
+when using the <code>action</code> approach.</p>
+
+<p>When our socket-callback gets called by libcurl and we get to know about
+yet another socket to wait for, we can use <code>assign</code> to point out the
+particular data so that when we get updates about this same socket
+again, we don&#39;t have to find the struct associated with this socket by
+ourselves.</p>
+</div><h4 id='method.timer_function' class='method'><code>fn <a href='#method.timer_function' class='fnname'>timer_function</a>&lt;F&gt;(&amp;mut self, f: F) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>,&nbsp;<a class='struct' href='../../curl/struct.MultiError.html' title='curl::MultiError'>MultiError</a>&gt; <span class='where'>where F: <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html' title='core::ops::FnMut'>FnMut</a>(<a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/std/time/duration/struct.Duration.html' title='std::time::duration::Duration'>Duration</a>&gt;) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Send.html' title='core::marker::Send'>Send</a> + 'static</span></code></h4>
+<div class='docblock'><p>Set callback to receive timeout values</p>
+
+<p>Certain features, such as timeouts and retries, require you to call
+libcurl even when there is no activity on the file descriptors.</p>
+
+<p>Your callback function should install a non-repeating timer with the
+interval specified. Each time that timer fires, call either <code>action</code> or
+<code>perform</code>, depending on which interface you use.</p>
+
+<p>A timeout value of <code>None</code> means you should delete your timer.</p>
+
+<p>A timeout value of 0 means you should call <code>action</code> or <code>perform</code> (once)
+as soon as possible.</p>
+
+<p>This callback will only be called when the timeout changes.</p>
+
+<p>The timer callback should return <code>true</code> on success, and <code>false</code> on
+error. This callback can be used instead of, or in addition to,
+<code>get_timeout</code>.</p>
+</div><h4 id='method.add' class='method'><code>fn <a href='#method.add' class='fnname'>add</a>(&amp;self, easy: <a class='struct' href='../../curl/easy/struct.Easy.html' title='curl::easy::Easy'>Easy</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='../../curl/multi/struct.EasyHandle.html' title='curl::multi::EasyHandle'>EasyHandle</a>,&nbsp;<a class='struct' href='../../curl/struct.MultiError.html' title='curl::MultiError'>MultiError</a>&gt;</code></h4>
+<div class='docblock'><p>Add an easy handle to a multi session</p>
+
+<p>Adds a standard easy handle to the multi stack. This function call will
+make this multi handle control the specified easy handle.</p>
+
+<p>When an easy interface is added to a multi handle, it will use a shared
+connection cache owned by the multi handle. Removing and adding new easy
+handles will not affect the pool of connections or the ability to do
+connection re-use.</p>
+
+<p>If you have <code>timer_function</code> set in the multi handle (and you really
+should if you&#39;re working event-based with <code>action</code> and friends), that
+callback will be called from within this function to ask for an updated
+timer so that your main event loop will get the activity on this handle
+to get started.</p>
+
+<p>The easy handle will remain added to the multi handle until you remove
+it again with <code>remove</code> on the returned handle - even when a transfer
+with that specific easy handle is completed.</p>
+</div><h4 id='method.remove' class='method'><code>fn <a href='#method.remove' class='fnname'>remove</a>(&amp;self, easy: <a class='struct' href='../../curl/multi/struct.EasyHandle.html' title='curl::multi::EasyHandle'>EasyHandle</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='../../curl/easy/struct.Easy.html' title='curl::easy::Easy'>Easy</a>,&nbsp;<a class='struct' href='../../curl/struct.MultiError.html' title='curl::MultiError'>MultiError</a>&gt;</code></h4>
+<div class='docblock'><p>Remove an easy handle from this multi session</p>
+
+<p>Removes the easy handle from this multi handle. This will make the
+returned easy handle be removed from this multi handle&#39;s control.</p>
+
+<p>When the easy handle has been removed from a multi stack, it is again
+perfectly legal to invoke <code>perform</code> on it.</p>
+
+<p>Removing an easy handle while being used is perfectly legal and will
+effectively halt the transfer in progress involving that easy handle.
+All other easy handles and transfers will remain unaffected.</p>
+</div><h4 id='method.messages' class='method'><code>fn <a href='#method.messages' class='fnname'>messages</a>&lt;F&gt;(&amp;self, f: F) <span class='where'>where F: <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html' title='core::ops::FnMut'>FnMut</a>(<a class='struct' href='../../curl/multi/struct.Message.html' title='curl::multi::Message'>Message</a>)</span></code></h4>
+<div class='docblock'><p>Read multi stack informationals</p>
+
+<p>Ask the multi handle if there are any messages/informationals from the
+individual transfers. Messages may include informationals such as an
+error code from the transfer or just the fact that a transfer is
+completed. More details on these should be written down as well.</p>
+</div><h4 id='method.action' class='method'><code>fn <a href='#method.action' class='fnname'>action</a>(&amp;self, socket: <a class='type' href='../../curl/multi/type.Socket.html' title='curl::multi::Socket'>Socket</a>, events: &amp;<a class='struct' href='../../curl/multi/struct.Events.html' title='curl::multi::Events'>Events</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>,&nbsp;<a class='struct' href='../../curl/struct.MultiError.html' title='curl::MultiError'>MultiError</a>&gt;</code></h4>
+<div class='docblock'><p>Inform of reads/writes available data given an action</p>
+
+<p>When the application has detected action on a socket handled by libcurl,
+it should call this function with the sockfd argument set to
+the socket with the action. When the events on a socket are known, they
+can be passed <code>events</code>. When the events on a socket are unknown, pass
+<code>Events::new()</code> instead, and libcurl will test the descriptor
+internally.</p>
+
+<p>The returned integer will contain the number of running easy handles
+within the multi handle. When this number reaches zero, all transfers
+are complete/done. When you call <code>action</code> on a specific socket and the
+counter decreases by one, it DOES NOT necessarily mean that this exact
+socket/transfer is the one that completed. Use <code>messages</code> to figure out
+which easy handle that completed.</p>
+
+<p>The <code>action</code> function informs the application about updates in the
+socket (file descriptor) status by doing none, one, or multiple calls to
+the socket callback function set with the <code>socket_function</code> method. They
+update the status with changes since the previous time the callback was
+called.</p>
+</div><h4 id='method.timeout' class='method'><code>fn <a href='#method.timeout' class='fnname'>timeout</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>,&nbsp;<a class='struct' href='../../curl/struct.MultiError.html' title='curl::MultiError'>MultiError</a>&gt;</code></h4>
+<div class='docblock'><p>Inform libcurl that a timeout has expired and sockets should be tested.</p>
+
+<p>The returned integer will contain the number of running easy handles
+within the multi handle. When this number reaches zero, all transfers
+are complete/done. When you call <code>action</code> on a specific socket and the
+counter decreases by one, it DOES NOT necessarily mean that this exact
+socket/transfer is the one that completed. Use <code>messages</code> to figure out
+which easy handle that completed.</p>
+
+<p>Get the timeout time by calling the <code>timer_function</code> method. Your
+application will then get called with information on how long to wait
+for socket actions at most before doing the timeout action: call the
+<code>timeout</code> method. You can also use the <code>get_timeout</code> function to
+poll the value at any given time, but for an event-based system using
+the callback is far better than relying on polling the timeout value.</p>
+</div><h4 id='method.get_timeout' class='method'><code>fn <a href='#method.get_timeout' class='fnname'>get_timeout</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/std/time/duration/struct.Duration.html' title='std::time::duration::Duration'>Duration</a>&gt;,&nbsp;<a class='struct' href='../../curl/struct.MultiError.html' title='curl::MultiError'>MultiError</a>&gt;</code></h4>
+<div class='docblock'><p>Get how long to wait for action before proceeding</p>
+
+<p>An application using the libcurl multi interface should call
+<code>get_timeout</code> to figure out how long it should wait for socket actions -
+at most - before proceeding.</p>
+
+<p>Proceeding means either doing the socket-style timeout action: call the
+<code>timeout</code> function, or call <code>perform</code> if you&#39;re using the simpler and
+older multi interface approach.</p>
+
+<p>The timeout value returned is the duration at this very moment. If 0, it
+means you should proceed immediately without waiting for anything. If it
+returns <code>None</code>, there&#39;s no timeout at all set.</p>
+
+<p>Note: if libcurl returns a <code>None</code> timeout here, it just means that
+libcurl currently has no stored timeout value. You must not wait too
+long (more than a few seconds perhaps) before you call <code>perform</code> again.</p>
+</div><h4 id='method.perform' class='method'><code>fn <a href='#method.perform' class='fnname'>perform</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>,&nbsp;<a class='struct' href='../../curl/struct.MultiError.html' title='curl::MultiError'>MultiError</a>&gt;</code></h4>
+<div class='docblock'><p>Reads/writes available data from each easy handle.</p>
+
+<p>This function handles transfers on all the added handles that need
+attention in an non-blocking fashion.</p>
+
+<p>When an application has found out there&#39;s data available for this handle
+or a timeout has elapsed, the application should call this function to
+read/write whatever there is to read or write right now etc.  This
+method returns as soon as the reads/writes are done. This function does
+not require that there actually is any data available for reading or
+that data can be written, it can be called just in case. It will return
+the number of handles that still transfer data.</p>
+
+<p>If the amount of running handles is changed from the previous call (or
+is less than the amount of easy handles you&#39;ve added to the multi
+handle), you know that there is one or more transfers less &quot;running&quot;.
+You can then call <code>info</code> to get information about each individual
+completed transfer, and that returned info includes <code>Error</code> and more.
+If an added handle fails very quickly, it may never be counted as a
+running handle.</p>
+
+<p>When running_handles is set to zero (0) on the return of this function,
+there is no longer any transfers in progress.</p>
+
+<h1 id='return' class='section-header'><a href='#return'>Return</a></h1>
+<p>Before libcurl version 7.20.0: If you receive <code>is_call_perform</code>, this
+basically means that you should call <code>perform</code> again, before you select
+on more actions. You don&#39;t have to do it immediately, but the return
+code means that libcurl may have more data available to return or that
+there may be more data to send off before it is &quot;satisfied&quot;. Do note
+that <code>perform</code> will return <code>is_call_perform</code> only when it wants to be
+called again immediately. When things are fine and there is nothing
+immediate it wants done, it&#39;ll return <code>Ok</code> and you need to wait for
+&quot;action&quot; and then call this function again.</p>
+
+<p>This function only returns errors etc regarding the whole multi stack.
+Problems still might have occurred on individual transfers even when
+this function returns <code>Ok</code>. Use <code>info</code> to figure out how individual
+transfers did.</p>
+</div><h4 id='method.fdset' class='method'><code>fn <a href='#method.fdset' class='fnname'>fdset</a>(&amp;self, read: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;mut <a class='struct' href='../../libc/unix/notbsd/struct.fd_set.html' title='libc::unix::notbsd::fd_set'>fd_set</a>&gt;, write: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;mut <a class='struct' href='../../libc/unix/notbsd/struct.fd_set.html' title='libc::unix::notbsd::fd_set'>fd_set</a>&gt;, except: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;mut <a class='struct' href='../../libc/unix/notbsd/struct.fd_set.html' title='libc::unix::notbsd::fd_set'>fd_set</a>&gt;) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt;,&nbsp;<a class='struct' href='../../curl/struct.MultiError.html' title='curl::MultiError'>MultiError</a>&gt;</code></h4>
+<div class='docblock'><p>Extracts file descriptor information from a multi handle</p>
+
+<p>This function extracts file descriptor information from a given
+handle, and libcurl returns its <code>fd_set</code> sets. The application can use
+these to <code>select()</code> on, but be sure to <code>FD_ZERO</code> them before calling
+this function as curl_multi_fdset only adds its own descriptors, it
+doesn&#39;t zero or otherwise remove any others. The curl_multi_perform
+function should be called as soon as one of them is ready to be read
+from or written to.</p>
+
+<p>If no file descriptors are set by libcurl, this function will return
+<code>Ok(None)</code>. Otherwise <code>Ok(Some(n))</code> will be returned where <code>n</code> the
+highest descriptor number libcurl set. When <code>Ok(None)</code> is returned it
+is because libcurl currently does something that isn&#39;t possible for
+your application to monitor with a socket and unfortunately you can
+then not know exactly when the current action is completed using
+<code>select()</code>. You then need to wait a while before you proceed and call
+<code>perform</code> anyway.</p>
+
+<p>When doing <code>select()</code>, you should use <code>get_timeout</code> to figure out
+how long to wait for action. Call <code>perform</code> even if no activity has
+been seen on the <code>fd_set</code>s after the timeout expires as otherwise
+internal retries and timeouts may not work as you&#39;d think and want.</p>
+
+<p>If one of the sockets used by libcurl happens to be larger than what
+can be set in an <code>fd_set</code>, which on POSIX systems means that the file
+descriptor is larger than <code>FD_SETSIZE</code>, then libcurl will try to not
+set it. Setting a too large file descriptor in an <code>fd_set</code> implies an out
+of bounds write which can cause crashes, or worse. The effect of NOT
+storing it will possibly save you from the crash, but will make your
+program NOT wait for sockets it should wait for...</p>
+</div><h4 id='method.close' class='method'><code>fn <a href='#method.close' class='fnname'>close</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>,&nbsp;<a class='struct' href='../../curl/struct.MultiError.html' title='curl::MultiError'>MultiError</a>&gt;</code></h4>
+<div class='docblock'><p>Attempt to close the multi handle and clean up all associated resources.</p>
+
+<p>Cleans up and removes a whole multi stack. It does not free or touch any
+individual easy handles in any way - they still need to be closed
+individually.</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.Drop.html' title='core::ops::Drop'>Drop</a> for <a class='struct' href='../../curl/multi/struct.Multi.html' title='curl::multi::Multi'>Multi</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1663' class='srclink' href='../../src/curl/multi.rs.html#529-533' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.drop' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/ops/trait.Drop.html#tymethod.drop' class='fnname'>drop</a>(&amp;mut self)</code></h4>
+<div class='docblock'><p>A method called when the value goes out of scope. <a href="https://doc.rust-lang.org/nightly/core/ops/trait.Drop.html#tymethod.drop">Read more</a></p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "curl";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

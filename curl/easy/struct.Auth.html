@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Auth` struct in crate `curl`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Auth">
+
+    <title>curl::easy::Auth - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>curl</a>::<wbr><a href='index.html'>easy</a></p><script>window.sidebarCurrent = {name: 'Auth', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>curl</a>::<wbr><a href='index.html'>easy</a>::<wbr><a class='struct' href=''>Auth</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-563' class='srclink' href='../../src/curl/easy.rs.html#310-312' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Auth {
+    // some fields omitted
+}</pre><div class='docblock'><p>Structure which stores possible authentication methods to get passed to
+<code>http_auth</code> and <code>proxy_auth</code>.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../curl/easy/struct.Auth.html' title='curl::easy::Auth'>Auth</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1493' class='srclink' href='../../src/curl/easy.rs.html#3448-3540' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>() -&gt; <a class='struct' href='../../curl/easy/struct.Auth.html' title='curl::easy::Auth'>Auth</a></code></h4>
+<div class='docblock'><p>Creates a new set of authentications with no members.</p>
+
+<p>An <code>Auth</code> structure is used to configure which forms of authentication
+are attempted when negotiating connections with servers.</p>
+</div><h4 id='method.basic' class='method'><code>fn <a href='#method.basic' class='fnname'>basic</a>(&amp;mut self, on: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; &amp;mut <a class='struct' href='../../curl/easy/struct.Auth.html' title='curl::easy::Auth'>Auth</a></code></h4>
+<div class='docblock'><p>HTTP Basic authentication.</p>
+
+<p>This is the default choice, and the only method that is in wide-spread
+use and supported virtually everywhere.  This sends the user name and
+password over the network in plain text, easily captured by others.</p>
+</div><h4 id='method.digest' class='method'><code>fn <a href='#method.digest' class='fnname'>digest</a>(&amp;mut self, on: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; &amp;mut <a class='struct' href='../../curl/easy/struct.Auth.html' title='curl::easy::Auth'>Auth</a></code></h4>
+<div class='docblock'><p>HTTP Digest authentication.</p>
+
+<p>Digest authentication is defined in RFC 2617 and is a more secure way to
+do authentication over public networks than the regular old-fashioned
+Basic method.</p>
+</div><h4 id='method.digest_ie' class='method'><code>fn <a href='#method.digest_ie' class='fnname'>digest_ie</a>(&amp;mut self, on: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; &amp;mut <a class='struct' href='../../curl/easy/struct.Auth.html' title='curl::easy::Auth'>Auth</a></code></h4>
+<div class='docblock'><p>HTTP Digest authentication with an IE flavor.</p>
+
+<p>Digest authentication is defined in RFC 2617 and is a more secure way to
+do authentication over public networks than the regular old-fashioned
+Basic method. The IE flavor is simply that libcurl will use a special
+&quot;quirk&quot; that IE is known to have used before version 7 and that some
+servers require the client to use.</p>
+</div><h4 id='method.gssnegotiate' class='method'><code>fn <a href='#method.gssnegotiate' class='fnname'>gssnegotiate</a>(&amp;mut self, on: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; &amp;mut <a class='struct' href='../../curl/easy/struct.Auth.html' title='curl::easy::Auth'>Auth</a></code></h4>
+<div class='docblock'><p>HTTP Negotiate (SPNEGO) authentication.</p>
+
+<p>Negotiate authentication is defined in RFC 4559 and is the most secure
+way to perform authentication over HTTP.</p>
+
+<p>You need to build libcurl with a suitable GSS-API library or SSPI on
+Windows for this to work.</p>
+</div><h4 id='method.ntlm' class='method'><code>fn <a href='#method.ntlm' class='fnname'>ntlm</a>(&amp;mut self, on: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; &amp;mut <a class='struct' href='../../curl/easy/struct.Auth.html' title='curl::easy::Auth'>Auth</a></code></h4>
+<div class='docblock'><p>HTTP NTLM authentication.</p>
+
+<p>A proprietary protocol invented and used by Microsoft. It uses a
+challenge-response and hash concept similar to Digest, to prevent the
+password from being eavesdropped.</p>
+
+<p>You need to build libcurl with either OpenSSL, GnuTLS or NSS support for
+this option to work, or build libcurl on Windows with SSPI support.</p>
+</div><h4 id='method.ntlm_wb' class='method'><code>fn <a href='#method.ntlm_wb' class='fnname'>ntlm_wb</a>(&amp;mut self, on: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; &amp;mut <a class='struct' href='../../curl/easy/struct.Auth.html' title='curl::easy::Auth'>Auth</a></code></h4>
+<div class='docblock'><p>NTLM delegating to winbind helper.</p>
+
+<p>Authentication is performed by a separate binary application that is
+executed when needed. The name of the application is specified at
+compile time but is typically /usr/bin/ntlm_auth</p>
+
+<p>Note that libcurl will fork when necessary to run the winbind
+application and kill it when complete, calling waitpid() to await its
+exit when done. On POSIX operating systems, killing the process will
+cause a SIGCHLD signal to be raised (regardless of whether
+CURLOPT_NOSIGNAL is set), which must be handled intelligently by the
+application. In particular, the application must not unconditionally
+call wait() in its SIGCHLD signal handler to avoid being subject to a
+race condition. This behavior is subject to change in future versions of
+libcurl.</p>
+
+<p>A proprietary protocol invented and used by Microsoft. It uses a
+challenge-response and hash concept similar to Digest, to prevent the
+password from being eavesdropped.</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='struct' href='../../curl/easy/struct.Auth.html' title='curl::easy::Auth'>Auth</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-553' class='srclink' href='../../src/curl/easy.rs.html#309' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
+<div class='docblock'><p>Formats the value using the given formatter.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> for <a class='struct' href='../../curl/easy/struct.Auth.html' title='curl::easy::Auth'>Auth</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-559' class='srclink' href='../../src/curl/easy.rs.html#309' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.clone' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='struct' href='../../curl/easy/struct.Auth.html' title='curl::easy::Auth'>Auth</a></code></h4>
+<div class='docblock'><p>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></p>
+</div><h4 id='method.clone_from' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div></h4>
+<div class='docblock'><p>Performs copy-assignment from <code>source</code>. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from">Read more</a></p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "curl";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

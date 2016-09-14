@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `slack_hook` crate.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, slack_hook">
+
+    <title>slack_hook - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'></p><script>window.sidebarCurrent = {name: 'slack_hook', ty: 'mod', relpath: '../'};</script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Crate <a class='mod' href=''>slack_hook</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-0' class='srclink' href='../src/slack_hook/src/lib.rs.html#1-96' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>Library to send messages to slack rooms
+supports entire messaging API, including attachments and fields
+also support for built-in colors as well as any hex colors</p>
+</div><h2 id='reexports' class='section-header'><a href="#reexports">Reexports</a></h2>
+<table><tr><td><code>pub extern crate <a class='mod' href='../url/index.html' title='url'>url</a>;</code></td></tr><tr><td><code>pub extern crate <a class='mod' href='../chrono/index.html' title='chrono'>chrono</a>;</code></td></tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Attachment.html'
+                                  title='slack_hook::Attachment'>Attachment</a></td>
+                           <td class='docblock short'>
+                                <p>Slack allows for attachments to be added to messages. See
+<a href="https://api.slack.com/docs/attachments">https://api.slack.com/docs/attachments</a> for more information.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.AttachmentBuilder.html'
+                                  title='slack_hook::AttachmentBuilder'>AttachmentBuilder</a></td>
+                           <td class='docblock short'>
+                                <p><code>AttachmentBuilder</code> is used to build a <code>Attachment</code></p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Field.html'
+                                  title='slack_hook::Field'>Field</a></td>
+                           <td class='docblock short'>
+                                <p>Fields are defined as an array, and hashes contained within it will
+be displayed in a table inside the message attachment.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.HexColor.html'
+                                  title='slack_hook::HexColor'>HexColor</a></td>
+                           <td class='docblock short'>
+                                <p>A <code>HexColor</code> <code>String</code> can be one of:</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Payload.html'
+                                  title='slack_hook::Payload'>Payload</a></td>
+                           <td class='docblock short'>
+                                <p>Payload to send to slack
+<a href="https://api.slack.com/incoming-webhooks">https://api.slack.com/incoming-webhooks</a>
+<a href="https://api.slack.com/methods/chat.postMessage">https://api.slack.com/methods/chat.postMessage</a></p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.PayloadBuilder.html'
+                                  title='slack_hook::PayloadBuilder'>PayloadBuilder</a></td>
+                           <td class='docblock short'>
+                                <p><code>PayloadBuilder</code> is used to build a <code>Payload</code></p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Slack.html'
+                                  title='slack_hook::Slack'>Slack</a></td>
+                           <td class='docblock short'>
+                                <p>Handles sending messages to slack</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.SlackLink.html'
+                                  title='slack_hook::SlackLink'>SlackLink</a></td>
+                           <td class='docblock short'>
+                                <p>Representation of a link sent in slack</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.SlackText.html'
+                                  title='slack_hook::SlackText'>SlackText</a></td>
+                           <td class='docblock short'>
+                                <p>Representation of any text sent through slack
+the text must be processed to escape specific characters</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.SlackTime.html'
+                                  title='slack_hook::SlackTime'>SlackTime</a></td>
+                           <td class='docblock short'>
+                                <p>Slack timestamp</p>
+                           </td>
+                       </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='enum' href='enum.Error.html'
+                                  title='slack_hook::Error'>Error</a></td>
+                           <td class='docblock short'>
+                                <p>Errors</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='enum' href='enum.Parse.html'
+                                  title='slack_hook::Parse'>Parse</a></td>
+                           <td class='docblock short'>
+                                <p>Change how messages are treated.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='enum' href='enum.SlackColor.html'
+                                  title='slack_hook::SlackColor'>SlackColor</a></td>
+                           <td class='docblock short'>
+                                <p>Default slack colors built-in to the API
+See: <a href="https://api.slack.com/docs/attachments">https://api.slack.com/docs/attachments</a></p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='enum' href='enum.SlackTextContent.html'
+                                  title='slack_hook::SlackTextContent'>SlackTextContent</a></td>
+                           <td class='docblock short'>
+                                <p>Enum used for constructing a text field having both <code>SlackText</code>(s) and <code>SlackLink</code>(s). The
+variants should be used together in a <code>Vec</code> on any function having a <code>Into&lt;SlackText&gt;</code> trait
+bound. The combined text will be space-separated.</p>
+                           </td>
+                       </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='trait' href='trait.TryFrom.html'
+                                  title='slack_hook::TryFrom'>TryFrom</a></td>
+                           <td class='docblock short'>
+                                <p>Waiting to stabilize: <a href="https://github.com/rust-lang/rust/issues/33417">https://github.com/rust-lang/rust/issues/33417</a></p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='trait' href='trait.TryInto.html'
+                                  title='slack_hook::TryInto'>TryInto</a></td>
+                           <td class='docblock short'>
+                                <p>Waiting to stabilize: <a href="https://github.com/rust-lang/rust/issues/33417">https://github.com/rust-lang/rust/issues/33417</a></p>
+                           </td>
+                       </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='type' href='type.Result.html'
+                                  title='slack_hook::Result'>Result</a></td>
+                           <td class='docblock short'>
+                                <p><code>Result</code> type-alias</p>
+                           </td>
+                       </tr></table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "slack_hook";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    
+    <script defer src="../search-index.js"></script>
+</body>
+</html>

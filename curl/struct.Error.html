@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Error` struct in crate `curl`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Error">
+
+    <title>curl::Error - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='index.html'>curl</a></p><script>window.sidebarCurrent = {name: 'Error', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>curl</a>::<wbr><a class='struct' href=''>Error</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-33' class='srclink' href='../src/curl/error.rs.html#13-15' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Error {
+    // some fields omitted
+}</pre><div class='docblock'><p>An error returned from various &quot;easy&quot; operations.</p>
+
+<p>This structure wraps a <code>CURLcode</code>.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../curl/struct.Error.html' title='curl::Error'>Error</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-35' class='srclink' href='../src/curl/error.rs.html#17-282' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>(code: <a class='type' href='../curl_sys/type.CURLcode.html' title='curl_sys::CURLcode'>CURLcode</a>) -&gt; <a class='struct' href='../curl/struct.Error.html' title='curl::Error'>Error</a></code></h4>
+<div class='docblock'><p>Creates a new error from the underlying code returned by libcurl.</p>
+</div><h4 id='method.is_unsupported_protocol' class='method'><code>fn <a href='#method.is_unsupported_protocol' class='fnname'>is_unsupported_protocol</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_UNSUPPORTED_PROTOCOL.</p>
+</div><h4 id='method.is_failed_init' class='method'><code>fn <a href='#method.is_failed_init' class='fnname'>is_failed_init</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_FAILED_INIT.</p>
+</div><h4 id='method.is_url_malformed' class='method'><code>fn <a href='#method.is_url_malformed' class='fnname'>is_url_malformed</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_URL_MALFORMAT.</p>
+</div><h4 id='method.is_couldnt_resolve_proxy' class='method'><code>fn <a href='#method.is_couldnt_resolve_proxy' class='fnname'>is_couldnt_resolve_proxy</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_COULDNT_RESOLVE_PROXY.</p>
+</div><h4 id='method.is_couldnt_resolve_host' class='method'><code>fn <a href='#method.is_couldnt_resolve_host' class='fnname'>is_couldnt_resolve_host</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_COULDNT_RESOLVE_HOST.</p>
+</div><h4 id='method.is_couldnt_connect' class='method'><code>fn <a href='#method.is_couldnt_connect' class='fnname'>is_couldnt_connect</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_COULDNT_CONNECT.</p>
+</div><h4 id='method.is_remote_access_denied' class='method'><code>fn <a href='#method.is_remote_access_denied' class='fnname'>is_remote_access_denied</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_REMOTE_ACCESS_DENIED.</p>
+</div><h4 id='method.is_partial_file' class='method'><code>fn <a href='#method.is_partial_file' class='fnname'>is_partial_file</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_PARTIAL_FILE.</p>
+</div><h4 id='method.is_quote_error' class='method'><code>fn <a href='#method.is_quote_error' class='fnname'>is_quote_error</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_QUOTE_ERROR.</p>
+</div><h4 id='method.is_http_returned_error' class='method'><code>fn <a href='#method.is_http_returned_error' class='fnname'>is_http_returned_error</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_HTTP_RETURNED_ERROR.</p>
+</div><h4 id='method.is_read_error' class='method'><code>fn <a href='#method.is_read_error' class='fnname'>is_read_error</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_READ_ERROR.</p>
+</div><h4 id='method.is_write_error' class='method'><code>fn <a href='#method.is_write_error' class='fnname'>is_write_error</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_WRITE_ERROR.</p>
+</div><h4 id='method.is_upload_failed' class='method'><code>fn <a href='#method.is_upload_failed' class='fnname'>is_upload_failed</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_UPLOAD_FAILED.</p>
+</div><h4 id='method.is_out_of_memory' class='method'><code>fn <a href='#method.is_out_of_memory' class='fnname'>is_out_of_memory</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_OUT_OF_MEMORY.</p>
+</div><h4 id='method.is_operation_timedout' class='method'><code>fn <a href='#method.is_operation_timedout' class='fnname'>is_operation_timedout</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_OPERATION_TIMEDOUT.</p>
+</div><h4 id='method.is_range_error' class='method'><code>fn <a href='#method.is_range_error' class='fnname'>is_range_error</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_RANGE_ERROR.</p>
+</div><h4 id='method.is_http_post_error' class='method'><code>fn <a href='#method.is_http_post_error' class='fnname'>is_http_post_error</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_HTTP_POST_ERROR.</p>
+</div><h4 id='method.is_ssl_connect_error' class='method'><code>fn <a href='#method.is_ssl_connect_error' class='fnname'>is_ssl_connect_error</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_SSL_CONNECT_ERROR.</p>
+</div><h4 id='method.is_bad_download_resume' class='method'><code>fn <a href='#method.is_bad_download_resume' class='fnname'>is_bad_download_resume</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_BAD_DOWNLOAD_RESUME.</p>
+</div><h4 id='method.is_file_couldnt_read_file' class='method'><code>fn <a href='#method.is_file_couldnt_read_file' class='fnname'>is_file_couldnt_read_file</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_FILE_COULDNT_READ_FILE.</p>
+</div><h4 id='method.is_function_not_found' class='method'><code>fn <a href='#method.is_function_not_found' class='fnname'>is_function_not_found</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_FUNCTION_NOT_FOUND.</p>
+</div><h4 id='method.is_aborted_by_callback' class='method'><code>fn <a href='#method.is_aborted_by_callback' class='fnname'>is_aborted_by_callback</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_ABORTED_BY_CALLBACK.</p>
+</div><h4 id='method.is_bad_function_argument' class='method'><code>fn <a href='#method.is_bad_function_argument' class='fnname'>is_bad_function_argument</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_BAD_FUNCTION_ARGUMENT.</p>
+</div><h4 id='method.is_interface_failed' class='method'><code>fn <a href='#method.is_interface_failed' class='fnname'>is_interface_failed</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_INTERFACE_FAILED.</p>
+</div><h4 id='method.is_too_many_redirects' class='method'><code>fn <a href='#method.is_too_many_redirects' class='fnname'>is_too_many_redirects</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_TOO_MANY_REDIRECTS.</p>
+</div><h4 id='method.is_unknown_option' class='method'><code>fn <a href='#method.is_unknown_option' class='fnname'>is_unknown_option</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_UNKNOWN_OPTION.</p>
+</div><h4 id='method.is_peer_failed_verification' class='method'><code>fn <a href='#method.is_peer_failed_verification' class='fnname'>is_peer_failed_verification</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_PEER_FAILED_VERIFICATION.</p>
+</div><h4 id='method.is_got_nothing' class='method'><code>fn <a href='#method.is_got_nothing' class='fnname'>is_got_nothing</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_GOT_NOTHING.</p>
+</div><h4 id='method.is_ssl_engine_notfound' class='method'><code>fn <a href='#method.is_ssl_engine_notfound' class='fnname'>is_ssl_engine_notfound</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_SSL_ENGINE_NOTFOUND.</p>
+</div><h4 id='method.is_ssl_engine_setfailed' class='method'><code>fn <a href='#method.is_ssl_engine_setfailed' class='fnname'>is_ssl_engine_setfailed</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_SSL_ENGINE_SETFAILED.</p>
+</div><h4 id='method.is_send_error' class='method'><code>fn <a href='#method.is_send_error' class='fnname'>is_send_error</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_SEND_ERROR.</p>
+</div><h4 id='method.is_recv_error' class='method'><code>fn <a href='#method.is_recv_error' class='fnname'>is_recv_error</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_RECV_ERROR.</p>
+</div><h4 id='method.is_ssl_certproblem' class='method'><code>fn <a href='#method.is_ssl_certproblem' class='fnname'>is_ssl_certproblem</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_SSL_CERTPROBLEM.</p>
+</div><h4 id='method.is_ssl_cipher' class='method'><code>fn <a href='#method.is_ssl_cipher' class='fnname'>is_ssl_cipher</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_SSL_CIPHER.</p>
+</div><h4 id='method.is_ssl_cacert' class='method'><code>fn <a href='#method.is_ssl_cacert' class='fnname'>is_ssl_cacert</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_SSL_CACERT.</p>
+</div><h4 id='method.is_bad_content_encoding' class='method'><code>fn <a href='#method.is_bad_content_encoding' class='fnname'>is_bad_content_encoding</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_BAD_CONTENT_ENCODING.</p>
+</div><h4 id='method.is_filesize_exceeded' class='method'><code>fn <a href='#method.is_filesize_exceeded' class='fnname'>is_filesize_exceeded</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_FILESIZE_EXCEEDED.</p>
+</div><h4 id='method.is_use_ssl_failed' class='method'><code>fn <a href='#method.is_use_ssl_failed' class='fnname'>is_use_ssl_failed</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_USE_SSL_FAILED.</p>
+</div><h4 id='method.is_send_fail_rewind' class='method'><code>fn <a href='#method.is_send_fail_rewind' class='fnname'>is_send_fail_rewind</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_SEND_FAIL_REWIND.</p>
+</div><h4 id='method.is_ssl_engine_initfailed' class='method'><code>fn <a href='#method.is_ssl_engine_initfailed' class='fnname'>is_ssl_engine_initfailed</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_SSL_ENGINE_INITFAILED.</p>
+</div><h4 id='method.is_login_denied' class='method'><code>fn <a href='#method.is_login_denied' class='fnname'>is_login_denied</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_LOGIN_DENIED.</p>
+</div><h4 id='method.is_conv_failed' class='method'><code>fn <a href='#method.is_conv_failed' class='fnname'>is_conv_failed</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_CONV_FAILED.</p>
+</div><h4 id='method.is_conv_required' class='method'><code>fn <a href='#method.is_conv_required' class='fnname'>is_conv_required</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_CONV_REQD.</p>
+</div><h4 id='method.is_ssl_cacert_badfile' class='method'><code>fn <a href='#method.is_ssl_cacert_badfile' class='fnname'>is_ssl_cacert_badfile</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_SSL_CACERT_BADFILE.</p>
+</div><h4 id='method.is_ssl_crl_badfile' class='method'><code>fn <a href='#method.is_ssl_crl_badfile' class='fnname'>is_ssl_crl_badfile</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_SSL_CRL_BADFILE.</p>
+</div><h4 id='method.is_ssl_shutdown_failed' class='method'><code>fn <a href='#method.is_ssl_shutdown_failed' class='fnname'>is_ssl_shutdown_failed</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_SSL_SHUTDOWN_FAILED.</p>
+</div><h4 id='method.is_again' class='method'><code>fn <a href='#method.is_again' class='fnname'>is_again</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_AGAIN.</p>
+</div><h4 id='method.is_ssl_issuer_error' class='method'><code>fn <a href='#method.is_ssl_issuer_error' class='fnname'>is_ssl_issuer_error</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_SSL_ISSUER_ERROR.</p>
+</div><h4 id='method.is_chunk_failed' class='method'><code>fn <a href='#method.is_chunk_failed' class='fnname'>is_chunk_failed</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether this error corresponds to CURLE_CHUNK_FAILED.</p>
+</div><h4 id='method.code' class='method'><code>fn <a href='#method.code' class='fnname'>code</a>(&amp;self) -&gt; <a class='type' href='../curl_sys/type.CURLcode.html' title='curl_sys::CURLcode'>CURLcode</a></code></h4>
+<div class='docblock'><p>Returns the value of the underlying error corresponding to libcurl.</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a> for <a class='struct' href='../curl/struct.Error.html' title='curl::Error'>Error</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-18' class='srclink' href='../src/curl/error.rs.html#12' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.eq' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq' class='fnname'>eq</a>(&amp;self, __arg_0: &amp;<a class='struct' href='../curl/struct.Error.html' title='curl::Error'>Error</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>This method tests for <code>self</code> and <code>other</code> values to be equal, and is used by <code>==</code>. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq">Read more</a></p>
+</div><h4 id='method.ne' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.ne' class='fnname'>ne</a>(&amp;self, __arg_0: &amp;<a class='struct' href='../curl/struct.Error.html' title='curl::Error'>Error</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>This method tests for <code>!=</code>.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> for <a class='struct' href='../curl/struct.Error.html' title='curl::Error'>Error</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-29' class='srclink' href='../src/curl/error.rs.html#12' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.clone' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='struct' href='../curl/struct.Error.html' title='curl::Error'>Error</a></code></h4>
+<div class='docblock'><p>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></p>
+</div><h4 id='method.clone_from' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div></h4>
+<div class='docblock'><p>Performs copy-assignment from <code>source</code>. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from">Read more</a></p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html' title='core::fmt::Display'>Display</a> for <a class='struct' href='../curl/struct.Error.html' title='curl::Error'>Error</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-138' class='srclink' href='../src/curl/error.rs.html#284-288' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, f: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
+<div class='docblock'><p>Formats the value using the given formatter.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='struct' href='../curl/struct.Error.html' title='curl::Error'>Error</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-145' class='srclink' href='../src/curl/error.rs.html#290-296' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt-1' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, f: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
+<div class='docblock'><p>Formats the value using the given formatter.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/std/error/trait.Error.html' title='std::error::Error'>Error</a> for <a class='struct' href='../curl/struct.Error.html' title='curl::Error'>Error</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-152' class='srclink' href='../src/curl/error.rs.html#298-306' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.description' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/std/error/trait.Error.html#tymethod.description' class='fnname'>description</a>(&amp;self) -&gt; &amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a></code></h4>
+<div class='docblock'><p>A short description of the error. <a href="https://doc.rust-lang.org/nightly/std/error/trait.Error.html#tymethod.description">Read more</a></p>
+</div><h4 id='method.cause' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/std/error/trait.Error.html#method.cause' class='fnname'>cause</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;<a class='trait' href='https://doc.rust-lang.org/nightly/std/error/trait.Error.html' title='std::error::Error'>Error</a>&gt;</code><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div></h4>
+<div class='docblock'><p>The lower-level cause of this error, if any.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html' title='core::convert::From'>From</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/std/ffi/c_str/struct.NulError.html' title='std::ffi::c_str::NulError'>NulError</a>&gt; for <a class='struct' href='../curl/struct.Error.html' title='curl::Error'>Error</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-305' class='srclink' href='../src/curl/error.rs.html#548-552' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(_: <a class='struct' href='https://doc.rust-lang.org/nightly/std/ffi/c_str/struct.NulError.html' title='std::ffi::c_str::NulError'>NulError</a>) -&gt; <a class='struct' href='../curl/struct.Error.html' title='curl::Error'>Error</a></code></h4>
+<div class='docblock'><p>Performs the conversion.</p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "curl";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    
+    <script defer src="../search-index.js"></script>
+</body>
+</html>
