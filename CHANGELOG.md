@@ -14,7 +14,7 @@ DEPRECATIONS/BREAKING CHANGES:
   - `ErrUtf8` -> `Utf8`
   - `ErrFromHex` -> `FromHex`
   - `ErrHexColor` -> `HexColor`
-  - `ErrEncoder` -> `Encoder`
+  - `ErrEncoder` -> REMOVED. Replaced with `Serialize`.
   - `ErrCurl` -> `Curl`
  - `SlackLink`, `SlackText`
   - The `Display` trait is now used to format strings for sending to slack rather than `Debug`.
