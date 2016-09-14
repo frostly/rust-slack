@@ -1,105 +1,181 @@
-use slack::SlackText;
-use error::Result;
-use hex::{HexColor, HexColorT};
-use helper::opt_str_to_slacktext;
+use error::{Error, Result};
+use {Attachment, Field, HexColor, SlackText, TryInto, SlackTime};
+use chrono::NaiveDateTime;
+use url::Url;
 
-/// Slack allows for attachments to be added to messages. See
-/// https://api.slack.com/docs/attachments for more information.
-#[derive(RustcEncodable, Debug)]
-pub struct Attachment {
-    /// Required text for attachment.
-    /// Slack will use this text to display on devices that don't support markup.
-    pub fallback: SlackText,
-    /// Optional text for other devices, markup supported
-    pub text: Option<SlackText>,
-    /// Optional text that appears above attachment
-    pub pretext: Option<SlackText>,
-    /// Color of attachment
-    pub color: HexColor,
-    /// Fields are defined as an array, and hashes contained within it will be
-    /// displayed in a table inside the message attachment.
-    pub fields: Option<Vec<Field>>,
-}
-
-/// Attachment template to simplify constructing attachments
-/// for common use cases.
-#[derive(Debug)]
-pub enum AttachmentTemplate<'a> {
-    /// Specify all attributes of attachment
-    Complete {
-        /// Required text for attachment.
-        /// Slack will use this text to display on devices that don't support markup.
-        fallback: &'a str,
-        /// Optional primary text of attachment
-        text: Option<&'a str>,
-        /// Optional text that appears above attachment
-        pretext: Option<&'a str>,
-        /// Color string can be any hex code starting with #
-        color: &'a str,
-        /// Fields are defined as an array, and hashes contained within it will
-        /// be displayed in a table inside the message attachment.
-        fields: Option<Vec<Field>>,
-    },
-    /// Provide only text and color for attachment
-    /// other values will be defaulted
-    Text {
-        /// Text to send
-        text: &'a str,
-        /// Color string can be any hex code starting with #
-        color: &'a str,
-    },
-}
-
-impl Attachment {
-    /// Construct new attachment based on template provided
-    pub fn new(t: AttachmentTemplate) -> Result<Attachment> {
-        match t {
-            AttachmentTemplate::Complete { fallback, text, pretext, color, fields } => {
-                let c = try!(HexColorT::new(color));
-                Ok(Attachment {
-                    fallback: SlackText::new(fallback),
-                    text: opt_str_to_slacktext(&text),
-                    pretext: opt_str_to_slacktext(&pretext),
-                    color: c,
-                    fields: fields,
-                })
-            }
-            AttachmentTemplate::Text { text, color } => {
-                let c = try!(HexColorT::new(color));
-                Ok(Attachment {
-                    fallback: SlackText::new(text),
-                    text: Some(SlackText::new(text)),
-                    pretext: None,
-                    color: c,
-                    fields: None,
-                })
-            }
+impl Field {
+    /// Construct a new field
+    pub fn new<S: Into<String>, ST: Into<SlackText>>(title: S,
+                                                     value: ST,
+                                                     short: Option<bool>)
+                                                     -> Field {
+        Field {
+            title: title.into(),
+            value: value.into(),
+            short: short,
         }
     }
 }
 
-/// Fields are defined as an array, and hashes contained within it will
-/// be displayed in a table inside the message attachment.
-#[derive(RustcEncodable, Debug)]
-pub struct Field {
-    /// Shown as a bold heading above the value text.
-    /// It cannot contain markup and will be escaped for you.
-    pub title: String,
-    /// The text value of the field. It may contain standard message markup
-    /// and must be escaped as normal. May be multi-line.
-    pub value: SlackText,
-    /// An optional flag indicating whether the value is short enough to be
-    /// displayed side-by-side with other values.
-    pub short: Option<bool>,
+/// `AttachmentBuilder` is used to build a `Attachment`
+#[derive(Debug)]
+pub struct AttachmentBuilder {
+    inner: Result<Attachment>,
 }
 
-impl Field {
-    /// Construct a new field
-    pub fn new(title: &str, value: &str, short: Option<bool>) -> Field {
-        Field {
-            title: title.to_owned(),
-            value: SlackText::new(value),
-            short: short,
+impl AttachmentBuilder {
+    /// Make a new `AttachmentBuilder`
+    ///
+    /// Fallback is the only required field which is a plain-text summary of the attachment.
+    pub fn new<S: Into<SlackText>>(fallback: S) -> AttachmentBuilder {
+        AttachmentBuilder {
+            inner: Ok(Attachment { fallback: fallback.into(), ..Default::default() }),
+        }
+    }
+
+    /// Optional text that appears within the attachment
+    pub fn text<S: Into<SlackText>>(self, text: S) -> AttachmentBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.text = Some(text.into());
+                AttachmentBuilder { inner: Ok(inner) }
+            }
+            _ => self,
+        }
+    }
+
+    /// Set the color of the attachment
+    ///
+    /// The color can be one of:
+    ///
+    /// 1. `String`s: `good`, `warning`, `danger`
+    /// 2. The built-in enums: `SlackColor::Good`, etc.
+    /// 3. Any valid hex color code: e.g. `#b13d41` or `#000`.
+    ///
+    /// hex color codes will be checked to ensure a valid hex number is provided
+    pub fn color<C: TryInto<HexColor, Err = Error>>(self, color: C) -> AttachmentBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                match color.try_into() {
+                    Ok(c) => {
+                        inner.color = Some(c);
+                        AttachmentBuilder { inner: Ok(inner) }
+                    }
+                    Err(e) => AttachmentBuilder { inner: Err(e) },
+                }
+            }
+            _ => self,
+        }
+    }
+
+    /// Optional text that appears above the attachment block
+    pub fn pretext<S: Into<SlackText>>(self, pretext: S) -> AttachmentBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.pretext = Some(pretext.into());
+                AttachmentBuilder { inner: Ok(inner) }
+            }
+            _ => self,
+        }
+    }
+
+    /// Fields are defined as an array, and hashes contained within it will be
+    /// displayed in a table inside the message attachment.
+    pub fn fields(self, fields: Vec<Field>) -> AttachmentBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.fields = Some(fields);
+                AttachmentBuilder { inner: Ok(inner) }
+            }
+            _ => self,
+        }
+    }
+    /// Optional small text used to display the author's name.
+    pub fn author_name<S: Into<SlackText>>(self, author_name: S) -> AttachmentBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.author_name = Some(author_name.into());
+                AttachmentBuilder { inner: Ok(inner) }
+            }
+            _ => self,
+        }
+    }
+
+    url_builder_fn! {
+        /// Optional URL that will hyperlink the `author_name`.
+        author_link, AttachmentBuilder
+    }
+
+    url_builder_fn! {
+        /// Optional URL that displays a small 16x16px image to the left of the `author_name` text.
+        author_icon, AttachmentBuilder
+    }
+
+    /// Optional larger, bolder text above the main body
+    pub fn title<S: Into<SlackText>>(self, title: S) -> AttachmentBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.title = Some(title.into());
+                AttachmentBuilder { inner: Ok(inner) }
+            }
+            _ => self,
+        }
+    }
+
+    url_builder_fn! {
+        /// Optional URL to link to from the title
+        title_link, AttachmentBuilder
+    }
+
+    url_builder_fn! {
+        /// Optional URL to an image that will be displayed in the body
+        image_url, AttachmentBuilder
+    }
+
+    url_builder_fn! {
+        /// Optional URL to an image that will be displayed as a thumbnail to the right of the body
+        thumb_url, AttachmentBuilder
+    }
+
+    /// Optional text that will appear at the bottom of the attachment
+    pub fn footer<S: Into<SlackText>>(self, footer: S) -> AttachmentBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.footer = Some(footer.into());
+                AttachmentBuilder { inner: Ok(inner) }
+            }
+            _ => self,
+        }
+    }
+
+    url_builder_fn! {
+        /// Optional URL to an image that will be displayed at the bottom of the attachment
+        footer_icon, AttachmentBuilder
+    }
+
+    /// Optional timestamp to be displayed with the attachment
+    pub fn ts(self, time: &NaiveDateTime) -> AttachmentBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.ts = Some(SlackTime::new(time));
+                AttachmentBuilder { inner: Ok(inner) }
+            }
+            _ => self,
+        }
+    }
+
+    /// Attempt to build the `Attachment`
+    pub fn build(self) -> Result<Attachment> {
+        // set text to equal fallback if text wasn't specified
+        match self.inner {
+            Ok(mut inner) => {
+                if inner.text.is_none() {
+                    inner.text = Some(inner.fallback.clone())
+                }
+                Ok(inner)
+            }
+            _ => self.inner,
+
         }
     }
 }

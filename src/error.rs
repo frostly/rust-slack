@@ -1,5 +1,7 @@
-use rustc_serialize;
+use hexx;
 use curl;
+use serde_json;
+use url;
 
 /// `Result` type-alias
 pub type Result<T> = ::std::result::Result<T, Error>;
@@ -20,18 +22,18 @@ quick_error! {
             display("utf8 error: {}", err)
             cause(err)
         }
-        /// `rustc_serialize::json::EncoderError`
-        Encoder(err: rustc_serialize::json::EncoderError) {
+        /// `serde_json::error::Error`
+        Serialize(err: serde_json::error::Error) {
             from()
-            description("rustc_serialize::json::EncoderError")
-            display("rustc_serialize::json::EncoderError: {}", err)
+            description("serde_json::error::Error")
+            display("serde_json::error::Error: {}", err)
             cause(err)
         }
         /// `rustc_serialize::hex::FromHexError`
-        FromHex(err: rustc_serialize::hex::FromHexError) {
+        FromHex(err: hexx::FromHexError) {
             from()
-            description("rustcrustc_serialize::hex::FromHexError")
-            display("rustc_serialize::hex::FromHexError: {}", err)
+            description("hexx::FromHexError")
+            display("hexx::FromHexError: {}", err)
             cause(err)
         }
         /// `HexColor` parsing error
@@ -45,6 +47,14 @@ quick_error! {
             description("curl error")
             display("curl error: {}", err)
             cause(err)
+        }
+        /// `Url` parsing error
+        Url(err: url::ParseError) {
+            from()
+            description("url parse error")
+            display("url parse error: {}", err)
+            cause(err)
+
         }
     }
 }
