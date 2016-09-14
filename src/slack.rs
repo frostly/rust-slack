@@ -243,11 +243,4 @@ mod test {
         assert_eq!(format!("{}", st),
                    "moo &lt;&amp;&gt; moo <@USER|M&lt;E&gt;> wow.");
     }
-
-    #[cfg(feature = "unstable")]
-    #[bench]
-    fn bench_get_escaped_text(b: &mut Bencher) {
-        let st = SlackText::new("moo <&> moo");
-        b.iter(|| st.get_escaped_text())
-    }
 }

@@ -7,10 +7,8 @@
         unused_import_braces,
         unused_qualifications,
         unused_results)]
-// add feature test when testing and unstable feature is provided
-#![cfg_attr(all(test, feature = "unstable"), feature(test))]
 #![cfg_attr(test, deny(warnings))]
-#![cfg_attr(any(feature = "clippy", feature = "unstable"), allow(unstable_features))]
+#![cfg_attr(any(feature = "clippy"), allow(unstable_features))]
 #![cfg_attr(feature = "clippy", feature(plugin))]
 #![cfg_attr(feature = "clippy", plugin(clippy))]
 #![cfg_attr(feature = "clippy", deny(clippy))]
@@ -21,8 +19,6 @@
 
 #[macro_use]
 extern crate log;
-#[cfg(all(test, feature="unstable"))]
-extern crate test; // needed for benchmarking
 
 extern crate curl;
 #[macro_use]
