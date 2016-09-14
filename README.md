@@ -10,13 +10,15 @@ A rust crate for sending messages to Slack via webhooks.
 
 [Slack](https://slack.com/) is a messaging platform for team collaboration.
 
+Upgrading from `0.1`? See the [CHANGELOG](./CHANGELOG.md).
+
 # Usage
 
 Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-slack-hook = "0.1"
+slack-hook = "0.2"
 ```
 
 Add the crate to your existing project:
