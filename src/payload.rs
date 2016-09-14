@@ -65,20 +65,9 @@ impl PayloadBuilder {
         }
     }
 
-    /// Set the icon_url
-    pub fn icon_url<U: TryInto<Url, Err = Error>>(self, icon_url: U) -> PayloadBuilder {
-        match self.inner {
-            Ok(mut inner) => {
-                match icon_url.try_into() {
-                    Ok(url) => {
-                        inner.icon_url = Some(url);
-                        PayloadBuilder { inner: Ok(inner) }
-                    }
-                    Err(e) => PayloadBuilder { inner: Err(e) },
-                }
-            }
-            _ => self,
-        }
+    url_builder_fn! {
+        /// Set the icon_url
+        icon_url, PayloadBuilder
     }
 
     /// Set the attachments

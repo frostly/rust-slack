@@ -1,4 +1,5 @@
 use serde::{Serialize, Serializer};
+use chrono::NaiveDateTime;
 
 /// Representation of any text sent through slack
 /// the text must be processed to escape specific characters
@@ -34,6 +35,59 @@ pub struct Attachment {
     /// displayed in a table inside the message attachment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fields: Option<Vec<Field>>,
+    /// Optional small text used to display the author's name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub author_name: Option<SlackText>,
+    /// Optional URL that will hyperlink the `author_name` text mentioned above. Will only
+    /// work if `author_name` is present.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub author_link: Option<Url>,
+    /// Optional URL that displays a small 16x16px image to the left of
+    /// the `author_name` text. Will only work if `author_name` is present.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub author_icon: Option<Url>,
+    /// Optional larger, bolder text above the main body
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub title: Option<SlackText>,
+    /// Optional URL to link to from the title
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub title_link: Option<Url>,
+    /// Optional URL to an image that will be displayed in the body
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub image_url: Option<Url>,
+    /// Optional URL to an image that will be displayed as a thumbnail to the
+    /// right of the body
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub thumb_url: Option<Url>,
+    /// Optional text that will appear at the bottom of the attachment
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub footer: Option<SlackText>,
+    /// Optional URL to an image that will be displayed at the bottom of the
+    /// attachment
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub footer_icon: Option<Url>,
+    /// Optional timestamp to be displayed with the attachment
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ts: Option<SlackTime>,
+}
+
+/// Slack timestamp
+#[derive(Debug)]
+pub struct SlackTime(NaiveDateTime);
+
+impl SlackTime {
+    /// Construct a new `SlackTime`
+    pub fn new(time: &NaiveDateTime) -> SlackTime {
+        SlackTime(time.clone())
+    }
+}
+
+impl Serialize for SlackTime {
+    fn serialize<S>(&self, serializer: &mut S) -> ::std::result::Result<(), S::Error>
+        where S: Serializer
+    {
+        serializer.serialize_i64(self.0.timestamp())
+    }
 }
 
 /// Fields are defined as an array, and hashes contained within it will

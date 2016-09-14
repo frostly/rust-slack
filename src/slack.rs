@@ -123,7 +123,10 @@ impl ::std::fmt::Display for SlackText {
 /// Representation of a link sent in slack
 #[derive(Debug)]
 pub struct SlackLink {
-    /// URL for link
+    /// URL for link.
+    ///
+    /// NOTE: this is NOT a `Url` type because some of the slack "urls", don't conform to standard
+    /// url parsing scheme, which are enforced by the `url` crate.
     pub url: String,
     /// Anchor text for link
     pub text: SlackText,
@@ -159,6 +162,7 @@ mod test {
     use test::Bencher;
     use slack::{Slack, SlackLink};
     use {PayloadBuilder, AttachmentBuilder, Field, SlackText, Parse, serde_json};
+    use chrono::NaiveDateTime;
 
     #[test]
     fn slack_incoming_url_test() {
@@ -199,6 +203,8 @@ mod test {
                          .text("text <&>")
                          .color("#6800e8")
                          .fields(vec![Field::new("title", "value", None)])
+                         .title_link("https://title_link.com/")
+                         .ts(&NaiveDateTime::from_timestamp(123456789, 0))
                          .build()
                          .unwrap()];
 
@@ -215,7 +221,7 @@ mod test {
             .build()
             .unwrap();
 
-        assert_eq!(serde_json::to_string(&p).unwrap().to_owned(), r##"{"text":"test message","channel":"#abc","username":"Bot","icon_url":"https://example.com/","icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","color":"#6800e8","fields":[{"title":"title","value":"value"}]}],"unfurl_links":false,"link_names":1,"parse":"full"}"##.to_owned())
+        assert_eq!(serde_json::to_string(&p).unwrap().to_owned(), r##"{"text":"test message","channel":"#abc","username":"Bot","icon_url":"https://example.com/","icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","color":"#6800e8","fields":[{"title":"title","value":"value"}],"title_link":"https://title_link.com/","ts":123456789}],"unfurl_links":false,"link_names":1,"parse":"full"}"##.to_owned())
     }
 
     #[test]

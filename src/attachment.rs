@@ -1,5 +1,7 @@
 use error::{Error, Result};
-use {Attachment, Field, HexColor, SlackText, TryInto};
+use {Attachment, Field, HexColor, SlackText, TryInto, SlackTime};
+use chrono::NaiveDateTime;
+use url::Url;
 
 impl Field {
     /// Construct a new field
@@ -83,6 +85,79 @@ impl AttachmentBuilder {
         match self.inner {
             Ok(mut inner) => {
                 inner.fields = Some(fields);
+                AttachmentBuilder { inner: Ok(inner) }
+            }
+            _ => self,
+        }
+    }
+    /// Optional small text used to display the author's name.
+    pub fn author_name<S: Into<SlackText>>(self, author_name: S) -> AttachmentBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.author_name = Some(author_name.into());
+                AttachmentBuilder { inner: Ok(inner) }
+            }
+            _ => self,
+        }
+    }
+
+    url_builder_fn! {
+        /// Optional URL that will hyperlink the `author_name`.
+        author_link, AttachmentBuilder
+    }
+
+    url_builder_fn! {
+        /// Optional URL that displays a small 16x16px image to the left of the `author_name` text.
+        author_icon, AttachmentBuilder
+    }
+
+    /// Optional larger, bolder text above the main body
+    pub fn title<S: Into<SlackText>>(self, title: S) -> AttachmentBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.title = Some(title.into());
+                AttachmentBuilder { inner: Ok(inner) }
+            }
+            _ => self,
+        }
+    }
+
+    url_builder_fn! {
+        /// Optional URL to link to from the title
+        title_link, AttachmentBuilder
+    }
+
+    url_builder_fn! {
+        /// Optional URL to an image that will be displayed in the body
+        image_url, AttachmentBuilder
+    }
+
+    url_builder_fn! {
+        /// Optional URL to an image that will be displayed as a thumbnail to the right of the body
+        thumb_url, AttachmentBuilder
+    }
+
+    /// Optional text that will appear at the bottom of the attachment
+    pub fn footer<S: Into<SlackText>>(self, footer: S) -> AttachmentBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.footer = Some(footer.into());
+                AttachmentBuilder { inner: Ok(inner) }
+            }
+            _ => self,
+        }
+    }
+
+    url_builder_fn! {
+        /// Optional URL to an image that will be displayed at the bottom of the attachment
+        footer_icon, AttachmentBuilder
+    }
+
+    /// Optional timestamp to be displayed with the attachment
+    pub fn ts(self, time: &NaiveDateTime) -> AttachmentBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.ts = Some(SlackTime::new(time));
                 AttachmentBuilder { inner: Ok(inner) }
             }
             _ => self,

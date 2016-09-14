@@ -31,6 +31,7 @@ extern crate serde;
 extern crate serde_json;
 extern crate hex as hexx;
 pub extern crate url;
+pub extern crate chrono;
 
 include!(concat!(env!("OUT_DIR"), "/serde_types.rs"));
 
@@ -41,6 +42,8 @@ pub use hex::SlackColor;
 pub use error::{Error, Result};
 use url::Url;
 
+#[macro_use]
+mod macros;
 mod helper;
 mod error;
 mod hex;
