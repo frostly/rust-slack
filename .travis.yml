@@ -32,6 +32,7 @@ after_success: |
     ./kcov-master/tmp/usr/local/bin/kcov --coveralls-id=$TRAVIS_JOB_ID --exclude-pattern=/.cargo target/kcov target/debug/slack_hook-* &&
     [ $TRAVIS_PULL_REQUEST = false ] &&
     { [ "$TRAVIS_TAG" != "" ] || [ "$TRAVIS_BRANCH" == "master" ]; } &&
+    cargo doc &&
     echo '<meta http-equiv=refresh content=0;url=slack_hook/index.html>' > target/doc/index.html &&
     pip install ghp-import --user $USER &&
     $HOME/.local/bin/ghp-import -n target/doc &&
