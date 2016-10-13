@@ -17,7 +17,7 @@ chrono = "0.2.25"
 
 [dependencies]
 chrono = "0.2.25"
-curl = "0.3.0"
+curl = "0.3.7"
 hex = "0.2.0"
 log = "0.3.6"
 quick-error = "1.1.0"
