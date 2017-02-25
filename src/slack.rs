@@ -1,9 +1,10 @@
 use curl::easy::Easy;
 use std::str;
 use error::{Result, Error};
-use {Payload, SlackText, TryInto, serde_json};
+use {Payload, TryInto, serde_json};
 use serde::{Serialize, Serializer};
 use url::Url;
+use chrono::NaiveDateTime;
 
 /// Handles sending messages to slack
 #[derive(Debug)]
@@ -51,6 +52,30 @@ impl Slack {
         }
     }
 }
+
+/// Slack timestamp
+#[derive(Debug)]
+pub struct SlackTime(NaiveDateTime);
+
+impl SlackTime {
+    /// Construct a new `SlackTime`
+    pub fn new(time: &NaiveDateTime) -> SlackTime {
+        SlackTime(time.clone())
+    }
+}
+
+impl Serialize for SlackTime {
+    fn serialize<S>(&self, serializer: S) -> ::std::result::Result<S::Ok, S::Error>
+        where S: Serializer
+    {
+        serializer.serialize_i64(self.0.timestamp())
+    }
+}
+
+/// Representation of any text sent through slack
+/// the text must be processed to escape specific characters
+#[derive(Serialize, Debug, Default, Clone)]
+pub struct SlackText(String);
 
 impl SlackText {
     /// Construct slack text with escaping
@@ -102,11 +127,9 @@ pub enum SlackTextContent {
 impl<'a> From<&'a [SlackTextContent]> for SlackText {
     fn from(v: &[SlackTextContent]) -> SlackText {
         let st = v.iter()
-            .map(|item| {
-                match *item {
-                    SlackTextContent::Text(ref s) => format!("{}", s),
-                    SlackTextContent::Link(ref link) => format!("{}", link),
-                }
+            .map(|item| match *item {
+                SlackTextContent::Text(ref s) => format!("{}", s),
+                SlackTextContent::Link(ref link) => format!("{}", link),
             })
             .collect::<Vec<String>>()
             .join(" ");
@@ -149,7 +172,7 @@ impl ::std::fmt::Display for SlackLink {
 }
 
 impl Serialize for SlackLink {
-    fn serialize<S>(&self, serializer: &mut S) -> ::std::result::Result<(), S::Error>
+    fn serialize<S>(&self, serializer: S) -> ::std::result::Result<S::Ok, S::Error>
         where S: Serializer
     {
         serializer.serialize_str(&format!("{}", self)[..])

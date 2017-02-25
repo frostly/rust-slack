@@ -1,7 +1,15 @@
 use error::Error;
 use hexx::FromHex;
-use {HexColor, TryFrom};
+use TryFrom;
 
+/// A `HexColor` `String` can be one of:
+///
+/// 1. `String`s: `good`, `warning`, `danger`
+/// 2. Any valid hex color code: e.g. `#b13d41` or `#000`.
+///
+/// hex color codes will be checked to ensure a valid hex number is provided
+#[derive(Serialize, Debug)]
+pub struct HexColor(String);
 impl HexColor {
     fn new<S: Into<String>>(s: S) -> HexColor {
         HexColor(s.into())
