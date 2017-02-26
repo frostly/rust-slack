@@ -60,7 +60,7 @@ pub struct SlackTime(NaiveDateTime);
 impl SlackTime {
     /// Construct a new `SlackTime`
     pub fn new(time: &NaiveDateTime) -> SlackTime {
-        SlackTime(time.clone())
+        SlackTime(*time)
     }
 }
 
