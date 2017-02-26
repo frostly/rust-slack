@@ -1,7 +1,85 @@
 use error::{Error, Result};
-use {Attachment, Field, HexColor, SlackText, TryInto, SlackTime};
+use {SlackText, TryInto, SlackTime, HexColor};
 use chrono::NaiveDateTime;
 use url::Url;
+
+/// Slack allows for attachments to be added to messages. See
+/// https://api.slack.com/docs/attachments for more information.
+#[derive(Serialize, Debug, Default)]
+pub struct Attachment {
+    /// Required text for attachment.
+    /// Slack will use this text to display on devices that don't support markup.
+    pub fallback: SlackText,
+    /// Optional text for other devices, markup supported
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub text: Option<SlackText>,
+    /// Optional text that appears above attachment
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pretext: Option<SlackText>,
+    /// Optional color of attachment
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub color: Option<HexColor>,
+    /// Fields are defined as an array, and hashes contained within it will be
+    /// displayed in a table inside the message attachment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fields: Option<Vec<Field>>,
+    /// Optional small text used to display the author's name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub author_name: Option<SlackText>,
+    /// Optional URL that will hyperlink the `author_name` text mentioned above. Will only
+    /// work if `author_name` is present.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "::url_serde")]
+    pub author_link: Option<Url>,
+    /// Optional URL that displays a small 16x16px image to the left of
+    /// the `author_name` text. Will only work if `author_name` is present.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "::url_serde")]
+    pub author_icon: Option<Url>,
+    /// Optional larger, bolder text above the main body
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub title: Option<SlackText>,
+    /// Optional URL to link to from the title
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "::url_serde")]
+    pub title_link: Option<Url>,
+    /// Optional URL to an image that will be displayed in the body
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "::url_serde")]
+    pub image_url: Option<Url>,
+    /// Optional URL to an image that will be displayed as a thumbnail to the
+    /// right of the body
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "::url_serde")]
+    pub thumb_url: Option<Url>,
+    /// Optional text that will appear at the bottom of the attachment
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub footer: Option<SlackText>,
+    /// Optional URL to an image that will be displayed at the bottom of the
+    /// attachment
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "::url_serde")]
+    pub footer_icon: Option<Url>,
+    /// Optional timestamp to be displayed with the attachment
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ts: Option<SlackTime>,
+}
+
+/// Fields are defined as an array, and hashes contained within it will
+/// be displayed in a table inside the message attachment.
+#[derive(Serialize, Debug)]
+pub struct Field {
+    /// Shown as a bold heading above the value text.
+    /// It cannot contain markup and will be escaped for you.
+    pub title: String,
+    /// The text value of the field. It may contain standard message markup
+    /// and must be escaped as normal. May be multi-line.
+    pub value: SlackText,
+    /// An optional flag indicating whether the value is short enough to be
+    /// displayed side-by-side with other values.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub short: Option<bool>,
+}
 
 impl Field {
     /// Construct a new field

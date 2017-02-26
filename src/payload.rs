@@ -1,8 +1,72 @@
-use {Attachment, Payload, SlackText, Parse, TryInto};
+use {Attachment, SlackText, TryInto};
 use helper::bool_to_u8;
 use error::{Error, Result};
 use url::Url;
+use serde::{Serialize, Serializer};
 
+/// Payload to send to slack
+/// https://api.slack.com/incoming-webhooks
+/// https://api.slack.com/methods/chat.postMessage
+#[derive(Serialize, Debug, Default)]
+pub struct Payload {
+    /// text to send
+    /// despite `text` stated as required, it does not seem to be
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub text: Option<SlackText>,
+    /// channel to send payload to
+    /// note: if not provided, this will default to channel
+    /// setup in slack
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub channel: Option<String>,
+    /// username override
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub username: Option<String>,
+    /// specific url for icon
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "::url_serde")]
+    pub icon_url: Option<Url>,
+    /// emjoi for icon
+    /// https://api.slack.com/methods/emoji.list
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub icon_emoji: Option<String>,
+    /// attachments to send
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub attachments: Option<Vec<Attachment>>,
+    /// whether slack will try to fetch links and create an attachment
+    /// https://api.slack.com/docs/unfurling
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unfurl_links: Option<bool>,
+    /// Pass false to disable unfurling of media content
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unfurl_media: Option<bool>,
+    /// find and link channel names and usernames
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub link_names: Option<u8>,
+    /// Change how messages are treated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parse: Option<Parse>,
+}
+
+/// Change how messages are treated.
+#[derive(Debug)]
+pub enum Parse {
+    /// Full
+    Full,
+    /// None
+    None,
+}
+
+impl Serialize for Parse {
+    fn serialize<S>(&self, serializer: S) -> ::std::result::Result<S::Ok, S::Error>
+        where S: Serializer
+    {
+        let st = match *self {
+            Parse::Full => "full",
+            Parse::None => "none",
+        };
+        serializer.serialize_str(st)
+    }
+}
 /// `PayloadBuilder` is used to build a `Payload`
 #[derive(Debug)]
 pub struct PayloadBuilder {

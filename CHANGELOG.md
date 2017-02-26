@@ -1,3 +1,11 @@
+## 0.3.0
+
+FEATURES
+ - Dependencies updated:
+  - Serde upgraded to 0.9 (requires rust 1.15)
+  - Chrono to 0.3
+  - Curl to 0.4
+
 ## 0.2.0
 
 DEPRECATIONS/BREAKING CHANGES:

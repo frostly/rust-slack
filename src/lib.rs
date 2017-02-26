@@ -25,16 +25,17 @@ extern crate curl;
 extern crate quick_error;
 extern crate serde;
 extern crate serde_json;
+#[macro_use]
+extern crate serde_derive;
 extern crate hex as hexx;
 pub extern crate url;
+extern crate url_serde;
 pub extern crate chrono;
 
-include!(concat!(env!("OUT_DIR"), "/serde_types.rs"));
-
-pub use slack::{Slack, SlackTextContent, SlackLink};
-pub use payload::PayloadBuilder;
-pub use attachment::AttachmentBuilder;
-pub use hex::SlackColor;
+pub use slack::{Slack, SlackTextContent, SlackLink, SlackText, SlackTime};
+pub use payload::{Payload, PayloadBuilder, Parse};
+pub use attachment::{Attachment, AttachmentBuilder, Field};
+pub use hex::{HexColor, SlackColor};
 pub use error::{Error, Result};
 use url::Url;
 
