@@ -25,19 +25,11 @@ script:
   - rustdoc --test README.md -L target/debug/deps -L target/debug
 
 after_success: |
-    [ $TRAVIS_RUST_VERSION = stable ] &&
+  - '[ $TRAVIS_RUST_VERSION = stable ] &&
     wget https://github.com/SimonKagstrom/kcov/archive/master.tar.gz &&
     tar xzf master.tar.gz && mkdir kcov-master/build && cd kcov-master/build && cmake .. && make && make install DESTDIR=../tmp && cd ../.. &&
     ls target/debug &&
-    ./kcov-master/tmp/usr/local/bin/kcov --coveralls-id=$TRAVIS_JOB_ID --exclude-pattern=/.cargo target/kcov target/debug/slack_hook-* &&
-    [ $TRAVIS_PULL_REQUEST = false ] &&
-    { [ "$TRAVIS_TAG" != "" ] || [ "$TRAVIS_BRANCH" == "master" ]; } &&
-    cargo doc &&
-    echo '<meta http-equiv=refresh content=0;url=slack_hook/index.html>' > target/doc/index.html &&
-    pip install ghp-import --user $USER &&
-    $HOME/.local/bin/ghp-import -n target/doc &&
-    git push -fq https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git gh-pages &&
-    echo "Docs published."
+    ./kcov-master/tmp/usr/local/bin/kcov --coveralls-id=$TRAVIS_JOB_ID --exclude-pattern=/.cargo target/kcov target/debug/slack_hook-*'
 
 notifications:
   slack:
