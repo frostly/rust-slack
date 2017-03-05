@@ -24,7 +24,7 @@ script:
   - cargo test --verbose $FEATURES
   - rustdoc --test README.md -L target/debug/deps -L target/debug
 
-after_success: |
+after_success:
   - '[ $TRAVIS_RUST_VERSION = stable ] &&
     wget https://github.com/SimonKagstrom/kcov/archive/master.tar.gz &&
     tar xzf master.tar.gz && mkdir kcov-master/build && cd kcov-master/build && cmake .. && make && make install DESTDIR=../tmp && cd ../.. &&
