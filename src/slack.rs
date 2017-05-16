@@ -1,4 +1,4 @@
-use curl::easy::Easy;
+use curl::easy::{Easy,List};
 use std::str;
 use error::{Result, Error};
 use {Payload, TryInto, serde_json};
@@ -30,6 +30,9 @@ impl Slack {
         try!(easy.url(&self.incoming_url[..]));
 
         try!(easy.post(true));
+        let mut headers = List::new();
+        try!(headers.append("Content-Type: application/json"));
+        try!(easy.http_headers(headers));
         try!(easy.post_fields_copy(encoded.as_bytes()));
         let mut data = Vec::new();
         {
