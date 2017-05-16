@@ -22,7 +22,7 @@ extern crate log;
 
 extern crate curl;
 #[macro_use]
-extern crate quick_error;
+extern crate error_chain;
 extern crate serde;
 extern crate serde_json;
 #[macro_use]

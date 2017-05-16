@@ -1,4 +1,4 @@
-use error::Error;
+use error::{Error, ErrorKind};
 use hexx::FromHex;
 use TryFrom;
 
@@ -81,21 +81,24 @@ impl<S> TryFrom<S> for HexColor
 
         let num_chars = s.chars().count();
         if num_chars != 7 && num_chars != 4 {
-            return Err(Error::HexColor(format!("Must be 4 or 7 characters long (including #): \
+            return Err(ErrorKind::HexColor(format!("Must be 4 or 7 characters long (including #): \
                                                 found `{}`",
-                                               s)));
+                                                   s))
+                               .into());
         }
         if s.chars().next().unwrap() != '#' {
-            return Err(Error::HexColor(format!("No leading #: found `{}`", s)));
+            return Err(ErrorKind::HexColor(format!("No leading #: found `{}`", s)).into());
         }
 
         // #d18 -> #dd1188
         let hex = if num_chars == 4 {
-            s.chars().skip(1).fold(String::from("#"), |mut s, c| {
-                s.push(c);
-                s.push(c);
-                s
-            })
+            s.chars()
+                .skip(1)
+                .fold(String::from("#"), |mut s, c| {
+                    s.push(c);
+                    s.push(c);
+                    s
+                })
         } else {
             s.clone()
         };
@@ -124,53 +127,52 @@ mod test {
     #[test]
     fn test_hex_color_too_short() {
         let err = HexColor::try_from("abc").unwrap_err();
-        assert_eq!(format!("{}", err),
+        assert_eq!(err.to_string(),
                    "hex color parsing error: Must be 4 or 7 characters long (including #): found \
-                    `abc`"
-                       .to_owned());
+                    `abc`");
     }
 
     #[test]
     fn test_hex_color_missing_hash() {
         let err = HexColor::try_from("1234567").unwrap_err();
-        assert_eq!(format!("{}", err),
-                   "hex color parsing error: No leading #: found `1234567`".to_owned());
+        assert_eq!(err.to_string(),
+                   "hex color parsing error: No leading #: found `1234567`");
     }
 
     #[test]
     fn test_hex_color_invalid_hex_fmt() {
         let err = HexColor::try_from("#abc12z").unwrap_err();
-        assert_eq!(format!("{}", err),
-                   "hexx::FromHexError: Invalid character 'z' at position 5".to_owned());
+        assert!(err.to_string()
+                    .contains("Invalid character 'z' at position 5"));
     }
 
     #[test]
     fn test_hex_color_good() {
         let h: HexColor = HexColor::try_from(SlackColor::Good).unwrap();
-        assert_eq!(format!("{}", h), "good".to_owned());
+        assert_eq!(h.to_string(), "good");
     }
 
     #[test]
     fn test_hex_color_danger_str() {
         let ok = HexColor::try_from("danger").unwrap();
-        assert_eq!(format!("{}", ok), "danger".to_owned());
+        assert_eq!(ok.to_string(), "danger");
     }
 
     #[test]
     fn test_hex_color_3_char_hex() {
         let ok = HexColor::try_from("#d18").unwrap();
-        assert_eq!(format!("{}", ok), "#d18".to_owned());
+        assert_eq!(ok.to_string(), "#d18");
     }
 
     #[test]
     fn test_hex_color_valid_upper_hex() {
         let ok = HexColor::try_from("#103D18").unwrap();
-        assert_eq!(format!("{}", ok), "#103D18".to_owned());
+        assert_eq!(ok.to_string(), "#103D18");
     }
 
     #[test]
     fn test_hex_color_valid_lower_hex() {
         let ok = HexColor::try_from("#103d18").unwrap();
-        assert_eq!(format!("{}", ok), "#103d18".to_owned());
+        assert_eq!(ok.to_string(), "#103d18");
     }
 }
