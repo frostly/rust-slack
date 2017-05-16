@@ -1,4 +1,4 @@
-/// helper macro to avoid the TryInto boilerplate for builder functions
+/// helper macro to avoid the `TryInto` boilerplate for builder functions
 macro_rules! url_builder_fn {
     {
         $(#[$meta:meta])+
