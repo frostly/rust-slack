@@ -1,4 +1,4 @@
-use error::Error;
+use error::{Error, ErrorKind};
 use hexx::FromHex;
 use TryFrom;
 
@@ -81,21 +81,24 @@ impl<S> TryFrom<S> for HexColor
 
         let num_chars = s.chars().count();
         if num_chars != 7 && num_chars != 4 {
-            return Err(Error::HexColor(format!("Must be 4 or 7 characters long (including #): \
+            return Err(ErrorKind::HexColor(format!("Must be 4 or 7 characters long (including #): \
                                                 found `{}`",
-                                               s)));
+                                                   s))
+                               .into());
         }
         if s.chars().next().unwrap() != '#' {
-            return Err(Error::HexColor(format!("No leading #: found `{}`", s)));
+            return Err(ErrorKind::HexColor(format!("No leading #: found `{}`", s)).into());
         }
 
         // #d18 -> #dd1188
         let hex = if num_chars == 4 {
-            s.chars().skip(1).fold(String::from("#"), |mut s, c| {
-                s.push(c);
-                s.push(c);
-                s
-            })
+            s.chars()
+                .skip(1)
+                .fold(String::from("#"), |mut s, c| {
+                    s.push(c);
+                    s.push(c);
+                    s
+                })
         } else {
             s.clone()
         };
@@ -127,7 +130,7 @@ mod test {
         assert_eq!(format!("{}", err),
                    "hex color parsing error: Must be 4 or 7 characters long (including #): found \
                     `abc`"
-                       .to_owned());
+                           .to_owned());
     }
 
     #[test]
