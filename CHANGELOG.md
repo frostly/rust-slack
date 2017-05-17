@@ -1,3 +1,16 @@
+## 0.4.0
+
+FEATURES
+- Upgrade to serde 1.0 #16
+ - chrono 0.3.1 is now also required (serde 1.0 support added in 0.3.1). Even though chrono
+didn't do this as a breaking change it should be for semver. As a result, I'm moving this crate
+to 0.4.0 to avoid any issues.
+- Specify `Content-Type` as json when sending messages #15
+
+OTHER
+
+- Replaced `quick-error` with `error-chain`
+
 ## 0.3.0
 
 FEATURES
