@@ -1,6 +1,6 @@
-use curl::easy::{Easy,List};
+use curl::easy::{Easy, List};
 use std::str;
-use error::{Result, Error};
+use error::{Result, Error, ErrorKind};
 use {Payload, TryInto, serde_json};
 use serde::{Serialize, Serializer};
 use url::Url;
@@ -38,9 +38,9 @@ impl Slack {
         {
             let mut transfer = easy.transfer();
             try!(transfer.write_function(|dt| {
-                data.extend_from_slice(dt);
-                Ok(dt.len())
-            }));
+                                             data.extend_from_slice(dt);
+                                             Ok(dt.len())
+                                         }));
             try!(transfer.perform());
         }
 
@@ -51,7 +51,7 @@ impl Slack {
 
         match (resp, body) {
             (200, _) => Ok(()),
-            (_, x) => Err(Error::Slack(x.into())),
+            (_, x) => Err(ErrorKind::Slack(x.into()).into()),
         }
     }
 }
@@ -131,9 +131,9 @@ impl<'a> From<&'a [SlackTextContent]> for SlackText {
     fn from(v: &[SlackTextContent]) -> SlackText {
         let st = v.iter()
             .map(|item| match *item {
-                SlackTextContent::Text(ref s) => format!("{}", s),
-                SlackTextContent::Link(ref link) => format!("{}", link),
-            })
+                     SlackTextContent::Text(ref s) => format!("{}", s),
+                     SlackTextContent::Link(ref link) => format!("{}", link),
+                 })
             .collect::<Vec<String>>()
             .join(" ");
         SlackText::new_raw(st)

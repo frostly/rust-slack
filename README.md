@@ -20,7 +20,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-slack-hook = "0.3"
+slack-hook = "0.4"
 ```
 
 Add the crate to your existing project:
@@ -56,7 +56,7 @@ extern crate slack_hook;
 use slack_hook::{PayloadBuilder, AttachmentBuilder};
 
 fn main() {
-  let p = PayloadBuilder::new()
+  let _ = PayloadBuilder::new()
     .attachments(vec![AttachmentBuilder::new("my text").color("#b13d41").build().unwrap()])
     .build()
     .unwrap();
@@ -74,7 +74,7 @@ use slack_hook::{PayloadBuilder, SlackTextContent, SlackLink};
 use slack_hook::SlackTextContent::{Text, Link};
 
 fn main() {
-  let p = PayloadBuilder::new()
+  let _ = PayloadBuilder::new()
     .text(vec![
       Text("Hello".into()),
       Link(SlackLink::new("https://google.com", "Google")),
