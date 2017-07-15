@@ -34,7 +34,7 @@ pub extern crate chrono;
 
 pub use slack::{Slack, SlackTextContent, SlackLink, SlackText, SlackTime};
 pub use payload::{Payload, PayloadBuilder, Parse};
-pub use attachment::{Attachment, AttachmentBuilder, Field};
+pub use attachment::{Attachment, AttachmentBuilder, Section, Field};
 pub use hex::{HexColor, SlackColor};
 pub use error::{Error, Result};
 use url::Url;

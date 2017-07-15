@@ -63,6 +63,23 @@ pub struct Attachment {
     /// Optional timestamp to be displayed with the attachment
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ts: Option<SlackTime>,
+    /// Optional sections formatted as markdown.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mrkdwn_in: Option<Vec<Section>>,
+}
+
+/// Sections define parts of an attachment.
+#[derive(Eq, PartialEq, Copy, Clone, Serialize, Debug)]
+#[serde(rename_all = "lowercase")]
+pub enum Section {
+    /// The pretext section.
+    Pretext,
+
+    /// The text section.
+    Text,
+
+    /// The fields.
+    Fields,
 }
 
 /// Fields are defined as an array, and hashes contained within it will
@@ -239,6 +256,18 @@ impl AttachmentBuilder {
                 AttachmentBuilder { inner: Ok(inner) }
             }
             _ => self,
+        }
+    }
+
+
+    /// Optional sections formatted as markdown.
+    pub fn markdown_in<'a, I: IntoIterator<Item = &'a Section>>(self, sections: I) -> AttachmentBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.mrkdwn_in = Some(sections.into_iter().cloned().collect());
+                AttachmentBuilder { inner: Ok(inner) }
+            }
+            _ => self
         }
     }
 
