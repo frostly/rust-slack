@@ -1,3 +1,11 @@
+## 0.5.0
+
+FEATURES
+- Support `mrkdwn_in` field for an `Attachment`: [#17](https://github.com/frostly/rust-slack/pull/17).
+
+BREAKING CHANGE:
+- Need to move to chrono 0.4 since 0.3.1 (with serde 1.0) was yanked.
+
 ## 0.4.0
 
 FEATURES
