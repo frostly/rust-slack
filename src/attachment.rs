@@ -74,10 +74,8 @@ pub struct Attachment {
 pub enum Section {
     /// The pretext section.
     Pretext,
-
     /// The text section.
     Text,
-
     /// The fields.
     Fields,
 }
@@ -258,7 +256,6 @@ impl AttachmentBuilder {
             _ => self,
         }
     }
-
 
     /// Optional sections formatted as markdown.
     pub fn markdown_in<'a, I: IntoIterator<Item = &'a Section>>(self, sections: I) -> AttachmentBuilder {
