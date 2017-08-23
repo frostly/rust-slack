@@ -1,7 +1,8 @@
 use error::{Error, Result};
 use {SlackText, TryInto, SlackTime, HexColor};
 use chrono::NaiveDateTime;
-use url::Url;
+use reqwest::Url;
+use helper;
 
 /// Slack allows for attachments to be added to messages. See
 /// https://api.slack.com/docs/attachments for more information.
@@ -29,28 +30,28 @@ pub struct Attachment {
     /// Optional URL that will hyperlink the `author_name` text mentioned above. Will only
     /// work if `author_name` is present.
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "::url_serde")]
+    #[serde(serialize_with = "helper::serialize_uri")]
     pub author_link: Option<Url>,
     /// Optional URL that displays a small 16x16px image to the left of
     /// the `author_name` text. Will only work if `author_name` is present.
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "::url_serde")]
+    #[serde(serialize_with = "helper::serialize_uri")]
     pub author_icon: Option<Url>,
     /// Optional larger, bolder text above the main body
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<SlackText>,
     /// Optional URL to link to from the title
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "::url_serde")]
+    #[serde(serialize_with = "helper::serialize_uri")]
     pub title_link: Option<Url>,
     /// Optional URL to an image that will be displayed in the body
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "::url_serde")]
+    #[serde(serialize_with = "helper::serialize_uri")]
     pub image_url: Option<Url>,
     /// Optional URL to an image that will be displayed as a thumbnail to the
     /// right of the body
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "::url_serde")]
+    #[serde(serialize_with = "helper::serialize_uri")]
     pub thumb_url: Option<Url>,
     /// Optional text that will appear at the bottom of the attachment
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -58,7 +59,7 @@ pub struct Attachment {
     /// Optional URL to an image that will be displayed at the bottom of the
     /// attachment
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "::url_serde")]
+    #[serde(serialize_with = "helper::serialize_uri")]
     pub footer_icon: Option<Url>,
     /// Optional timestamp to be displayed with the attachment
     #[serde(skip_serializing_if = "Option::is_none")]

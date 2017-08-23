@@ -5,7 +5,7 @@ macro_rules! url_builder_fn {
         $name:ident, $builder:ident
     } => {
         $(#[$meta])+
-        pub fn $name<U: TryInto<Url, Err = Error>>(self, $name: U) -> $builder {
+        pub fn $name<U: TryInto<::reqwest::Url, Err = Error>>(self, $name: U) -> $builder {
             match self.inner {
                 Ok(mut inner) => {
                     match $name.try_into() {
