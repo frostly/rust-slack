@@ -17,10 +17,8 @@
 //! supports entire messaging API, including attachments and fields
 //! also support for built-in colors as well as any hex colors
 
-#[macro_use]
-extern crate log;
+extern crate reqwest;
 
-extern crate curl;
 #[macro_use]
 extern crate error_chain;
 extern crate serde;
@@ -28,16 +26,14 @@ extern crate serde_json;
 #[macro_use]
 extern crate serde_derive;
 extern crate hex as hexx;
-pub extern crate url;
+extern crate chrono;
 extern crate url_serde;
-pub extern crate chrono;
 
 pub use slack::{Slack, SlackTextContent, SlackLink, SlackText, SlackTime};
 pub use payload::{Payload, PayloadBuilder, Parse};
 pub use attachment::{Attachment, AttachmentBuilder, Section, Field};
 pub use hex::{HexColor, SlackColor};
 pub use error::{Error, Result};
-use url::Url;
 
 #[macro_use]
 mod macros;
@@ -86,10 +82,11 @@ impl<T, U> TryInto<U> for T
     }
 }
 
-impl<'a> TryFrom<&'a str> for Url {
+impl<'a> TryFrom<&'a str> for reqwest::Url {
     type Err = Error;
+
     fn try_from(s: &str) -> ::std::result::Result<Self, Self::Err> {
-        match Url::parse(s) {
+        match s.parse() {
             Ok(u) => Ok(u),
             Err(e) => Err(e.into()),
         }

@@ -1,8 +1,8 @@
 use {Attachment, SlackText, TryInto};
 use helper::bool_to_u8;
 use error::{Error, Result};
-use url::Url;
 use serde::{Serialize, Serializer};
+use reqwest::Url;
 
 /// Payload to send to slack
 /// https://api.slack.com/incoming-webhooks
