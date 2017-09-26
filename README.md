@@ -20,7 +20,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-slack-hook = "0.4"
+slack-hook = "0.6"
 ```
 
 Add the crate to your existing project:

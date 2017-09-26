@@ -1,3 +1,15 @@
+## 0.6.0
+
+FEATURES
+- Replaced `curl` with `reqwest`
+
+BREAKING CHANGES:
+- `url` (removed) and `chrono` crates are no longer re-exported
+
+OTHER:
+- Removed `log` crate
+- `error-chain` updated to `0.11`
+
 ## 0.5.0
 
 FEATURES
