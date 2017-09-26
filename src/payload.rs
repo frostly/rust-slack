@@ -23,7 +23,7 @@ pub struct Payload {
     pub username: Option<String>,
     /// specific url for icon
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(serialize_with = "::helper::serialize_uri")]
+    #[serde(with = "::url_serde")]
     pub icon_url: Option<Url>,
     /// emjoi for icon
     /// https://api.slack.com/methods/emoji.list

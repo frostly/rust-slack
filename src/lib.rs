@@ -27,6 +27,7 @@ extern crate serde_json;
 extern crate serde_derive;
 extern crate hex as hexx;
 extern crate chrono;
+extern crate url_serde;
 
 pub use slack::{Slack, SlackTextContent, SlackLink, SlackText, SlackTime};
 pub use payload::{Payload, PayloadBuilder, Parse};
