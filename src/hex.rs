@@ -92,7 +92,7 @@ where
                 )).into(),
             );
         }
-        if s.chars().next().unwrap() != '#' {
+        if !s.starts_with('#') {
             return Err(ErrorKind::HexColor(format!("No leading #: found `{}`", s)).into());
         }
 

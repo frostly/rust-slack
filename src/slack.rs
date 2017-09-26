@@ -215,7 +215,7 @@ mod test {
                 .color("#6800e8")
                 .fields(vec![Field::new("title", "value", None)])
                 .title_link("https://title_link.com/")
-                .ts(&NaiveDateTime::from_timestamp(123456789, 0))
+                .ts(&NaiveDateTime::from_timestamp(123_456_789, 0))
                 .build()
                 .unwrap(),
         ];
