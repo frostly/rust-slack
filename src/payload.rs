@@ -58,7 +58,8 @@ pub enum Parse {
 
 impl Serialize for Parse {
     fn serialize<S>(&self, serializer: S) -> ::std::result::Result<S::Ok, S::Error>
-        where S: Serializer
+    where
+        S: Serializer,
     {
         let st = match *self {
             Parse::Full => "full",
@@ -75,7 +76,9 @@ pub struct PayloadBuilder {
 
 impl Default for PayloadBuilder {
     fn default() -> PayloadBuilder {
-        PayloadBuilder { inner: Ok(Default::default()) }
+        PayloadBuilder {
+            inner: Ok(Default::default()),
+        }
     }
 }
 

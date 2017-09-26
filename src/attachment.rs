@@ -1,5 +1,5 @@
 use error::{Error, Result};
-use {SlackText, TryInto, SlackTime, HexColor};
+use {HexColor, SlackText, SlackTime, TryInto};
 use chrono::NaiveDateTime;
 use reqwest::Url;
 
@@ -98,10 +98,11 @@ pub struct Field {
 
 impl Field {
     /// Construct a new field
-    pub fn new<S: Into<String>, ST: Into<SlackText>>(title: S,
-                                                     value: ST,
-                                                     short: Option<bool>)
-                                                     -> Field {
+    pub fn new<S: Into<String>, ST: Into<SlackText>>(
+        title: S,
+        value: ST,
+        short: Option<bool>,
+    ) -> Field {
         Field {
             title: title.into(),
             value: value.into(),
@@ -122,7 +123,10 @@ impl AttachmentBuilder {
     /// Fallback is the only required field which is a plain-text summary of the attachment.
     pub fn new<S: Into<SlackText>>(fallback: S) -> AttachmentBuilder {
         AttachmentBuilder {
-            inner: Ok(Attachment { fallback: fallback.into(), ..Default::default() }),
+            inner: Ok(Attachment {
+                fallback: fallback.into(),
+                ..Default::default()
+            }),
         }
     }
 
@@ -148,15 +152,13 @@ impl AttachmentBuilder {
     /// hex color codes will be checked to ensure a valid hex number is provided
     pub fn color<C: TryInto<HexColor, Err = Error>>(self, color: C) -> AttachmentBuilder {
         match self.inner {
-            Ok(mut inner) => {
-                match color.try_into() {
-                    Ok(c) => {
-                        inner.color = Some(c);
-                        AttachmentBuilder { inner: Ok(inner) }
-                    }
-                    Err(e) => AttachmentBuilder { inner: Err(e) },
+            Ok(mut inner) => match color.try_into() {
+                Ok(c) => {
+                    inner.color = Some(c);
+                    AttachmentBuilder { inner: Ok(inner) }
                 }
-            }
+                Err(e) => AttachmentBuilder { inner: Err(e) },
+            },
             _ => self,
         }
     }
@@ -258,13 +260,16 @@ impl AttachmentBuilder {
     }
 
     /// Optional sections formatted as markdown.
-    pub fn markdown_in<'a, I: IntoIterator<Item = &'a Section>>(self, sections: I) -> AttachmentBuilder {
+    pub fn markdown_in<'a, I: IntoIterator<Item = &'a Section>>(
+        self,
+        sections: I,
+    ) -> AttachmentBuilder {
         match self.inner {
             Ok(mut inner) => {
                 inner.mrkdwn_in = Some(sections.into_iter().cloned().collect());
                 AttachmentBuilder { inner: Ok(inner) }
             }
-            _ => self
+            _ => self,
         }
     }
 
@@ -279,7 +284,6 @@ impl AttachmentBuilder {
                 Ok(inner)
             }
             _ => self.inner,
-
         }
     }
 }

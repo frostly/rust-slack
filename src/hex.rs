@@ -42,10 +42,12 @@ pub enum SlackColor {
 
 // can't seem to convert enum to slice despite trait being implemented
 // need this to support passing in the string directly
-const SLACK_COLORS: [&'static str; 3] = [// SlackColor::Good.as_slice(),
-                                         "good",
-                                         "warning",
-                                         "danger"];
+const SLACK_COLORS: [&'static str; 3] = [
+    // SlackColor::Good.as_slice(),
+    "good",
+    "warning",
+    "danger",
+];
 
 impl ::std::fmt::Display for SlackColor {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
@@ -70,7 +72,8 @@ impl From<SlackColor> for HexColor {
 }
 
 impl<S> TryFrom<S> for HexColor
-    where S: Into<String>
+where
+    S: Into<String>,
 {
     type Err = Error;
     fn try_from(s: S) -> ::std::result::Result<Self, Self::Err> {
@@ -81,10 +84,13 @@ impl<S> TryFrom<S> for HexColor
 
         let num_chars = s.chars().count();
         if num_chars != 7 && num_chars != 4 {
-            return Err(ErrorKind::HexColor(format!("Must be 4 or 7 characters long (including #): \
-                                                found `{}`",
-                                                   s))
-                               .into());
+            return Err(
+                ErrorKind::HexColor(format!(
+                    "Must be 4 or 7 characters long (including #): \
+                     found `{}`",
+                    s
+                )).into(),
+            );
         }
         if s.chars().next().unwrap() != '#' {
             return Err(ErrorKind::HexColor(format!("No leading #: found `{}`", s)).into());
@@ -92,13 +98,11 @@ impl<S> TryFrom<S> for HexColor
 
         // #d18 -> #dd1188
         let hex = if num_chars == 4 {
-            s.chars()
-                .skip(1)
-                .fold(String::from("#"), |mut s, c| {
-                    s.push(c);
-                    s.push(c);
-                    s
-                })
+            s.chars().skip(1).fold(String::from("#"), |mut s, c| {
+                s.push(c);
+                s.push(c);
+                s
+            })
         } else {
             s.clone()
         };
@@ -127,23 +131,29 @@ mod test {
     #[test]
     fn test_hex_color_too_short() {
         let err = HexColor::try_from("abc").unwrap_err();
-        assert_eq!(err.to_string(),
-                   "hex color parsing error: Must be 4 or 7 characters long (including #): found \
-                    `abc`");
+        assert_eq!(
+            err.to_string(),
+            "hex color parsing error: Must be 4 or 7 characters long (including #): found \
+             `abc`"
+        );
     }
 
     #[test]
     fn test_hex_color_missing_hash() {
         let err = HexColor::try_from("1234567").unwrap_err();
-        assert_eq!(err.to_string(),
-                   "hex color parsing error: No leading #: found `1234567`");
+        assert_eq!(
+            err.to_string(),
+            "hex color parsing error: No leading #: found `1234567`"
+        );
     }
 
     #[test]
     fn test_hex_color_invalid_hex_fmt() {
         let err = HexColor::try_from("#abc12z").unwrap_err();
-        assert!(err.to_string()
-                    .contains("Invalid character 'z' at position 5"));
+        assert!(
+            err.to_string()
+                .contains("Invalid character 'z' at position 5")
+        );
     }
 
     #[test]

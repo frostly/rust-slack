@@ -1,12 +1,5 @@
-#![deny(missing_docs,
-        missing_debug_implementations,
-        trivial_casts,
-        trivial_numeric_casts,
-        unsafe_code,
-        unstable_features,
-        unused_import_braces,
-        unused_qualifications,
-        unused_results)]
+#![deny(missing_docs, missing_debug_implementations, trivial_casts, trivial_numeric_casts,
+       unsafe_code, unstable_features, unused_import_braces, unused_qualifications, unused_results)]
 #![cfg_attr(test, deny(warnings))]
 #![cfg_attr(any(feature = "clippy"), allow(unstable_features))]
 #![cfg_attr(feature = "clippy", feature(plugin))]
@@ -19,19 +12,19 @@
 
 extern crate reqwest;
 
+extern crate chrono;
 #[macro_use]
 extern crate error_chain;
+extern crate hex as hexx;
 extern crate serde;
-extern crate serde_json;
 #[macro_use]
 extern crate serde_derive;
-extern crate hex as hexx;
-extern crate chrono;
+extern crate serde_json;
 extern crate url_serde;
 
-pub use slack::{Slack, SlackTextContent, SlackLink, SlackText, SlackTime};
-pub use payload::{Payload, PayloadBuilder, Parse};
-pub use attachment::{Attachment, AttachmentBuilder, Section, Field};
+pub use slack::{Slack, SlackLink, SlackText, SlackTextContent, SlackTime};
+pub use payload::{Parse, Payload, PayloadBuilder};
+pub use attachment::{Attachment, AttachmentBuilder, Field, Section};
 pub use hex::{HexColor, SlackColor};
 pub use error::{Error, Result};
 
@@ -73,7 +66,8 @@ pub trait TryFrom<T>: Sized {
 }
 
 impl<T, U> TryInto<U> for T
-    where U: TryFrom<T>
+where
+    U: TryFrom<T>,
 {
     type Err = U::Err;
 

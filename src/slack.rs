@@ -1,9 +1,9 @@
 use std::str;
-use error::{Result, Error, ErrorKind};
+use error::{Error, ErrorKind, Result};
 use {Payload, TryInto};
 use serde::{Serialize, Serializer};
 use chrono::NaiveDateTime;
-use reqwest::{Client, Url, StatusCode};
+use reqwest::{Client, StatusCode, Url};
 
 /// Handles sending messages to slack
 #[derive(Debug)]
@@ -16,20 +16,19 @@ impl Slack {
     /// Construct a new instance of slack for a specific
     /// incoming url endopoint
     pub fn new<T: TryInto<Url, Err = Error>>(hook: T) -> Result<Slack> {
-        Ok(Slack { hook: hook.try_into()?, client: Client::new()? })
+        Ok(Slack {
+            hook: hook.try_into()?,
+            client: Client::new()?,
+        })
     }
 
     /// Send payload to slack service
     pub fn send(&self, payload: &Payload) -> Result<()> {
-        let response = self.client
-            .post(self.hook.clone())?
-            .json(payload)?
-            .send()?;
+        let response = self.client.post(self.hook.clone())?.json(payload)?.send()?;
 
         if response.status() == StatusCode::Ok {
             Ok(())
-        }
-        else {
+        } else {
             Err(ErrorKind::Slack("HTTP error".to_string()).into())
         }
     }
@@ -48,7 +47,8 @@ impl SlackTime {
 
 impl Serialize for SlackTime {
     fn serialize<S>(&self, serializer: S) -> ::std::result::Result<S::Ok, S::Error>
-        where S: Serializer
+    where
+        S: Serializer,
     {
         serializer.serialize_i64(self.0.timestamp())
     }
@@ -64,17 +64,15 @@ impl SlackText {
     /// Escape &, <, and > in any slack text
     /// https://api.slack.com/docs/formatting
     pub fn new<S: Into<String>>(text: S) -> SlackText {
-        let s = text.into()
-            .chars()
-            .fold(String::new(), |mut s, c| {
-                match c {
-                    '&' => s.push_str("&amp;"),
-                    '<' => s.push_str("&lt;"),
-                    '>' => s.push_str("&gt;"),
-                    _ => s.push(c),
-                }
-                s
-            });
+        let s = text.into().chars().fold(String::new(), |mut s, c| {
+            match c {
+                '&' => s.push_str("&amp;"),
+                '<' => s.push_str("&lt;"),
+                '>' => s.push_str("&gt;"),
+                _ => s.push(c),
+            }
+            s
+        });
         SlackText(s)
     }
 
@@ -110,9 +108,9 @@ impl<'a> From<&'a [SlackTextContent]> for SlackText {
     fn from(v: &[SlackTextContent]) -> SlackText {
         let st = v.iter()
             .map(|item| match *item {
-                     SlackTextContent::Text(ref s) => format!("{}", s),
-                     SlackTextContent::Link(ref link) => format!("{}", link),
-                 })
+                SlackTextContent::Text(ref s) => format!("{}", s),
+                SlackTextContent::Link(ref link) => format!("{}", link),
+            })
             .collect::<Vec<String>>()
             .join(" ");
         SlackText::new_raw(st)
@@ -155,7 +153,8 @@ impl ::std::fmt::Display for SlackLink {
 
 impl Serialize for SlackLink {
     fn serialize<S>(&self, serializer: S) -> ::std::result::Result<S::Ok, S::Error>
-        where S: Serializer
+    where
+        S: Serializer,
     {
         serializer.serialize_str(&format!("{}", self)[..])
     }
@@ -166,14 +165,16 @@ mod test {
     #[cfg(feature = "unstable")]
     use test::Bencher;
     use slack::{Slack, SlackLink};
-    use {PayloadBuilder, AttachmentBuilder, Field, SlackText, Parse, serde_json};
+    use {serde_json, AttachmentBuilder, Field, Parse, PayloadBuilder, SlackText};
     use chrono::NaiveDateTime;
 
     #[test]
     fn slack_incoming_url_test() {
         let s = Slack::new("https://hooks.slack.com/services/abc/123/45z").unwrap();
-        assert_eq!(s.hook.to_string(),
-                   "https://hooks.slack.com/services/abc/123/45z".to_owned());
+        assert_eq!(
+            s.hook.to_string(),
+            "https://hooks.slack.com/services/abc/123/45z".to_owned()
+        );
     }
 
     #[test]
@@ -188,8 +189,10 @@ mod test {
             text: SlackText::new("moo <&> moo"),
             url: "http://google.com".to_owned(),
         };
-        assert_eq!(format!("{}", s),
-                   "<http://google.com|moo &lt;&amp;&gt; moo>".to_owned());
+        assert_eq!(
+            format!("{}", s),
+            "<http://google.com|moo &lt;&amp;&gt; moo>".to_owned()
+        );
     }
 
     #[test]
@@ -198,20 +201,24 @@ mod test {
             text: SlackText::new("moo <&> moo"),
             url: "http://google.com".to_owned(),
         };
-        assert_eq!(serde_json::to_string(&s).unwrap().to_owned(),
-                   "\"<http://google.com|moo &lt;&amp;&gt; moo>\"".to_owned())
+        assert_eq!(
+            serde_json::to_string(&s).unwrap().to_owned(),
+            "\"<http://google.com|moo &lt;&amp;&gt; moo>\"".to_owned()
+        )
     }
 
     #[test]
     fn json_complete_payload_test() {
-        let a = vec![AttachmentBuilder::new("fallback <&>")
-                         .text("text <&>")
-                         .color("#6800e8")
-                         .fields(vec![Field::new("title", "value", None)])
-                         .title_link("https://title_link.com/")
-                         .ts(&NaiveDateTime::from_timestamp(123456789, 0))
-                         .build()
-                         .unwrap()];
+        let a = vec![
+            AttachmentBuilder::new("fallback <&>")
+                .text("text <&>")
+                .color("#6800e8")
+                .fields(vec![Field::new("title", "value", None)])
+                .title_link("https://title_link.com/")
+                .ts(&NaiveDateTime::from_timestamp(123456789, 0))
+                .build()
+                .unwrap(),
+        ];
 
         let p = PayloadBuilder::new()
             .text("test message")
@@ -234,19 +241,25 @@ mod test {
     fn json_message_payload_test() {
         let p = PayloadBuilder::new().text("test message").build().unwrap();
 
-        assert_eq!(serde_json::to_string(&p).unwrap().to_owned(),
-                   r##"{"text":"test message"}"##.to_owned())
+        assert_eq!(
+            serde_json::to_string(&p).unwrap().to_owned(),
+            r##"{"text":"test message"}"##.to_owned()
+        )
     }
 
     #[test]
     fn slack_text_content_test() {
         use super::SlackTextContent;
         use super::SlackTextContent::{Link, Text};
-        let message: Vec<SlackTextContent> = vec![Text("moo <&> moo".into()),
-                                                  Link(SlackLink::new("@USER", "M<E>")),
-                                                  Text("wow.".into())];
+        let message: Vec<SlackTextContent> = vec![
+            Text("moo <&> moo".into()),
+            Link(SlackLink::new("@USER", "M<E>")),
+            Text("wow.".into()),
+        ];
         let st: SlackText = SlackText::from(&message[..]);
-        assert_eq!(format!("{}", st),
-                   "moo &lt;&amp;&gt; moo <@USER|M&lt;E&gt;> wow.");
+        assert_eq!(
+            format!("{}", st),
+            "moo &lt;&amp;&gt; moo <@USER|M&lt;E&gt;> wow."
+        );
     }
 }
