@@ -1,10 +1,6 @@
 #![deny(missing_docs, missing_debug_implementations, trivial_casts, trivial_numeric_casts,
        unsafe_code, unstable_features, unused_import_braces, unused_qualifications, unused_results)]
 #![cfg_attr(test, deny(warnings))]
-#![cfg_attr(any(feature = "clippy"), allow(unstable_features))]
-#![cfg_attr(feature = "clippy", feature(plugin))]
-#![cfg_attr(feature = "clippy", plugin(clippy))]
-#![cfg_attr(feature = "clippy", deny(clippy))]
 
 //! Library to send messages to slack rooms
 //! supports entire messaging API, including attachments and fields
