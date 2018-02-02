@@ -29,7 +29,7 @@ impl Slack {
         if response.status() == StatusCode::Ok {
             Ok(())
         } else {
-            Err(ErrorKind::Slack("HTTP error".to_string()).into())
+            Err(ErrorKind::Slack(format!("HTTP error {}", response.status())).into())
         }
     }
 }
