@@ -13,8 +13,7 @@ pub struct Slack {
 }
 
 impl Slack {
-    /// Construct a new instance of slack for a specific
-    /// incoming url endopoint
+    /// Construct a new instance of slack for a specific incoming url endpoint.
     pub fn new<T: TryInto<Url, Err = Error>>(hook: T) -> Result<Slack> {
         Ok(Slack {
             hook: hook.try_into()?,
