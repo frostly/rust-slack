@@ -1,12 +1,12 @@
-use std::str;
-use error::{Error, ErrorKind, Result};
-use {Payload, TryInto};
-use serde::{Serialize, Serializer};
 use chrono::NaiveDateTime;
+use error::{Error, ErrorKind, Result};
 use reqwest::{Client, StatusCode, Url};
+use serde::{Serialize, Serializer};
+use std::str;
+use {Payload, TryInto};
 
 /// Handles sending messages to slack
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Slack {
     hook: Url,
     client: Client,
@@ -35,7 +35,7 @@ impl Slack {
 }
 
 /// Slack timestamp
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SlackTime(NaiveDateTime);
 
 impl SlackTime {
@@ -56,7 +56,7 @@ impl Serialize for SlackTime {
 
 /// Representation of any text sent through slack
 /// the text must be processed to escape specific characters
-#[derive(Serialize, Debug, Default, Clone)]
+#[derive(Serialize, Debug, Default, Clone, PartialEq)]
 pub struct SlackText(String);
 
 impl SlackText {
@@ -96,7 +96,7 @@ impl<'a> From<String> for SlackText {
 /// Enum used for constructing a text field having both `SlackText`(s) and `SlackLink`(s). The
 /// variants should be used together in a `Vec` on any function having a `Into<SlackText>` trait
 /// bound. The combined text will be space-separated.
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum SlackTextContent {
     /// Text that will be escaped via slack api rules
     Text(SlackText),
@@ -108,13 +108,13 @@ pub enum SlackTextContent {
 
 impl<'a> From<&'a [SlackTextContent]> for SlackText {
     fn from(v: &[SlackTextContent]) -> SlackText {
-        let st = v.iter()
+        let st = v
+            .iter()
             .map(|item| match *item {
                 SlackTextContent::Text(ref s) => format!("{}", s),
                 SlackTextContent::Link(ref link) => format!("{}", link),
                 SlackTextContent::User(ref u) => format!("{}", u),
-            })
-            .collect::<Vec<String>>()
+            }).collect::<Vec<String>>()
             .join(" ");
         SlackText::new_raw(st)
     }
@@ -127,7 +127,7 @@ impl ::std::fmt::Display for SlackText {
 }
 
 /// Representation of a link sent in slack
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct SlackLink {
     /// URL for link.
     ///
@@ -163,12 +163,11 @@ impl Serialize for SlackLink {
     }
 }
 
-
 /// Representation of a user id link sent in slack
 ///
 /// Cannot do @UGUID|handle links using SlackLink in the future due to
 /// https://api.slack.com/changelog/2017-09-the-one-about-usernames
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SlackUserLink {
     /// User ID (U1231232123) style
     pub uid: String,
@@ -198,14 +197,13 @@ impl Serialize for SlackUserLink {
     }
 }
 
-
 #[cfg(test)]
 mod test {
+    use chrono::NaiveDateTime;
+    use slack::{Slack, SlackLink};
     #[cfg(feature = "unstable")]
     use test::Bencher;
-    use slack::{Slack, SlackLink};
     use {serde_json, AttachmentBuilder, Field, Parse, PayloadBuilder, SlackText};
-    use chrono::NaiveDateTime;
 
     #[test]
     fn slack_incoming_url_test() {

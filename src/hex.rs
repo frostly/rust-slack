@@ -8,7 +8,7 @@ use TryFrom;
 /// 2. Any valid hex color code: e.g. `#b13d41` or `#000`.
 ///
 /// hex color codes will be checked to ensure a valid hex number is provided
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct HexColor(String);
 impl HexColor {
     fn new<S: Into<String>>(s: S) -> HexColor {
@@ -30,7 +30,7 @@ impl ::std::fmt::Display for HexColor {
 
 /// Default slack colors built-in to the API
 /// See: https://api.slack.com/docs/attachments
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum SlackColor {
     /// green
     Good,
@@ -40,14 +40,7 @@ pub enum SlackColor {
     Danger,
 }
 
-// can't seem to convert enum to slice despite trait being implemented
-// need this to support passing in the string directly
-const SLACK_COLORS: [&'static str; 3] = [
-    // SlackColor::Good.as_slice(),
-    "good",
-    "warning",
-    "danger",
-];
+const SLACK_COLORS: [&str; 3] = ["good", "warning", "danger"];
 
 impl ::std::fmt::Display for SlackColor {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
@@ -84,13 +77,11 @@ where
 
         let num_chars = s.chars().count();
         if num_chars != 7 && num_chars != 4 {
-            return Err(
-                ErrorKind::HexColor(format!(
-                    "Must be 4 or 7 characters long (including #): \
-                     found `{}`",
-                    s
-                )).into(),
-            );
+            return Err(ErrorKind::HexColor(format!(
+                "Must be 4 or 7 characters long (including #): \
+                 found `{}`",
+                s
+            )).into());
         }
         if !s.starts_with('#') {
             return Err(ErrorKind::HexColor(format!("No leading #: found `{}`", s)).into());

@@ -1,11 +1,11 @@
-use error::{Error, Result};
-use {HexColor, SlackText, SlackTime, TryInto};
 use chrono::NaiveDateTime;
+use error::{Error, Result};
 use reqwest::Url;
+use {HexColor, SlackText, SlackTime, TryInto};
 
 /// Slack allows for attachments to be added to messages. See
 /// https://api.slack.com/docs/attachments for more information.
-#[derive(Serialize, Debug, Default)]
+#[derive(Serialize, Debug, Default, Clone, PartialEq)]
 pub struct Attachment {
     /// Required text for attachment.
     /// Slack will use this text to display on devices that don't support markup.
@@ -82,7 +82,7 @@ pub enum Section {
 
 /// Fields are defined as an array, and hashes contained within it will
 /// be displayed in a table inside the message attachment.
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct Field {
     /// Shown as a bold heading above the value text.
     /// It cannot contain markup and will be escaped for you.
@@ -106,7 +106,7 @@ impl Field {
         Field {
             title: title.into(),
             value: value.into(),
-            short: short,
+            short,
         }
     }
 }
