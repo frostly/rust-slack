@@ -2,7 +2,7 @@ use chrono::NaiveDateTime;
 use error::{Error, ErrorKind, Result};
 use reqwest::{Client, StatusCode, Url};
 use serde::{Serialize, Serializer};
-use std::str;
+use std::fmt;
 use {Payload, TryInto};
 
 /// Handles sending messages to slack
@@ -120,8 +120,8 @@ impl<'a> From<&'a [SlackTextContent]> for SlackText {
     }
 }
 
-impl ::std::fmt::Display for SlackText {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+impl fmt::Display for SlackText {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.0)
     }
 }
@@ -148,8 +148,8 @@ impl SlackLink {
     }
 }
 
-impl ::std::fmt::Display for SlackLink {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+impl fmt::Display for SlackLink {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "<{}|{}>", self.url, self.text)
     }
 }
@@ -182,8 +182,8 @@ impl SlackUserLink {
     }
 }
 
-impl ::std::fmt::Display for SlackUserLink {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+impl fmt::Display for SlackUserLink {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "<{}>", self.uid)
     }
 }
