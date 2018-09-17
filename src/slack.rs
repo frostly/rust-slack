@@ -173,7 +173,7 @@ pub struct SlackUserLink {
 }
 
 impl SlackUserLink {
-    /// Construct new SlackUserLink with a string slice
+    /// Construct new `SlackUserLink` with a string slice
     pub fn new(uid: &str) -> SlackUserLink {
         SlackUserLink {
             uid: uid.to_owned(),
