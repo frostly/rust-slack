@@ -102,6 +102,8 @@ pub enum SlackTextContent {
     Text(SlackText),
     /// Link
     Link(SlackLink),
+    /// User Link
+    User(SlackUserLink),
 }
 
 impl<'a> From<&'a [SlackTextContent]> for SlackText {
@@ -110,6 +112,7 @@ impl<'a> From<&'a [SlackTextContent]> for SlackText {
             .map(|item| match *item {
                 SlackTextContent::Text(ref s) => format!("{}", s),
                 SlackTextContent::Link(ref link) => format!("{}", link),
+                SlackTextContent::User(ref u) => format!("{}", u),
             })
             .collect::<Vec<String>>()
             .join(" ");
@@ -159,6 +162,42 @@ impl Serialize for SlackLink {
         serializer.serialize_str(&format!("{}", self)[..])
     }
 }
+
+
+/// Representation of a user id link sent in slack
+///
+/// Cannot do @UGUID|handle links using SlackLink in the future due to
+/// https://api.slack.com/changelog/2017-09-the-one-about-usernames
+#[derive(Debug)]
+pub struct SlackUserLink {
+    /// User ID (U1231232123) style
+    pub uid: String,
+}
+
+impl SlackUserLink {
+    /// Construct new SlackUserLink with a string slice
+    pub fn new(uid: &str) -> SlackUserLink {
+        SlackUserLink {
+            uid: uid.to_owned(),
+        }
+    }
+}
+
+impl ::std::fmt::Display for SlackUserLink {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        write!(f, "<{}>", self.uid)
+    }
+}
+
+impl Serialize for SlackUserLink {
+    fn serialize<S>(&self, serializer: S) -> ::std::result::Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_str(&format!("{}", self)[..])
+    }
+}
+
 
 #[cfg(test)]
 mod test {

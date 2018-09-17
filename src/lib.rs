@@ -18,7 +18,7 @@ extern crate serde_derive;
 extern crate serde_json;
 extern crate url_serde;
 
-pub use slack::{Slack, SlackLink, SlackText, SlackTextContent, SlackTime};
+pub use slack::{Slack, SlackLink, SlackUserLink, SlackText, SlackTextContent, SlackTime};
 pub use payload::{Parse, Payload, PayloadBuilder};
 pub use attachment::{Attachment, AttachmentBuilder, Field, Section};
 pub use hex::{HexColor, SlackColor};
