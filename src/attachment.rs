@@ -19,6 +19,9 @@ pub struct Attachment {
     /// Optional color of attachment
     #[serde(skip_serializing_if = "Option::is_none")]
     pub color: Option<HexColor>,
+    /// Actions as array
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub actions: Option<Vec<Action>>,
     /// Fields are defined as an array, and hashes contained within it will be
     /// displayed in a table inside the message attachment.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -66,6 +69,9 @@ pub struct Attachment {
     /// Optional sections formatted as markdown.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mrkdwn_in: Option<Vec<Section>>,
+    /// Optional callback_id for actions
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub callback_id: Option<SlackText>,
 }
 
 /// Sections define parts of an attachment.
@@ -79,7 +85,44 @@ pub enum Section {
     /// The fields.
     Fields,
 }
+/// Actions are defined as an array, and values contained within it will
+/// be displayed with the message.
+#[derive(Serialize, Debug, Clone, PartialEq)]
+pub struct Action {
+    /// Action type, renamed to 'type'
+    #[serde(rename = "type")]
+    pub action_type: String,
+    /// Text for action
+    pub text: String,
+    /// Name of action
+    pub name: String,
+    /// Action style, ie: primary, danger, etc
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub style: Option<String>,
+    /// Value of action
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>
+}
 
+impl Action {
+    /// Construct a new field
+    pub fn new<S: Into<String>>(
+        action_type: S,
+        text: S,
+        name: S,
+        style: Option<String>,
+        value: Option<String>
+
+    ) -> Action {
+        Action {
+            action_type: action_type.into(),
+            text: text.into(),
+            name: name.into(),
+            style,
+            value
+        }
+    }
+}
 /// Fields are defined as an array, and hashes contained within it will
 /// be displayed in a table inside the message attachment.
 #[derive(Serialize, Debug, Clone, PartialEq)]
@@ -173,7 +216,17 @@ impl AttachmentBuilder {
             _ => self,
         }
     }
-
+    /// Actions are defined as an array, and hashes contained within it will be
+    /// displayed in a table inside the message attachment.
+    pub fn actions(self, actions: Vec<Action>) -> AttachmentBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.actions = Some(actions);
+                AttachmentBuilder { inner: Ok(inner) }
+            }
+            _ => self,
+        }
+    }
     /// Fields are defined as an array, and hashes contained within it will be
     /// displayed in a table inside the message attachment.
     pub fn fields(self, fields: Vec<Field>) -> AttachmentBuilder {
@@ -211,6 +264,17 @@ impl AttachmentBuilder {
         match self.inner {
             Ok(mut inner) => {
                 inner.title = Some(title.into());
+                AttachmentBuilder { inner: Ok(inner) }
+            }
+            _ => self,
+        }
+    }
+
+    /// Optional larger, bolder text above the main body
+    pub fn callback_id<S: Into<SlackText>>(self, callback_id: S) -> AttachmentBuilder {
+        match self.inner {
+            Ok(mut inner) => {
+                inner.callback_id = Some(callback_id.into());
                 AttachmentBuilder { inner: Ok(inner) }
             }
             _ => self,
