@@ -20,7 +20,7 @@ extern crate url_serde;
 
 pub use slack::{Slack, SlackLink, SlackUserLink, SlackText, SlackTextContent, SlackTime};
 pub use payload::{Parse, Payload, PayloadBuilder};
-pub use attachment::{Attachment, AttachmentBuilder, Field, Section};
+pub use attachment::{Attachment, AttachmentBuilder, Field, Section, Action};
 pub use hex::{HexColor, SlackColor};
 pub use error::{Error, Result};
 
