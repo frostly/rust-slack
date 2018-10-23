@@ -11,7 +11,7 @@ version = "0.7.0"
 
 [dependencies]
 chrono = "0.4"
-reqwest = "0.7"
+reqwest = "0.9"
 hex = "0.2.0"
 error-chain = "~0.11"
 serde = "1"

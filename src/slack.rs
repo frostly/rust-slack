@@ -1,6 +1,6 @@
 use chrono::NaiveDateTime;
 use error::{Error, ErrorKind, Result};
-use reqwest::{Client, StatusCode, Url};
+use reqwest::{Client, Url};
 use serde::{Serialize, Serializer};
 use std::fmt;
 use {Payload, TryInto};
@@ -17,15 +17,15 @@ impl Slack {
     pub fn new<T: TryInto<Url, Err = Error>>(hook: T) -> Result<Slack> {
         Ok(Slack {
             hook: hook.try_into()?,
-            client: Client::new()?,
+            client: Client::new(),
         })
     }
 
     /// Send payload to slack service
     pub fn send(&self, payload: &Payload) -> Result<()> {
-        let response = self.client.post(self.hook.clone())?.json(payload)?.send()?;
+        let response = self.client.post(self.hook.clone()).json(payload).send()?;
 
-        if response.status() == StatusCode::Ok {
+        if response.status().is_success(){
             Ok(())
         } else {
             Err(ErrorKind::Slack(format!("HTTP error {}", response.status())).into())
