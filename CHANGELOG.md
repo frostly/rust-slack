@@ -1,3 +1,9 @@
+## [0.8.0](https://github.com/frostly/rust-slack/tree/0.8.0)
+
+### Features
+- `reqwest` updated to `0.9`. `hex` updated to `0.3`.
+- `Action` support: [#23](https://github.com/frostly/rust-slack/pull/23)
+
 ## [0.7.0](https://github.com/frostly/rust-slack/tree/0.7.0)
 
 ### Features
