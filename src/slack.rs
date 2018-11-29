@@ -1,5 +1,5 @@
 use chrono::NaiveDateTime;
-use error::{Error, ErrorKind, Result};
+use error::{Error, Result};
 use reqwest::{Client, Url};
 use serde::{Serialize, Serializer};
 use std::fmt;
@@ -28,7 +28,7 @@ impl Slack {
         if response.status().is_success(){
             Ok(())
         } else {
-            Err(ErrorKind::Slack(format!("HTTP error {}", response.status())).into())
+            Err(format_err!("HTTP error {}", response.status()))
         }
     }
 }

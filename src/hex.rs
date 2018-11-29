@@ -1,4 +1,4 @@
-use error::{Error, ErrorKind};
+use error::{Result, Error};
 use hexx::FromHex;
 use TryFrom;
 
@@ -69,7 +69,7 @@ where
     S: Into<String>,
 {
     type Err = Error;
-    fn try_from(s: S) -> ::std::result::Result<Self, Self::Err> {
+    fn try_from(s: S) -> Result<Self> {
         let s: String = s.into();
         if SLACK_COLORS.contains(&&s[..]) {
             return Ok(HexColor(s));
@@ -77,14 +77,14 @@ where
 
         let num_chars = s.chars().count();
         if num_chars != 7 && num_chars != 4 {
-            return Err(ErrorKind::HexColor(format!(
+            return Err(format_err!(
                 "Must be 4 or 7 characters long (including #): \
                  found `{}`",
                 s
-            )).into());
+            ));
         }
         if !s.starts_with('#') {
-            return Err(ErrorKind::HexColor(format!("No leading #: found `{}`", s)).into());
+            return Err(format_err!("No leading #: found `{}`", s));
         }
 
         // #d18 -> #dd1188
@@ -109,7 +109,7 @@ where
 // even though this will always succeed, it simplifies the trait bound in the builder
 impl TryFrom<SlackColor> for HexColor {
     type Err = Error;
-    fn try_from(color: SlackColor) -> ::std::result::Result<Self, Self::Err> {
+    fn try_from(color: SlackColor) -> Result<Self> {
         Ok(color.into())
     }
 }
