@@ -9,9 +9,15 @@ readme = "README.md"
 repository = "https://github.com/frostly/rust-slack"
 version = "0.8.0"
 
+[features]
+default = ["default-tls"]
+
+default-tls = ["reqwest/default-tls"]
+rustls-tls = ["reqwest/rustls-tls"]
+
 [dependencies]
 chrono = "0.4"
-reqwest = "0.9"
+reqwest = { version = "^0.9.7", default-features = false }
 hex = "0.3"
 error-chain = "~0.11"
 serde = "1"
