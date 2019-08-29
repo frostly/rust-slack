@@ -1,6 +1,8 @@
 use chrono::NaiveDateTime;
 use error::{Error, ErrorKind, Result};
-use reqwest::{Client, Url};
+use futures::*;
+use reqwest::async::Client;
+use reqwest::Url;
 use serde::{Serialize, Serializer};
 use std::fmt;
 use {Payload, TryInto};
@@ -23,13 +25,33 @@ impl Slack {
 
     /// Send payload to slack service
     pub fn send(&self, payload: &Payload) -> Result<()> {
-        let response = self.client.post(self.hook.clone()).json(payload).send()?;
+        let response = self
+            .client
+            .post(self.hook.clone())
+            .json(payload)
+            .send()
+            .wait()?;
 
-        if response.status().is_success(){
+        if response.status().is_success() {
             Ok(())
         } else {
             Err(ErrorKind::Slack(format!("HTTP error {}", response.status())).into())
         }
+    }
+
+    /// Send payload to slack service, returning a future Response.
+    pub fn async_send(&self, payload: &Payload) -> impl Future<Item = Result<()>> {
+        self.client
+            .post(self.hook.clone())
+            .json(payload)
+            .send()
+            .map(|response| {
+                if response.status().is_success() {
+                    Ok(())
+                } else {
+                    Err(ErrorKind::Slack(format!("HTTP error {}", response.status())).into())
+                }
+            })
     }
 }
 
