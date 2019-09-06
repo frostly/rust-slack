@@ -40,12 +40,13 @@ impl Slack {
     }
 
     /// Send payload to slack service, returning a future Response.
-    pub fn async_send(&self, payload: &Payload) -> impl Future<Item = Result<()>> {
+    pub fn async_send(&self, payload: &Payload) -> impl Future<Item = (), Error = Error> {
         self.client
             .post(self.hook.clone())
             .json(payload)
             .send()
-            .map(|response| {
+            .map_err(|err| err.into())
+            .and_then(|response| {
                 if response.status().is_success() {
                     Ok(())
                 } else {
