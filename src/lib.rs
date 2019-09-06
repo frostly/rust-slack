@@ -11,6 +11,7 @@ extern crate reqwest;
 extern crate chrono;
 #[macro_use]
 extern crate error_chain;
+extern crate futures;
 extern crate hex as hexx;
 extern crate serde;
 #[macro_use]
