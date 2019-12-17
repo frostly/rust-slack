@@ -1,9 +1,9 @@
-use std::str;
-use error::{Error, ErrorKind, Result};
-use {Payload, TryInto};
-use serde::{Serialize, Serializer};
 use chrono::NaiveDateTime;
-use reqwest::{Client, StatusCode, Url};
+use error::{Error, ErrorKind, Result};
+use reqwest::{Client, ClientBuilder, Proxy, StatusCode, Url};
+use serde::{Serialize, Serializer};
+use std::str;
+use {Payload, TryInto};
 
 /// Handles sending messages to slack
 #[derive(Debug)]
@@ -15,18 +15,21 @@ pub struct Slack {
 impl Slack {
     /// Construct a new instance of slack for a specific
     /// incoming url endopoint
-    pub fn new<T: TryInto<Url, Err = Error>>(hook: T) -> Result<Slack> {
+    pub fn new<T: TryInto<Url, Err = Error>>(hook: T, proxy: Option<Proxy>) -> Result<Slack> {
         Ok(Slack {
             hook: hook.try_into()?,
-            client: Client::new()?,
+            client: match proxy {
+                Some(proxy) => ClientBuilder::new().proxy(proxy).build()?,
+                None => Client::new(),
+            },
         })
     }
 
     /// Send payload to slack service
     pub fn send(&self, payload: &Payload) -> Result<()> {
-        let response = self.client.post(self.hook.clone())?.json(payload)?.send()?;
+        let response = self.client.post(self.hook.clone()).json(payload).send()?;
 
-        if response.status() == StatusCode::Ok {
+        if response.status() == StatusCode::OK {
             Ok(())
         } else {
             Err(ErrorKind::Slack("HTTP error".to_string()).into())
@@ -106,7 +109,8 @@ pub enum SlackTextContent {
 
 impl<'a> From<&'a [SlackTextContent]> for SlackText {
     fn from(v: &[SlackTextContent]) -> SlackText {
-        let st = v.iter()
+        let st = v
+            .iter()
             .map(|item| match *item {
                 SlackTextContent::Text(ref s) => format!("{}", s),
                 SlackTextContent::Link(ref link) => format!("{}", link),
@@ -162,15 +166,15 @@ impl Serialize for SlackLink {
 
 #[cfg(test)]
 mod test {
+    use chrono::NaiveDateTime;
+    use slack::{Slack, SlackLink};
     #[cfg(feature = "unstable")]
     use test::Bencher;
-    use slack::{Slack, SlackLink};
     use {serde_json, AttachmentBuilder, Field, Parse, PayloadBuilder, SlackText};
-    use chrono::NaiveDateTime;
 
     #[test]
     fn slack_incoming_url_test() {
-        let s = Slack::new("https://hooks.slack.com/services/abc/123/45z").unwrap();
+        let s = Slack::new("https://hooks.slack.com/services/abc/123/45z", None).unwrap();
         assert_eq!(
             s.hook.to_string(),
             "https://hooks.slack.com/services/abc/123/45z".to_owned()
@@ -209,16 +213,14 @@ mod test {
 
     #[test]
     fn json_complete_payload_test() {
-        let a = vec![
-            AttachmentBuilder::new("fallback <&>")
-                .text("text <&>")
-                .color("#6800e8")
-                .fields(vec![Field::new("title", "value", None)])
-                .title_link("https://title_link.com/")
-                .ts(&NaiveDateTime::from_timestamp(123_456_789, 0))
-                .build()
-                .unwrap(),
-        ];
+        let a = vec![AttachmentBuilder::new("fallback <&>")
+            .text("text <&>")
+            .color("#6800e8")
+            .fields(vec![Field::new("title", "value", None)])
+            .title_link("https://title_link.com/")
+            .ts(&NaiveDateTime::from_timestamp(123_456_789, 0))
+            .build()
+            .unwrap()];
 
         let p = PayloadBuilder::new()
             .text("test message")

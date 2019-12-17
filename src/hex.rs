@@ -42,7 +42,7 @@ pub enum SlackColor {
 
 // can't seem to convert enum to slice despite trait being implemented
 // need this to support passing in the string directly
-const SLACK_COLORS: [&'static str; 3] = [
+const SLACK_COLORS: [&str; 3] = [
     // SlackColor::Good.as_slice(),
     "good",
     "warning",

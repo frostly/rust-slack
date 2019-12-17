@@ -106,7 +106,7 @@ impl Field {
         Field {
             title: title.into(),
             value: value.into(),
-            short: short,
+            short,
         }
     }
 }
