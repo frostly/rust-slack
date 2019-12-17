@@ -1,7 +1,6 @@
 # rust-slack
 [![Travis Build Status](https://img.shields.io/travis/frostly/rust-slack.svg)](https://travis-ci.org/frostly/rust-slack)
 [![Documentation](https://img.shields.io/badge/docs-latest-C9893D.svg)](https://docs.rs/slack-hook/)
-[![Coverage Status](https://img.shields.io/coveralls/frostly/rust-slack.svg)](https://coveralls.io/github/frostly/rust-slack?branch=master)
 [![crates.io](https://img.shields.io/crates/v/slack-hook.svg)](https://crates.io/crates/slack-hook)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE-MIT)
 [![Apache licensed](https://img.shields.io/badge/license-Apache-blue.svg)](./LICENSE-APACHE)
@@ -12,7 +11,7 @@ A rust crate for sending messages to Slack via webhooks.
 
 Upgrading? See the [CHANGELOG](./CHANGELOG.md).
 
-Requires rust 1.15 or newer.
+Requires rust 1.17 or newer.
 
 # Usage
 
@@ -20,7 +19,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-slack-hook = "0.6"
+slack-hook = "0.7"
 ```
 
 Add the crate to your existing project:

@@ -1,12 +1,13 @@
 use chrono::NaiveDateTime;
 use error::{Error, ErrorKind, Result};
-use reqwest::{Client, ClientBuilder, Proxy, StatusCode, Url};
-use serde::{Serialize, Serializer};
+use reqwest::{Client, ClientBuilder, Proxy, Url};
 use std::str;
+use serde::{Serialize, Serializer};
+use std::fmt;
 use {Payload, TryInto};
 
 /// Handles sending messages to slack
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Slack {
     hook: Url,
     client: Client,
@@ -29,16 +30,16 @@ impl Slack {
     pub fn send(&self, payload: &Payload) -> Result<()> {
         let response = self.client.post(self.hook.clone()).json(payload).send()?;
 
-        if response.status() == StatusCode::OK {
+        if response.status().is_success(){
             Ok(())
         } else {
-            Err(ErrorKind::Slack("HTTP error".to_string()).into())
+            Err(ErrorKind::Slack(format!("HTTP error {}", response.status())).into())
         }
     }
 }
 
 /// Slack timestamp
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SlackTime(NaiveDateTime);
 
 impl SlackTime {
@@ -59,7 +60,7 @@ impl Serialize for SlackTime {
 
 /// Representation of any text sent through slack
 /// the text must be processed to escape specific characters
-#[derive(Serialize, Debug, Default, Clone)]
+#[derive(Serialize, Debug, Default, Clone, PartialEq)]
 pub struct SlackText(String);
 
 impl SlackText {
@@ -99,12 +100,14 @@ impl<'a> From<String> for SlackText {
 /// Enum used for constructing a text field having both `SlackText`(s) and `SlackLink`(s). The
 /// variants should be used together in a `Vec` on any function having a `Into<SlackText>` trait
 /// bound. The combined text will be space-separated.
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum SlackTextContent {
     /// Text that will be escaped via slack api rules
     Text(SlackText),
     /// Link
     Link(SlackLink),
+    /// User Link
+    User(SlackUserLink),
 }
 
 impl<'a> From<&'a [SlackTextContent]> for SlackText {
@@ -114,21 +117,21 @@ impl<'a> From<&'a [SlackTextContent]> for SlackText {
             .map(|item| match *item {
                 SlackTextContent::Text(ref s) => format!("{}", s),
                 SlackTextContent::Link(ref link) => format!("{}", link),
-            })
-            .collect::<Vec<String>>()
+                SlackTextContent::User(ref u) => format!("{}", u),
+            }).collect::<Vec<String>>()
             .join(" ");
         SlackText::new_raw(st)
     }
 }
 
-impl ::std::fmt::Display for SlackText {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+impl fmt::Display for SlackText {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.0)
     }
 }
 
 /// Representation of a link sent in slack
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct SlackLink {
     /// URL for link.
     ///
@@ -149,13 +152,47 @@ impl SlackLink {
     }
 }
 
-impl ::std::fmt::Display for SlackLink {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+impl fmt::Display for SlackLink {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "<{}|{}>", self.url, self.text)
     }
 }
 
 impl Serialize for SlackLink {
+    fn serialize<S>(&self, serializer: S) -> ::std::result::Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_str(&format!("{}", self)[..])
+    }
+}
+
+/// Representation of a user id link sent in slack
+///
+/// Cannot do @UGUID|handle links using SlackLink in the future due to
+/// https://api.slack.com/changelog/2017-09-the-one-about-usernames
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct SlackUserLink {
+    /// User ID (U1231232123) style
+    pub uid: String,
+}
+
+impl SlackUserLink {
+    /// Construct new `SlackUserLink` with a string slice
+    pub fn new(uid: &str) -> SlackUserLink {
+        SlackUserLink {
+            uid: uid.to_owned(),
+        }
+    }
+}
+
+impl fmt::Display for SlackUserLink {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "<{}>", self.uid)
+    }
+}
+
+impl Serialize for SlackUserLink {
     fn serialize<S>(&self, serializer: S) -> ::std::result::Result<S::Ok, S::Error>
     where
         S: Serializer,
