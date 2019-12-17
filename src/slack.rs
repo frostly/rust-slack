@@ -1,6 +1,7 @@
 use chrono::NaiveDateTime;
 use error::{Error, ErrorKind, Result};
-use reqwest::{Client, Url};
+use reqwest::{Client, ClientBuilder, Proxy, Url};
+use std::str;
 use serde::{Serialize, Serializer};
 use std::fmt;
 use {Payload, TryInto};
@@ -13,11 +14,15 @@ pub struct Slack {
 }
 
 impl Slack {
-    /// Construct a new instance of slack for a specific incoming url endpoint.
-    pub fn new<T: TryInto<Url, Err = Error>>(hook: T) -> Result<Slack> {
+    /// Construct a new instance of slack for a specific
+    /// incoming url endopoint
+    pub fn new<T: TryInto<Url, Err = Error>>(hook: T, proxy: Option<Proxy>) -> Result<Slack> {
         Ok(Slack {
             hook: hook.try_into()?,
-            client: Client::new(),
+            client: match proxy {
+                Some(proxy) => ClientBuilder::new().proxy(proxy).build()?,
+                None => Client::new(),
+            },
         })
     }
 
@@ -206,7 +211,7 @@ mod test {
 
     #[test]
     fn slack_incoming_url_test() {
-        let s = Slack::new("https://hooks.slack.com/services/abc/123/45z").unwrap();
+        let s = Slack::new("https://hooks.slack.com/services/abc/123/45z", None).unwrap();
         assert_eq!(
             s.hook.to_string(),
             "https://hooks.slack.com/services/abc/123/45z".to_owned()
@@ -245,16 +250,14 @@ mod test {
 
     #[test]
     fn json_complete_payload_test() {
-        let a = vec![
-            AttachmentBuilder::new("fallback <&>")
-                .text("text <&>")
-                .color("#6800e8")
-                .fields(vec![Field::new("title", "value", None)])
-                .title_link("https://title_link.com/")
-                .ts(&NaiveDateTime::from_timestamp(123_456_789, 0))
-                .build()
-                .unwrap(),
-        ];
+        let a = vec![AttachmentBuilder::new("fallback <&>")
+            .text("text <&>")
+            .color("#6800e8")
+            .fields(vec![Field::new("title", "value", None)])
+            .title_link("https://title_link.com/")
+            .ts(&NaiveDateTime::from_timestamp(123_456_789, 0))
+            .build()
+            .unwrap()];
 
         let p = PayloadBuilder::new()
             .text("test message")
