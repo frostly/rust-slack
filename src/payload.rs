@@ -1,8 +1,8 @@
-use {Attachment, SlackText, TryInto};
-use helper::bool_to_u8;
-use error::{Error, Result};
+use crate::{Attachment, SlackText};
+use crate::helper::bool_to_u8;
+use crate::error::Result;
 use serde::{Serialize, Serializer};
-use reqwest::Url;
+use url::Url;
 
 /// Payload to send to slack
 /// https://api.slack.com/incoming-webhooks
@@ -23,7 +23,6 @@ pub struct Payload {
     pub username: Option<String>,
     /// specific url for icon
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "::url_serde")]
     pub icon_url: Option<Url>,
     /// emjoi for icon
     /// https://api.slack.com/methods/emoji.list

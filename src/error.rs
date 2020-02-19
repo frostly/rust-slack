@@ -1,23 +1,26 @@
-error_chain! {
-    foreign_links {
-        Utf8(::std::str::Utf8Error) #[doc = "utf8 error, slack responses should be valid utf8"];
-        Serialize(::serde_json::error::Error) #[doc = "`serde_json::error::Error`"];
-        FromHex(::hexx::FromHexError) #[doc = "`rustc_serialize::hex::FromHexError`"];
-        Reqwest(::reqwest::Error) #[doc = "`reqwest::Error`"];
-        Url(::reqwest::UrlError) #[doc = "`reqwest::UrlError`"];
-        Io(::std::io::Error) #[doc = "`std::io::Error`"];
-    }
+pub use failure::{Error, Fail, Context, Backtrace, ResultExt};
 
-    errors {
-        /// slack service error
-        Slack(err: String) {
-            description("slack service error")
-            display("slack service error: {}", err)
-        }
-        /// `HexColor` parsing error
-        HexColor(err: String) {
-            description("hex color parsing error")
-            display("hex color parsing error: {}", err)
-        }
-    }
+/*
+// This would be a more expressive pattern by following
+// https://rust-lang-nursery.github.io/failure/error-errorkind.html
+// however it was hard to get to work inside TryFrom, TryInto traits
+// so have left the typed error equivalents that was here before commented out
+// but ready to be swapped in if they are useful.
+
+#[derive(Debug)]
+pub struct SlackError {
+    inner: Context<ErrorKind>,
 }
+
+#[derive(Fail, Debug)]
+pub enum ErrorKind {
+    #[fail(display = "hex color parsing error: {}", _0)]
+    HexColor(String),
+
+    #[fail(display = "slack service error: {}", _0)]
+    Slack(String),
+}
+*/
+
+/// Error handling convenience type
+pub type Result<T> = std::result::Result<T, Error>;

@@ -1,7 +1,7 @@
 use chrono::NaiveDateTime;
-use error::{Error, Result};
-use reqwest::Url;
-use {HexColor, SlackText, SlackTime, TryInto};
+use crate::error::Result;
+use url::Url;
+use crate::{HexColor, SlackText, SlackTime};
 
 /// Slack allows for attachments to be added to messages. See
 /// https://api.slack.com/docs/attachments for more information.
@@ -32,28 +32,23 @@ pub struct Attachment {
     /// Optional URL that will hyperlink the `author_name` text mentioned above. Will only
     /// work if `author_name` is present.
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "::url_serde")]
     pub author_link: Option<Url>,
     /// Optional URL that displays a small 16x16px image to the left of
     /// the `author_name` text. Will only work if `author_name` is present.
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "::url_serde")]
     pub author_icon: Option<Url>,
     /// Optional larger, bolder text above the main body
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<SlackText>,
     /// Optional URL to link to from the title
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "::url_serde")]
     pub title_link: Option<Url>,
     /// Optional URL to an image that will be displayed in the body
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "::url_serde")]
     pub image_url: Option<Url>,
     /// Optional URL to an image that will be displayed as a thumbnail to the
     /// right of the body
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "::url_serde")]
     pub thumb_url: Option<Url>,
     /// Optional text that will appear at the bottom of the attachment
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -61,7 +56,6 @@ pub struct Attachment {
     /// Optional URL to an image that will be displayed at the bottom of the
     /// attachment
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "::url_serde")]
     pub footer_icon: Option<Url>,
     /// Optional timestamp to be displayed with the attachment
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -193,9 +187,9 @@ impl AttachmentBuilder {
     /// 3. Any valid hex color code: e.g. `#b13d41` or `#000`.
     ///
     /// hex color codes will be checked to ensure a valid hex number is provided
-    pub fn color<C: TryInto<HexColor, Err = Error>>(self, color: C) -> AttachmentBuilder {
+    pub fn color<S: Into<String>>(self, color: S) -> AttachmentBuilder {
         match self.inner {
-            Ok(mut inner) => match color.try_into() {
+            Ok(mut inner) => match HexColor::new_checked(color) {
                 Ok(c) => {
                     inner.color = Some(c);
                     AttachmentBuilder { inner: Ok(inner) }
