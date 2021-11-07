@@ -67,7 +67,7 @@ pub trait TryFrom<T>: Sized {
     type Err;
 
     /// Performs the conversion.
-    fn try_from(T) -> ::std::result::Result<Self, Self::Err>;
+    fn try_from(_: T) -> ::std::result::Result<Self, Self::Err>;
 }
 
 impl<T, U> TryInto<U> for T

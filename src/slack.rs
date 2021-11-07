@@ -239,7 +239,7 @@ mod test {
             url: "http://google.com".to_owned(),
         };
         assert_eq!(
-            serde_json::to_string(&s).unwrap().to_owned(),
+            serde_json::to_string(&s).unwrap(),
             "\"<http://google.com|moo &lt;&amp;&gt; moo>\"".to_owned()
         )
     }
@@ -268,7 +268,7 @@ mod test {
             .build()
             .unwrap();
 
-        assert_eq!(serde_json::to_string(&p).unwrap().to_owned(),
+        assert_eq!(serde_json::to_string(&p).unwrap(),
             r##"{"text":"test message","channel":"#abc","username":"Bot","icon_url":"https://example.com/","icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","color":"#6800e8","fields":[{"title":"title","value":"value"}],"title_link":"https://title_link.com/","ts":123456789}],"unfurl_links":false,"link_names":1,"parse":"full"}"##.to_owned())
     }
 
@@ -277,7 +277,7 @@ mod test {
         let p = PayloadBuilder::new().text("test message").build().unwrap();
 
         assert_eq!(
-            serde_json::to_string(&p).unwrap().to_owned(),
+            serde_json::to_string(&p).unwrap(),
             r##"{"text":"test message"}"##.to_owned()
         )
     }
