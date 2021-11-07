@@ -81,7 +81,8 @@ where
                 "Must be 4 or 7 characters long (including #): \
                  found `{}`",
                 s
-            )).into());
+            ))
+            .into());
         }
         if !s.starts_with('#') {
             return Err(ErrorKind::HexColor(format!("No leading #: found `{}`", s)).into());
@@ -141,10 +142,9 @@ mod test {
     #[test]
     fn test_hex_color_invalid_hex_fmt() {
         let err = HexColor::try_from("#abc12z").unwrap_err();
-        assert!(
-            err.to_string()
-                .contains("Invalid character 'z' at position 5")
-        );
+        assert!(err
+            .to_string()
+            .contains("Invalid character 'z' at position 5"));
     }
 
     #[test]

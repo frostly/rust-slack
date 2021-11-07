@@ -25,7 +25,7 @@ impl Slack {
     pub fn send(&self, payload: &Payload) -> Result<()> {
         let response = self.client.post(self.hook.clone()).json(payload).send()?;
 
-        if response.status().is_success(){
+        if response.status().is_success() {
             Ok(())
         } else {
             Err(ErrorKind::Slack(format!("HTTP error {}", response.status())).into())
@@ -113,7 +113,8 @@ impl<'a> From<&'a [SlackTextContent]> for SlackText {
                 SlackTextContent::Text(ref s) => format!("{}", s),
                 SlackTextContent::Link(ref link) => format!("{}", link),
                 SlackTextContent::User(ref u) => format!("{}", u),
-            }).collect::<Vec<String>>()
+            })
+            .collect::<Vec<String>>()
             .join(" ");
         SlackText::new_raw(st)
     }
@@ -245,16 +246,14 @@ mod test {
 
     #[test]
     fn json_complete_payload_test() {
-        let a = vec![
-            AttachmentBuilder::new("fallback <&>")
-                .text("text <&>")
-                .color("#6800e8")
-                .fields(vec![Field::new("title", "value", None)])
-                .title_link("https://title_link.com/")
-                .ts(&NaiveDateTime::from_timestamp(123_456_789, 0))
-                .build()
-                .unwrap(),
-        ];
+        let a = vec![AttachmentBuilder::new("fallback <&>")
+            .text("text <&>")
+            .color("#6800e8")
+            .fields(vec![Field::new("title", "value", None)])
+            .title_link("https://title_link.com/")
+            .ts(&NaiveDateTime::from_timestamp(123_456_789, 0))
+            .build()
+            .unwrap()];
 
         let p = PayloadBuilder::new()
             .text("test message")

@@ -101,7 +101,7 @@ pub struct Action {
     pub style: Option<String>,
     /// Value of action
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>
+    pub value: Option<String>,
 }
 
 impl Action {
@@ -111,15 +111,14 @@ impl Action {
         text: S,
         name: S,
         style: Option<String>,
-        value: Option<String>
-
+        value: Option<String>,
     ) -> Action {
         Action {
             action_type: action_type.into(),
             text: text.into(),
             name: name.into(),
             style,
-            value
+            value,
         }
     }
 }
