@@ -25,7 +25,7 @@ impl Slack {
     pub fn send(&self, payload: &Payload) -> Result<()> {
         let response = self.client.post(self.hook.clone()).json(payload).send()?;
 
-        if response.status().is_success(){
+        if response.status().is_success() {
             Ok(())
         } else {
             Err(ErrorKind::Slack(format!("HTTP error {}", response.status())).into())
@@ -113,7 +113,8 @@ impl<'a> From<&'a [SlackTextContent]> for SlackText {
                 SlackTextContent::Text(ref s) => format!("{}", s),
                 SlackTextContent::Link(ref link) => format!("{}", link),
                 SlackTextContent::User(ref u) => format!("{}", u),
-            }).collect::<Vec<String>>()
+            })
+            .collect::<Vec<String>>()
             .join(" ");
         SlackText::new_raw(st)
     }
@@ -238,23 +239,21 @@ mod test {
             url: "http://google.com".to_owned(),
         };
         assert_eq!(
-            serde_json::to_string(&s).unwrap().to_owned(),
+            serde_json::to_string(&s).unwrap(),
             "\"<http://google.com|moo &lt;&amp;&gt; moo>\"".to_owned()
         )
     }
 
     #[test]
     fn json_complete_payload_test() {
-        let a = vec![
-            AttachmentBuilder::new("fallback <&>")
-                .text("text <&>")
-                .color("#6800e8")
-                .fields(vec![Field::new("title", "value", None)])
-                .title_link("https://title_link.com/")
-                .ts(&NaiveDateTime::from_timestamp(123_456_789, 0))
-                .build()
-                .unwrap(),
-        ];
+        let a = vec![AttachmentBuilder::new("fallback <&>")
+            .text("text <&>")
+            .color("#6800e8")
+            .fields(vec![Field::new("title", "value", None)])
+            .title_link("https://title_link.com/")
+            .ts(&NaiveDateTime::from_timestamp(123_456_789, 0))
+            .build()
+            .unwrap()];
 
         let p = PayloadBuilder::new()
             .text("test message")
@@ -269,7 +268,7 @@ mod test {
             .build()
             .unwrap();
 
-        assert_eq!(serde_json::to_string(&p).unwrap().to_owned(),
+        assert_eq!(serde_json::to_string(&p).unwrap(),
             r##"{"text":"test message","channel":"#abc","username":"Bot","icon_url":"https://example.com/","icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","color":"#6800e8","fields":[{"title":"title","value":"value"}],"title_link":"https://title_link.com/","ts":123456789}],"unfurl_links":false,"link_names":1,"parse":"full"}"##.to_owned())
     }
 
@@ -278,7 +277,7 @@ mod test {
         let p = PayloadBuilder::new().text("test message").build().unwrap();
 
         assert_eq!(
-            serde_json::to_string(&p).unwrap().to_owned(),
+            serde_json::to_string(&p).unwrap(),
             r##"{"text":"test message"}"##.to_owned()
         )
     }

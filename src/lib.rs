@@ -1,5 +1,14 @@
-#![deny(missing_docs, missing_debug_implementations, trivial_casts, trivial_numeric_casts,
-       unsafe_code, unstable_features, unused_import_braces, unused_qualifications, unused_results)]
+#![deny(
+    missing_docs,
+    missing_debug_implementations,
+    trivial_casts,
+    trivial_numeric_casts,
+    unsafe_code,
+    unstable_features,
+    unused_import_braces,
+    unused_qualifications,
+    unused_results
+)]
 #![cfg_attr(test, deny(warnings))]
 
 //! Library to send messages to slack rooms
@@ -18,19 +27,19 @@ extern crate serde_derive;
 extern crate serde_json;
 extern crate url_serde;
 
-pub use slack::{Slack, SlackLink, SlackUserLink, SlackText, SlackTextContent, SlackTime};
-pub use payload::{Parse, Payload, PayloadBuilder};
-pub use attachment::{Attachment, AttachmentBuilder, Field, Section, Action};
-pub use hex::{HexColor, SlackColor};
+pub use attachment::{Action, Attachment, AttachmentBuilder, Field, Section};
 pub use error::{Error, Result};
+pub use hex::{HexColor, SlackColor};
+pub use payload::{Parse, Payload, PayloadBuilder};
+pub use slack::{Slack, SlackLink, SlackText, SlackTextContent, SlackTime, SlackUserLink};
 
 #[macro_use]
 mod macros;
-mod helper;
+mod attachment;
 mod error;
+mod helper;
 mod hex;
 mod payload;
-mod attachment;
 mod slack;
 
 /// Waiting to stabilize: https://github.com/rust-lang/rust/issues/33417
@@ -58,7 +67,7 @@ pub trait TryFrom<T>: Sized {
     type Err;
 
     /// Performs the conversion.
-    fn try_from(T) -> ::std::result::Result<Self, Self::Err>;
+    fn try_from(_: T) -> ::std::result::Result<Self, Self::Err>;
 }
 
 impl<T, U> TryInto<U> for T
