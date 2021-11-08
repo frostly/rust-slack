@@ -1,0 +1,66 @@
+on: [push, pull_request]
+
+name: "Build, Test, and Styling"
+
+jobs:
+  basic:
+    name: Basic
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rust:
+          - stable
+          - beta
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install ${{ matrix.rust }} toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: ${{ matrix.rust }}
+          override: true
+          components: rustfmt, clippy
+
+      # The `rustc` version will change as the channel updates so pin the cache
+      # to the specific version
+      - name: Get rustc version
+        id: get-version
+        run: |
+          echo "::set-output name=version::$(rustc -V | sed 's/ /_/g')"
+
+      - name: Cargo registry cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.cargo/registry
+          key: basic-cargo-registry-${{ steps.get-version.outputs.version }}
+
+      - name: Cargo build cache
+        uses: actions/cache@v2
+        with:
+          path: target
+          key: basic-cargo-build-${{ steps.get-version.outputs.version }}
+
+      - name: Build all targets
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --all-targets
+
+      - name: Run the test suite
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+
+      - name: Check formatting
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: -- --check
+
+      - name: Check clippy lints
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: -- -D warnings
