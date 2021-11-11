@@ -1,6 +1,7 @@
 use chrono::NaiveDateTime;
 use error::{Error, ErrorKind, Result};
-use reqwest::{Client, Url};
+use reqwest::{Client, ClientBuilder, Proxy, Url};
+use std::str;
 use serde::{Serialize, Serializer};
 use std::fmt;
 use {Payload, TryInto};
@@ -13,11 +14,15 @@ pub struct Slack {
 }
 
 impl Slack {
-    /// Construct a new instance of slack for a specific incoming url endpoint.
-    pub fn new<T: TryInto<Url, Err = Error>>(hook: T) -> Result<Slack> {
+    /// Construct a new instance of slack for a specific
+    /// incoming url endopoint
+    pub fn new<T: TryInto<Url, Err = Error>>(hook: T, proxy: Option<Proxy>) -> Result<Slack> {
         Ok(Slack {
             hook: hook.try_into()?,
-            client: Client::new(),
+            client: match proxy {
+                Some(proxy) => ClientBuilder::new().proxy(proxy).build()?,
+                None => Client::new(),
+            },
         })
     }
 
@@ -207,7 +212,7 @@ mod test {
 
     #[test]
     fn slack_incoming_url_test() {
-        let s = Slack::new("https://hooks.slack.com/services/abc/123/45z").unwrap();
+        let s = Slack::new("https://hooks.slack.com/services/abc/123/45z", None).unwrap();
         assert_eq!(
             s.hook.to_string(),
             "https://hooks.slack.com/services/abc/123/45z".to_owned()
