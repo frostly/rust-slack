@@ -5,10 +5,10 @@ macro_rules! url_builder_fn {
         $name:ident, $builder:ident
     } => {
         $(#[$meta])+
-        pub fn $name(self, $name: &str) -> $builder {
+        pub fn $name<U: ::reqwest::IntoUrl>(self, $name: U) -> $builder {
             match self.inner {
                 Ok(mut inner) => {
-                    match Url::parse($name) {
+                    match $name.into_url() {
                         Ok(url) => {
                             inner.$name = Some(url);
                             $builder { inner: Ok(inner) }
