@@ -8,6 +8,7 @@ name = "slack-hook"
 readme = "README.md"
 repository = "https://github.com/frostly/rust-slack"
 version = "0.8.0"
+edition = "2018"
 
 [dependencies]
 chrono = "0.4"

@@ -1,7 +1,8 @@
-use chrono::NaiveDateTime;
 use crate::error::{Error, Result};
-use reqwest::Url;
 use crate::{HexColor, SlackText, SlackTime, TryInto};
+use chrono::NaiveDateTime;
+use reqwest::Url;
+use serde::Serialize;
 
 /// Slack allows for attachments to be added to messages. See
 /// https://api.slack.com/docs/attachments for more information.

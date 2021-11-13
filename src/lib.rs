@@ -9,35 +9,26 @@
     unused_qualifications,
     unused_results
 )]
-#![cfg_attr(test, deny(warnings))]
 
 //! Library to send messages to slack rooms
 //! supports entire messaging API, including attachments and fields
 //! also support for built-in colors as well as any hex colors
 
-extern crate reqwest;
-
-extern crate chrono;
 #[macro_use]
 extern crate error_chain;
-extern crate hex as hexx;
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-extern crate serde_json;
-extern crate url_serde;
 
 pub use crate::attachment::{Action, Attachment, AttachmentBuilder, Field, Section};
 pub use crate::error::{Error, Result};
-pub use crate::hex::{HexColor, SlackColor};
+pub use crate::hexx::{HexColor, SlackColor};
 pub use crate::payload::{Parse, Payload, PayloadBuilder};
 pub use crate::slack::{Slack, SlackLink, SlackText, SlackTextContent, SlackTime, SlackUserLink};
 
 #[macro_use]
 mod macros;
+
 mod attachment;
 mod error;
-mod hex;
+mod hexx;
 mod payload;
 mod slack;
 
