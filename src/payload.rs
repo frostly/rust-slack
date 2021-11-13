@@ -1,5 +1,5 @@
-use crate::error::{Error, Result};
-use crate::{Attachment, SlackText, TryInto};
+use crate::error::Result;
+use crate::{Attachment, SlackText};
 use reqwest::Url;
 use serde::{Serialize, Serializer};
 

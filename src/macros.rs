@@ -5,15 +5,15 @@ macro_rules! url_builder_fn {
         $name:ident, $builder:ident
     } => {
         $(#[$meta])+
-        pub fn $name<U: TryInto<::reqwest::Url, Err = Error>>(self, $name: U) -> $builder {
+        pub fn $name(self, $name: &str) -> $builder {
             match self.inner {
                 Ok(mut inner) => {
-                    match $name.try_into() {
+                    match Url::parse($name) {
                         Ok(url) => {
                             inner.$name = Some(url);
                             $builder { inner: Ok(inner) }
                         }
-                        Err(e) => $builder { inner: Err(e) },
+                        Err(e) => $builder { inner: Err(e.into()) },
                     }
                 }
                 _ => self,

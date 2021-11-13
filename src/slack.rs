@@ -1,5 +1,5 @@
-use crate::error::{Error, ErrorKind, Result};
-use crate::{Payload, TryInto};
+use crate::error::{ErrorKind, Result};
+use crate::Payload;
 use chrono::NaiveDateTime;
 use reqwest::{Client, Url};
 use serde::{Serialize, Serializer};
@@ -14,9 +14,9 @@ pub struct Slack {
 
 impl Slack {
     /// Construct a new instance of slack for a specific incoming url endpoint.
-    pub fn new<T: TryInto<Url, Err = Error>>(hook: T) -> Result<Slack> {
+    pub fn new<T: reqwest::IntoUrl>(hook: T) -> Result<Slack> {
         Ok(Slack {
-            hook: hook.try_into()?,
+            hook: hook.into_url()?,
             client: Client::new(),
         })
     }

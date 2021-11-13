@@ -1,5 +1,5 @@
 use crate::error::{Error, ErrorKind};
-use crate::TryFrom;
+use std::{convert::TryFrom, str::FromStr};
 
 use hex::FromHex;
 use serde::Serialize;
@@ -27,6 +27,14 @@ impl Default for HexColor {
 impl ::std::fmt::Display for HexColor {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         write!(f, "{}", self.0)
+    }
+}
+
+impl TryFrom<&str> for HexColor {
+    type Error = Error;
+
+    fn try_from(s: &str) -> Result<Self, Self::Error> {
+        s.parse()
     }
 }
 
@@ -66,12 +74,10 @@ impl From<SlackColor> for HexColor {
     }
 }
 
-impl<S> TryFrom<S> for HexColor
-where
-    S: Into<String>,
-{
+impl FromStr for HexColor {
     type Err = Error;
-    fn try_from(s: S) -> ::std::result::Result<Self, Self::Err> {
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
         let s: String = s.into();
         if SLACK_COLORS.contains(&&s[..]) {
             return Ok(HexColor(s));
@@ -109,22 +115,15 @@ where
     }
 }
 
-// even though this will always succeed, it simplifies the trait bound in the builder
-impl TryFrom<SlackColor> for HexColor {
-    type Err = Error;
-    fn try_from(color: SlackColor) -> ::std::result::Result<Self, Self::Err> {
-        Ok(color.into())
-    }
-}
-
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::{HexColor, TryFrom};
+    use crate::HexColor;
+    use std::convert::TryFrom;
 
     #[test]
     fn test_hex_color_too_short() {
-        let err = HexColor::try_from("abc").unwrap_err();
+        let err = HexColor::from_str("abc").unwrap_err();
         assert_eq!(
             err.to_string(),
             "hex color parsing error: Must be 4 or 7 characters long (including #): found \
@@ -134,7 +133,7 @@ mod test {
 
     #[test]
     fn test_hex_color_missing_hash() {
-        let err = HexColor::try_from("1234567").unwrap_err();
+        let err = HexColor::from_str("1234567").unwrap_err();
         assert_eq!(
             err.to_string(),
             "hex color parsing error: No leading #: found `1234567`"
@@ -143,7 +142,7 @@ mod test {
 
     #[test]
     fn test_hex_color_invalid_hex_fmt() {
-        let err = HexColor::try_from("#abc12z").unwrap_err();
+        let err = HexColor::from_str("#abc12z").unwrap_err();
         assert!(err
             .to_string()
             .contains("Invalid character 'z' at position 5"));
@@ -151,31 +150,31 @@ mod test {
 
     #[test]
     fn test_hex_color_good() {
-        let h: HexColor = HexColor::try_from(SlackColor::Good).unwrap();
+        let h: HexColor = HexColor::from_str(&SlackColor::Good.to_string()).unwrap();
         assert_eq!(h.to_string(), "good");
     }
 
     #[test]
     fn test_hex_color_danger_str() {
-        let ok = HexColor::try_from("danger").unwrap();
+        let ok = HexColor::from_str("danger").unwrap();
         assert_eq!(ok.to_string(), "danger");
     }
 
     #[test]
     fn test_hex_color_3_char_hex() {
-        let ok = HexColor::try_from("#d18").unwrap();
+        let ok = HexColor::from_str("#d18").unwrap();
         assert_eq!(ok.to_string(), "#d18");
     }
 
     #[test]
     fn test_hex_color_valid_upper_hex() {
-        let ok = HexColor::try_from("#103D18").unwrap();
+        let ok = HexColor::from_str("#103D18").unwrap();
         assert_eq!(ok.to_string(), "#103D18");
     }
 
     #[test]
     fn test_hex_color_valid_lower_hex() {
-        let ok = HexColor::try_from("#103d18").unwrap();
+        let ok = HexColor::from_str("#103d18").unwrap();
         assert_eq!(ok.to_string(), "#103d18");
     }
 }
