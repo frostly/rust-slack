@@ -37,7 +37,6 @@ pub use crate::slack::{Slack, SlackLink, SlackText, SlackTextContent, SlackTime,
 mod macros;
 mod attachment;
 mod error;
-mod helper;
 mod hex;
 mod payload;
 mod slack;

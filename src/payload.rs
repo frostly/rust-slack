@@ -1,8 +1,7 @@
 use crate::error::{Error, Result};
-use crate::helper::bool_to_u8;
+use crate::{Attachment, SlackText, TryInto};
 use reqwest::Url;
 use serde::{Serialize, Serializer};
-use crate::{Attachment, SlackText, TryInto};
 
 /// Payload to send to slack
 /// https://api.slack.com/incoming-webhooks
@@ -178,7 +177,7 @@ impl PayloadBuilder {
     pub fn link_names(self, b: bool) -> PayloadBuilder {
         match self.inner {
             Ok(mut inner) => {
-                inner.link_names = Some(bool_to_u8(b));
+                inner.link_names = Some(u8::from(b));
                 PayloadBuilder { inner: Ok(inner) }
             }
             _ => self,
