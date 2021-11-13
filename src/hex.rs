@@ -123,7 +123,7 @@ mod test {
 
     #[test]
     fn test_hex_color_too_short() {
-        let err = HexColor::from_str("abc").unwrap_err();
+        let err = HexColor::try_from("abc").unwrap_err();
         assert_eq!(
             err.to_string(),
             "hex color parsing error: Must be 4 or 7 characters long (including #): found \
@@ -133,7 +133,7 @@ mod test {
 
     #[test]
     fn test_hex_color_missing_hash() {
-        let err = HexColor::from_str("1234567").unwrap_err();
+        let err = HexColor::try_from("1234567").unwrap_err();
         assert_eq!(
             err.to_string(),
             "hex color parsing error: No leading #: found `1234567`"
@@ -142,7 +142,7 @@ mod test {
 
     #[test]
     fn test_hex_color_invalid_hex_fmt() {
-        let err = HexColor::from_str("#abc12z").unwrap_err();
+        let err = HexColor::try_from("#abc12z").unwrap_err();
         assert!(err
             .to_string()
             .contains("Invalid character 'z' at position 5"));
@@ -150,31 +150,31 @@ mod test {
 
     #[test]
     fn test_hex_color_good() {
-        let h: HexColor = HexColor::from_str(&SlackColor::Good.to_string()).unwrap();
+        let h: HexColor = HexColor::try_from(SlackColor::Good).unwrap();
         assert_eq!(h.to_string(), "good");
     }
 
     #[test]
     fn test_hex_color_danger_str() {
-        let ok = HexColor::from_str("danger").unwrap();
+        let ok = HexColor::try_from("danger").unwrap();
         assert_eq!(ok.to_string(), "danger");
     }
 
     #[test]
     fn test_hex_color_3_char_hex() {
-        let ok = HexColor::from_str("#d18").unwrap();
+        let ok = HexColor::try_from("#d18").unwrap();
         assert_eq!(ok.to_string(), "#d18");
     }
 
     #[test]
     fn test_hex_color_valid_upper_hex() {
-        let ok = HexColor::from_str("#103D18").unwrap();
+        let ok = HexColor::try_from("#103D18").unwrap();
         assert_eq!(ok.to_string(), "#103D18");
     }
 
     #[test]
     fn test_hex_color_valid_lower_hex() {
-        let ok = HexColor::from_str("#103d18").unwrap();
+        let ok = HexColor::try_from("#103d18").unwrap();
         assert_eq!(ok.to_string(), "#103d18");
     }
 }

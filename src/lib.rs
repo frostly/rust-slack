@@ -20,7 +20,7 @@ extern crate error_chain;
 
 pub use crate::attachment::{Action, Attachment, AttachmentBuilder, Field, Section};
 pub use crate::error::{Error, Result};
-pub use crate::hexx::{HexColor, SlackColor};
+pub use crate::hex::{HexColor, SlackColor};
 pub use crate::payload::{Parse, Payload, PayloadBuilder};
 pub use crate::slack::{Slack, SlackLink, SlackText, SlackTextContent, SlackTime, SlackUserLink};
 
@@ -29,6 +29,6 @@ mod macros;
 
 mod attachment;
 mod error;
-mod hexx;
+mod hex;
 mod payload;
 mod slack;
