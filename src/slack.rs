@@ -121,7 +121,7 @@ impl<'a> From<&'a [SlackTextContent]> for SlackText {
 }
 
 impl fmt::Display for SlackText {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.0)
     }
 }
@@ -149,7 +149,7 @@ impl SlackLink {
 }
 
 impl fmt::Display for SlackLink {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "<{}|{}>", self.url, self.text)
     }
 }
@@ -183,7 +183,7 @@ impl SlackUserLink {
 }
 
 impl fmt::Display for SlackUserLink {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "<{}>", self.uid)
     }
 }

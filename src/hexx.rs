@@ -25,7 +25,7 @@ impl Default for HexColor {
 }
 
 impl ::std::fmt::Display for HexColor {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         write!(f, "{}", self.0)
     }
 }
@@ -45,7 +45,7 @@ pub enum SlackColor {
 const SLACK_COLORS: [&str; 3] = ["good", "warning", "danger"];
 
 impl ::std::fmt::Display for SlackColor {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         write!(f, "{}", self.as_ref())
     }
 }

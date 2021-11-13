@@ -9,6 +9,7 @@
     unused_qualifications,
     unused_results
 )]
+#![warn(rust_2018_idioms)]
 
 //! Library to send messages to slack rooms
 //! supports entire messaging API, including attachments and fields
