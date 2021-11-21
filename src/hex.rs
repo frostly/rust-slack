@@ -1,6 +1,8 @@
-use error::{Error, ErrorKind};
-use hexx::FromHex;
-use TryFrom;
+use crate::error::{Error, ErrorKind};
+use std::{convert::TryFrom, str::FromStr};
+
+use hex::FromHex;
+use serde::Serialize;
 
 /// A `HexColor` `String` can be one of:
 ///
@@ -23,8 +25,16 @@ impl Default for HexColor {
 }
 
 impl ::std::fmt::Display for HexColor {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         write!(f, "{}", self.0)
+    }
+}
+
+impl TryFrom<&str> for HexColor {
+    type Error = Error;
+
+    fn try_from(s: &str) -> Result<Self, Self::Error> {
+        s.parse()
     }
 }
 
@@ -43,7 +53,7 @@ pub enum SlackColor {
 const SLACK_COLORS: [&str; 3] = ["good", "warning", "danger"];
 
 impl ::std::fmt::Display for SlackColor {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         write!(f, "{}", self.as_ref())
     }
 }
@@ -64,12 +74,10 @@ impl From<SlackColor> for HexColor {
     }
 }
 
-impl<S> TryFrom<S> for HexColor
-where
-    S: Into<String>,
-{
+impl FromStr for HexColor {
     type Err = Error;
-    fn try_from(s: S) -> ::std::result::Result<Self, Self::Err> {
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
         let s: String = s.into();
         if SLACK_COLORS.contains(&&s[..]) {
             return Ok(HexColor(s));
@@ -107,18 +115,11 @@ where
     }
 }
 
-// even though this will always succeed, it simplifies the trait bound in the builder
-impl TryFrom<SlackColor> for HexColor {
-    type Err = Error;
-    fn try_from(color: SlackColor) -> ::std::result::Result<Self, Self::Err> {
-        Ok(color.into())
-    }
-}
-
 #[cfg(test)]
 mod test {
     use super::*;
-    use {HexColor, TryFrom};
+    use crate::HexColor;
+    use std::convert::TryFrom;
 
     #[test]
     fn test_hex_color_too_short() {

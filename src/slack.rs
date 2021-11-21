@@ -1,9 +1,9 @@
+use crate::error::{ErrorKind, Result};
+use crate::Payload;
 use chrono::NaiveDateTime;
-use error::{Error, ErrorKind, Result};
 use reqwest::{Client, Url};
 use serde::{Serialize, Serializer};
 use std::fmt;
-use {Payload, TryInto};
 
 /// Handles sending messages to slack
 #[derive(Debug, Clone)]
@@ -14,9 +14,9 @@ pub struct Slack {
 
 impl Slack {
     /// Construct a new instance of slack for a specific incoming url endpoint.
-    pub fn new<T: TryInto<Url, Err = Error>>(hook: T) -> Result<Slack> {
+    pub fn new<T: reqwest::IntoUrl>(hook: T) -> Result<Slack> {
         Ok(Slack {
-            hook: hook.try_into()?,
+            hook: hook.into_url()?,
             client: Client::new(),
         })
     }
@@ -121,7 +121,7 @@ impl<'a> From<&'a [SlackTextContent]> for SlackText {
 }
 
 impl fmt::Display for SlackText {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.0)
     }
 }
@@ -149,7 +149,7 @@ impl SlackLink {
 }
 
 impl fmt::Display for SlackLink {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "<{}|{}>", self.url, self.text)
     }
 }
@@ -183,7 +183,7 @@ impl SlackUserLink {
 }
 
 impl fmt::Display for SlackUserLink {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "<{}>", self.uid)
     }
 }
@@ -199,11 +199,11 @@ impl Serialize for SlackUserLink {
 
 #[cfg(test)]
 mod test {
+    use crate::slack::{Slack, SlackLink};
+    use crate::{AttachmentBuilder, Field, Parse, PayloadBuilder, SlackText};
     use chrono::NaiveDateTime;
-    use slack::{Slack, SlackLink};
     #[cfg(feature = "unstable")]
     use test::Bencher;
-    use {serde_json, AttachmentBuilder, Field, Parse, PayloadBuilder, SlackText};
 
     #[test]
     fn slack_incoming_url_test() {

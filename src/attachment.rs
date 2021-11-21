@@ -1,7 +1,9 @@
+use crate::error::{Error, Result};
+use crate::{HexColor, SlackText, SlackTime};
 use chrono::NaiveDateTime;
-use error::{Error, Result};
 use reqwest::Url;
-use {HexColor, SlackText, SlackTime, TryInto};
+use serde::Serialize;
+use std::convert::TryInto;
 
 /// Slack allows for attachments to be added to messages. See
 /// https://api.slack.com/docs/attachments for more information.
@@ -192,7 +194,7 @@ impl AttachmentBuilder {
     /// 3. Any valid hex color code: e.g. `#b13d41` or `#000`.
     ///
     /// hex color codes will be checked to ensure a valid hex number is provided
-    pub fn color<C: TryInto<HexColor, Err = Error>>(self, color: C) -> AttachmentBuilder {
+    pub fn color<C: TryInto<HexColor, Error = Error>>(self, color: C) -> AttachmentBuilder {
         match self.inner {
             Ok(mut inner) => match color.try_into() {
                 Ok(c) => {
