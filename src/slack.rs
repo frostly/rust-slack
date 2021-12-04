@@ -1,7 +1,7 @@
 use crate::error::{ErrorKind, Result};
 use crate::Payload;
 use chrono::NaiveDateTime;
-use reqwest::{Client, Url};
+use reqwest::{blocking::Client, Url};
 use serde::{Serialize, Serializer};
 use std::fmt;
 
