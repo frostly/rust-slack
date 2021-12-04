@@ -6,7 +6,7 @@ use serde::Serialize;
 use std::convert::TryInto;
 
 /// Slack allows for attachments to be added to messages. See
-/// https://api.slack.com/docs/attachments for more information.
+/// <https://api.slack.com/docs/attachments> for more information.
 #[derive(Serialize, Debug, Default, Clone, PartialEq)]
 pub struct Attachment {
     /// Required text for attachment.

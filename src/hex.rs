@@ -39,7 +39,7 @@ impl TryFrom<&str> for HexColor {
 }
 
 /// Default slack colors built-in to the API
-/// See: https://api.slack.com/docs/attachments
+/// See: <https://api.slack.com/docs/attachments>
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum SlackColor {
     /// green

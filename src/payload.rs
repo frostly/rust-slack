@@ -4,8 +4,8 @@ use reqwest::Url;
 use serde::{Serialize, Serializer};
 
 /// Payload to send to slack
-/// https://api.slack.com/incoming-webhooks
-/// https://api.slack.com/methods/chat.postMessage
+/// <https://api.slack.com/incoming-webhooks>
+/// <https://api.slack.com/methods/chat.postMessage>
 #[derive(Serialize, Debug, Default)]
 pub struct Payload {
     /// text to send
@@ -25,14 +25,14 @@ pub struct Payload {
     #[serde(with = "::url_serde")]
     pub icon_url: Option<Url>,
     /// emjoi for icon
-    /// https://api.slack.com/methods/emoji.list
+    /// <https://api.slack.com/methods/emoji.list>
     #[serde(skip_serializing_if = "Option::is_none")]
     pub icon_emoji: Option<String>,
     /// attachments to send
     #[serde(skip_serializing_if = "Option::is_none")]
     pub attachments: Option<Vec<Attachment>>,
     /// whether slack will try to fetch links and create an attachment
-    /// https://api.slack.com/docs/unfurling
+    /// <https://api.slack.com/docs/unfurling>
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unfurl_links: Option<bool>,
     /// Pass false to disable unfurling of media content
@@ -148,7 +148,7 @@ impl PayloadBuilder {
     }
 
     /// whether slack will try to fetch links and create an attachment
-    /// https://api.slack.com/docs/unfurling
+    /// <https://api.slack.com/docs/unfurling>
     pub fn unfurl_links(self, b: bool) -> PayloadBuilder {
         match self.inner {
             Ok(mut inner) => {
