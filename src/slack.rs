@@ -61,7 +61,7 @@ pub struct SlackText(String);
 impl SlackText {
     /// Construct slack text with escaping
     /// Escape &, <, and > in any slack text
-    /// https://api.slack.com/docs/formatting
+    /// <https://api.slack.com/docs/formatting>
     pub fn new<S: Into<String>>(text: S) -> SlackText {
         let s = text.into().chars().fold(String::new(), |mut s, c| {
             match c {
@@ -166,7 +166,7 @@ impl Serialize for SlackLink {
 /// Representation of a user id link sent in slack
 ///
 /// Cannot do @UGUID|handle links using SlackLink in the future due to
-/// https://api.slack.com/changelog/2017-09-the-one-about-usernames
+/// <https://api.slack.com/changelog/2017-09-the-one-about-usernames>
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct SlackUserLink {
     /// User ID (U1231232123) style
