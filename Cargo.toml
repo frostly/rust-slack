@@ -13,9 +13,8 @@ edition = "2018"
 [dependencies]
 chrono = "0.4"
 reqwest = "0.9"
-hex = "0.3"
-error-chain = "~0.11"
-serde = "1"
-serde_derive = "1"
+hex = "0.4"
+error-chain = "0.12"
+serde = { version = "1.0", features = ["derive"] }
 serde_json = "1"
 url_serde = "0.2"
