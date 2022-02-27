@@ -31,6 +31,16 @@ impl Slack {
             Err(ErrorKind::Slack(format!("HTTP error {}", response.status())).into())
         }
     }
+
+    /// Construct a new instance of slack for a specific incoming url endpoint with a proxy tunnel.
+    pub fn new_with_proxy<T: TryInto<Url, Err = Error>>(hook: T, proxy: T) -> Result<Slack> {
+        Ok(Slack {
+            hook: hook.try_into()?,
+            client: reqwest::Client::builder()
+                .proxy(reqwest::Proxy::all(proxy.try_into()?)?)
+                .build()?,
+        })
+    }
 }
 
 /// Slack timestamp
