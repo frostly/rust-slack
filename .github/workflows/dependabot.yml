@@ -1,0 +1,22 @@
+---
+
+version: 2
+updates:
+
+  # Maintain dependencies for GitHub actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    reviewers:
+      - "@compressed"
+    open-pull-requests-limit: 2
+
+  # Maintain dependencies for Cargo
+  - package-ecosystem: "cargo"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    reviewers:
+      - "@compressed"
+    open-pull-requests-limit: 2
