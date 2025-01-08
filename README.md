@@ -1,5 +1,6 @@
 # rust-slack
-[![Travis Build Status](https://img.shields.io/travis/frostly/rust-slack.svg)](https://travis-ci.org/frostly/rust-slack)
+
+[![CI](https://github.com/frostly/rust-slack/actions/workflows/basic.yml/badge.svg)](https://github.com/frostly/rust-slack/actions/workflows/basic.yml)
 [![Documentation](https://img.shields.io/badge/docs-latest-C9893D.svg)](https://docs.rs/slack-hook/)
 [![crates.io](https://img.shields.io/crates/v/slack-hook.svg)](https://crates.io/crates/slack-hook)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE-MIT)
@@ -11,37 +12,32 @@ A rust crate for sending messages to Slack via webhooks.
 
 Upgrading? See the [CHANGELOG](./CHANGELOG.md).
 
-Requires rust 1.17 or newer.
-
 # Usage
 
-Add this to your `Cargo.toml`:
+Simply run this to add it to your `Cargo.toml`:
 
-```toml
-[dependencies]
-slack-hook = "0.7"
+```console
+cargo add slack-hook
 ```
 
-Add the crate to your existing project:
+and then start sending messages!
 
 ```rust,no_run
-extern crate slack_hook;
 use slack_hook::{Slack, PayloadBuilder};
 
 fn main() {
     let slack = Slack::new("https://hooks.slack.com/services/abc/123/45z").unwrap();
-    let p = PayloadBuilder::new()
-      .text("test message")
-      .channel("#testing")
-      .username("My Bot")
-      .icon_emoji(":chart_with_upwards_trend:")
-      .build()
-      .unwrap();
+    let payload = PayloadBuilder::new()
+        .text("test message")
+        .channel("#testing")
+        .username("My Bot")
+        .icon_emoji(":chart_with_upwards_trend:")
+        .build()
+        .expect("we know this payload is valid");
 
-    let res = slack.send(&p);
-    match res {
-        Ok(()) => println!("ok"),
-        Err(x) => println!("ERR: {:?}",x)
+    match slack.send(&payload) {
+        Ok(()) => println!("Message sent!"),
+        Err(err) => eprintln!("Error: {err:?}")
     }
 }
 ```
@@ -51,48 +47,52 @@ fn main() {
 To create a payload with just an attachment:
 
 ```rust
-extern crate slack_hook;
 use slack_hook::{PayloadBuilder, AttachmentBuilder};
 
-fn main() {
-  let _ = PayloadBuilder::new()
-    .attachments(vec![AttachmentBuilder::new("my text").color("#b13d41").build().unwrap()])
+let attachment = AttachmentBuilder::new("my text")
+    .color("#b13d41")
     .build()
     .unwrap();
-}
+let _payload = PayloadBuilder::new()
+    .attachments(vec![attachment])
+    .build()
+    .unwrap();
 ```
 
 ## Text with Links
 
-Slack messaging API permits you to send links within text. However, given the different formatting
-rules, these text fragments need to be specified as follows:
+Slack messaging API permits you to send links within text. However, given the
+different formatting rules, these text fragments need to be specified as
+follows:
 
 ```rust
-extern crate slack_hook;
 use slack_hook::{PayloadBuilder, SlackTextContent, SlackLink};
-use slack_hook::SlackTextContent::{Text, Link};
 
 fn main() {
+    let text = [
+        SlackTextContent::Text("Hello".into()),
+        SlackTextContent::Link(SlackLink::new("https://google.com", "Google")),
+        SlackTextContent::Text(", nice to know you.".into())
+    ];
   let _ = PayloadBuilder::new()
-    .text(vec![
-      Text("Hello".into()),
-      Link(SlackLink::new("https://google.com", "Google")),
-      Text(", nice to know you.".into())
-    ].as_slice())
+    .text(text.as_slice())
     .build()
     .unwrap();
 }
 ```
 
-Sending this payload will print the following in slack (note: each element of the `Vec` has been
-space-separated):
+Sending this payload will display the following in slack (note: each element
+of the `Vec` has been space-separated):
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hello [Google](https://google.com), nice to know you.
 
-This technique can be used for any function that has the `Into<SlackText>` trait bound.
+This technique can be used for any function that has the `Into<SlackText>`
+trait bound.
 
 # License
 
-This library is distributed under similar terms to Rust: dual licensed under the MIT license and the Apache license (version 2.0).
+This library is distributed under similar terms to Rust: dual licensed under
+the MIT license and the Apache license (version 2.0).
 
-See [LICENSE-APACHE](LICENSE-APACHE), [LICENSE-MIT](LICENSE-MIT), and [COPYRIGHT](COPYRIGHT) for details.
+See [LICENSE-APACHE](LICENSE-APACHE), [LICENSE-MIT](LICENSE-MIT), and
+[COPYRIGHT](COPYRIGHT) for details.
