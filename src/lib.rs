@@ -20,9 +20,6 @@
 #[cfg(doctest)]
 pub struct ReadmeDoctests;
 
-#[macro_use]
-extern crate error_chain;
-
 pub use crate::attachment::{Action, Attachment, AttachmentBuilder, Field, Section};
 pub use crate::error::{Error, Result};
 pub use crate::hex::{HexColor, SlackColor};

@@ -1,4 +1,4 @@
-use crate::error::{Error, ErrorKind};
+use crate::error::Error;
 use std::{convert::TryFrom, str::FromStr};
 
 use hex::FromHex;
@@ -85,15 +85,14 @@ impl FromStr for HexColor {
 
         let num_chars = s.chars().count();
         if num_chars != 7 && num_chars != 4 {
-            return Err(ErrorKind::HexColor(format!(
+            return Err(Error::HexColor(format!(
                 "Must be 4 or 7 characters long (including #): \
                  found `{}`",
                 s
-            ))
-            .into());
+            )));
         }
         if !s.starts_with('#') {
-            return Err(ErrorKind::HexColor(format!("No leading #: found `{}`", s)).into());
+            return Err(Error::HexColor(format!("No leading #: found `{}`", s)));
         }
 
         // #d18 -> #dd1188
