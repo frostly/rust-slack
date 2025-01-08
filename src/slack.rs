@@ -1,4 +1,4 @@
-use crate::error::{ErrorKind, Result};
+use crate::error::{Error, Result};
 use crate::Payload;
 use chrono::NaiveDateTime;
 use reqwest::{blocking::Client, Url};
@@ -28,7 +28,7 @@ impl Slack {
         if response.status().is_success() {
             Ok(())
         } else {
-            Err(ErrorKind::Slack(format!("HTTP error {}", response.status())).into())
+            Err(Error::Slack(format!("HTTP error {}", response.status())))
         }
     }
 }
