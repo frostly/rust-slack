@@ -49,7 +49,7 @@ impl Serialize for SlackTime {
     where
         S: Serializer,
     {
-        serializer.serialize_i64(self.0.timestamp())
+        serializer.serialize_i64(self.0.and_utc().timestamp())
     }
 }
 
@@ -201,7 +201,7 @@ impl Serialize for SlackUserLink {
 mod test {
     use crate::slack::{Slack, SlackLink};
     use crate::{AttachmentBuilder, Field, Parse, PayloadBuilder, SlackText};
-    use chrono::NaiveDateTime;
+    use chrono::DateTime;
 
     #[test]
     fn slack_incoming_url_test() {
@@ -249,7 +249,9 @@ mod test {
             .color("#6800e8")
             .fields(vec![Field::new("title", "value", None)])
             .title_link("https://title_link.com/")
-            .ts(&NaiveDateTime::from_timestamp(123_456_789, 0))
+            .ts(&DateTime::from_timestamp(123_456_789, 0)
+                .unwrap()
+                .naive_utc())
             .build()
             .unwrap()];
 
