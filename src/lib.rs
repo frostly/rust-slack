@@ -15,6 +15,11 @@
 //! supports entire messaging API, including attachments and fields
 //! also support for built-in colors as well as any hex colors
 
+// Run doctests on the README
+#[doc = include_str!("../README.md")]
+#[cfg(doctest)]
+pub struct ReadmeDoctests;
+
 #[macro_use]
 extern crate error_chain;
 
