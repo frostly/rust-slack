@@ -202,8 +202,6 @@ mod test {
     use crate::slack::{Slack, SlackLink};
     use crate::{AttachmentBuilder, Field, Parse, PayloadBuilder, SlackText};
     use chrono::NaiveDateTime;
-    #[cfg(feature = "unstable")]
-    use test::Bencher;
 
     #[test]
     fn slack_incoming_url_test() {
