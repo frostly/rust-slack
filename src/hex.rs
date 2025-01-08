@@ -150,7 +150,7 @@ mod test {
 
     #[test]
     fn test_hex_color_good() {
-        let h: HexColor = HexColor::try_from(SlackColor::Good).unwrap();
+        let h: HexColor = HexColor::from(SlackColor::Good);
         assert_eq!(h.to_string(), "good");
     }
 

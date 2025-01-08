@@ -86,7 +86,7 @@ impl<'a> From<&'a str> for SlackText {
     }
 }
 
-impl<'a> From<String> for SlackText {
+impl From<String> for SlackText {
     fn from(s: String) -> SlackText {
         SlackText::new(s)
     }
@@ -105,7 +105,7 @@ pub enum SlackTextContent {
     User(SlackUserLink),
 }
 
-impl<'a> From<&'a [SlackTextContent]> for SlackText {
+impl From<&[SlackTextContent]> for SlackText {
     fn from(v: &[SlackTextContent]) -> SlackText {
         let st = v
             .iter()
