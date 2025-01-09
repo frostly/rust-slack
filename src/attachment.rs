@@ -81,6 +81,7 @@ pub enum Section {
     /// The fields.
     Fields,
 }
+
 /// Actions are defined as an array, and values contained within it will
 /// be displayed with the message.
 #[derive(Serialize, Debug, Clone, PartialEq)]
@@ -118,6 +119,7 @@ impl Action {
         }
     }
 }
+
 /// Fields are defined as an array, and hashes contained within it will
 /// be displayed in a table inside the message attachment.
 #[derive(Serialize, Debug, Clone, PartialEq)]
@@ -151,6 +153,7 @@ impl Field {
 
 /// `AttachmentBuilder` is used to build a `Attachment`
 #[derive(Debug)]
+#[must_use]
 pub struct AttachmentBuilder {
     inner: Result<Attachment>,
 }
@@ -159,8 +162,10 @@ impl AttachmentBuilder {
     /// Make a new `AttachmentBuilder`
     ///
     /// Fallback is the only required field which is a plain-text summary of the attachment.
-    pub fn new<S: Into<SlackText>>(fallback: S) -> AttachmentBuilder {
-        AttachmentBuilder {
+    // FIXME(cosmic): there's a bit of a miss-match where `fallback` is the only required field,
+    // but an `Attachment` can still be constructed with purely default values :thinking_face:
+    pub fn new<S: Into<SlackText>>(fallback: S) -> Self {
+        Self {
             inner: Ok(Attachment {
                 fallback: fallback.into(),
                 ..Default::default()
@@ -169,14 +174,11 @@ impl AttachmentBuilder {
     }
 
     /// Optional text that appears within the attachment
-    pub fn text<S: Into<SlackText>>(self, text: S) -> AttachmentBuilder {
-        match self.inner {
-            Ok(mut inner) => {
-                inner.text = Some(text.into());
-                AttachmentBuilder { inner: Ok(inner) }
-            }
-            _ => self,
+    pub fn text<S: Into<SlackText>>(mut self, text: S) -> Self {
+        if let Ok(inner) = &mut self.inner {
+            inner.text = Some(text.into());
         }
+        self
     }
 
     /// Set the color of the attachment
@@ -188,161 +190,125 @@ impl AttachmentBuilder {
     /// 3. Any valid hex color code: e.g. `#b13d41` or `#000`.
     ///
     /// hex color codes will be checked to ensure a valid hex number is provided
-    pub fn color<C: TryInto<HexColor, Error = Error>>(self, color: C) -> AttachmentBuilder {
-        match self.inner {
-            Ok(mut inner) => match color.try_into() {
-                Ok(c) => {
-                    inner.color = Some(c);
-                    AttachmentBuilder { inner: Ok(inner) }
-                }
-                Err(e) => AttachmentBuilder { inner: Err(e) },
-            },
-            _ => self,
+    pub fn color<C: TryInto<HexColor, Error = Error>>(mut self, color: C) -> Self {
+        if let Ok(inner) = &mut self.inner {
+            match color.try_into() {
+                Ok(c) => inner.color = Some(c),
+                Err(err) => self.inner = Err(err),
+            }
         }
+        self
     }
 
     /// Optional text that appears above the attachment block
-    pub fn pretext<S: Into<SlackText>>(self, pretext: S) -> AttachmentBuilder {
-        match self.inner {
-            Ok(mut inner) => {
-                inner.pretext = Some(pretext.into());
-                AttachmentBuilder { inner: Ok(inner) }
-            }
-            _ => self,
+    pub fn pretext<S: Into<SlackText>>(mut self, pretext: S) -> Self {
+        if let Ok(inner) = &mut self.inner {
+            inner.pretext = Some(pretext.into());
         }
+        self
     }
     /// Actions are defined as an array, and hashes contained within it will be
     /// displayed in a table inside the message attachment.
-    pub fn actions(self, actions: Vec<Action>) -> AttachmentBuilder {
-        match self.inner {
-            Ok(mut inner) => {
-                inner.actions = Some(actions);
-                AttachmentBuilder { inner: Ok(inner) }
-            }
-            _ => self,
+    pub fn actions(mut self, actions: Vec<Action>) -> Self {
+        if let Ok(inner) = &mut self.inner {
+            inner.actions = Some(actions);
         }
+        self
     }
     /// Fields are defined as an array, and hashes contained within it will be
     /// displayed in a table inside the message attachment.
-    pub fn fields(self, fields: Vec<Field>) -> AttachmentBuilder {
-        match self.inner {
-            Ok(mut inner) => {
-                inner.fields = Some(fields);
-                AttachmentBuilder { inner: Ok(inner) }
-            }
-            _ => self,
+    pub fn fields(mut self, fields: Vec<Field>) -> Self {
+        if let Ok(inner) = &mut self.inner {
+            inner.fields = Some(fields);
         }
+        self
     }
     /// Optional small text used to display the author's name.
-    pub fn author_name<S: Into<SlackText>>(self, author_name: S) -> AttachmentBuilder {
-        match self.inner {
-            Ok(mut inner) => {
-                inner.author_name = Some(author_name.into());
-                AttachmentBuilder { inner: Ok(inner) }
-            }
-            _ => self,
+    pub fn author_name<S: Into<SlackText>>(mut self, author_name: S) -> Self {
+        if let Ok(inner) = &mut self.inner {
+            inner.author_name = Some(author_name.into());
         }
+        self
     }
 
     url_builder_fn! {
         /// Optional URL that will hyperlink the `author_name`.
-        author_link, AttachmentBuilder
+        author_link, Self
     }
 
     url_builder_fn! {
         /// Optional URL that displays a small 16x16px image to the left of the `author_name` text.
-        author_icon, AttachmentBuilder
+        author_icon, Self
     }
 
     /// Optional larger, bolder text above the main body
-    pub fn title<S: Into<SlackText>>(self, title: S) -> AttachmentBuilder {
-        match self.inner {
-            Ok(mut inner) => {
-                inner.title = Some(title.into());
-                AttachmentBuilder { inner: Ok(inner) }
-            }
-            _ => self,
+    pub fn title<S: Into<SlackText>>(mut self, title: S) -> Self {
+        if let Ok(inner) = &mut self.inner {
+            inner.title = Some(title.into());
         }
+        self
     }
 
     /// Optional larger, bolder text above the main body
-    pub fn callback_id<S: Into<SlackText>>(self, callback_id: S) -> AttachmentBuilder {
-        match self.inner {
-            Ok(mut inner) => {
-                inner.callback_id = Some(callback_id.into());
-                AttachmentBuilder { inner: Ok(inner) }
-            }
-            _ => self,
+    pub fn callback_id<S: Into<SlackText>>(mut self, callback_id: S) -> Self {
+        if let Ok(inner) = &mut self.inner {
+            inner.callback_id = Some(callback_id.into());
         }
+        self
     }
 
     url_builder_fn! {
         /// Optional URL to link to from the title
-        title_link, AttachmentBuilder
+        title_link, Self
     }
 
     url_builder_fn! {
         /// Optional URL to an image that will be displayed in the body
-        image_url, AttachmentBuilder
+        image_url, Self
     }
 
     url_builder_fn! {
         /// Optional URL to an image that will be displayed as a thumbnail to the right of the body
-        thumb_url, AttachmentBuilder
+        thumb_url, Self
     }
 
     /// Optional text that will appear at the bottom of the attachment
-    pub fn footer<S: Into<SlackText>>(self, footer: S) -> AttachmentBuilder {
-        match self.inner {
-            Ok(mut inner) => {
-                inner.footer = Some(footer.into());
-                AttachmentBuilder { inner: Ok(inner) }
-            }
-            _ => self,
+    pub fn footer<S: Into<SlackText>>(mut self, footer: S) -> Self {
+        if let Ok(inner) = &mut self.inner {
+            inner.footer = Some(footer.into());
         }
+        self
     }
 
     url_builder_fn! {
         /// Optional URL to an image that will be displayed at the bottom of the attachment
-        footer_icon, AttachmentBuilder
+        footer_icon, Self
     }
 
     /// Optional timestamp to be displayed with the attachment
-    pub fn ts(self, time: &NaiveDateTime) -> AttachmentBuilder {
-        match self.inner {
-            Ok(mut inner) => {
-                inner.ts = Some(SlackTime::new(time));
-                AttachmentBuilder { inner: Ok(inner) }
-            }
-            _ => self,
+    pub fn ts(mut self, time: &NaiveDateTime) -> Self {
+        if let Ok(inner) = &mut self.inner {
+            inner.ts = Some(SlackTime::new(time));
         }
+        self
     }
 
     /// Optional sections formatted as markdown.
-    pub fn markdown_in<'a, I: IntoIterator<Item = &'a Section>>(
-        self,
-        sections: I,
-    ) -> AttachmentBuilder {
-        match self.inner {
-            Ok(mut inner) => {
-                inner.mrkdwn_in = Some(sections.into_iter().cloned().collect());
-                AttachmentBuilder { inner: Ok(inner) }
-            }
-            _ => self,
+    pub fn markdown_in<'a, I: IntoIterator<Item = &'a Section>>(mut self, sections: I) -> Self {
+        if let Ok(inner) = &mut self.inner {
+            inner.mrkdwn_in = Some(sections.into_iter().cloned().collect());
         }
+        self
     }
 
     /// Attempt to build the `Attachment`
-    pub fn build(self) -> Result<Attachment> {
+    pub fn build(mut self) -> Result<Attachment> {
         // set text to equal fallback if text wasn't specified
-        match self.inner {
-            Ok(mut inner) => {
-                if inner.text.is_none() {
-                    inner.text = Some(inner.fallback.clone())
-                }
-                Ok(inner)
+        if let Ok(inner) = &mut self.inner {
+            if inner.text.is_none() {
+                inner.text = Some(inner.fallback.clone());
             }
-            _ => self.inner,
         }
+        self.inner
     }
 }
