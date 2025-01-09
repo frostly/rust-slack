@@ -1,5 +1,5 @@
 use crate::error::Error;
-use std::{convert::TryFrom, str::FromStr};
+use std::{convert::TryFrom, fmt, str::FromStr};
 
 use hex::FromHex;
 use serde::Serialize;
@@ -12,6 +12,7 @@ use serde::Serialize;
 /// hex color codes will be checked to ensure a valid hex number is provided
 #[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct HexColor(String);
+
 impl HexColor {
     fn new<S: Into<String>>(s: S) -> HexColor {
         HexColor(s.into())
@@ -24,12 +25,13 @@ impl Default for HexColor {
     }
 }
 
-impl ::std::fmt::Display for HexColor {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        write!(f, "{}", self.0)
+impl fmt::Display for HexColor {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        self.0.fmt(f)
     }
 }
 
+// FIXME(cosmic): Why provide this when there's already `FromStr`? Some generic bound maybe?
 impl TryFrom<&str> for HexColor {
     type Error = Error;
 
@@ -52,9 +54,9 @@ pub enum SlackColor {
 
 const SLACK_COLORS: [&str; 3] = ["good", "warning", "danger"];
 
-impl ::std::fmt::Display for SlackColor {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        write!(f, "{}", self.as_ref())
+impl fmt::Display for SlackColor {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        self.as_ref().fmt(f)
     }
 }
 
@@ -149,7 +151,7 @@ mod test {
 
     #[test]
     fn test_hex_color_good() {
-        let h: HexColor = HexColor::from(SlackColor::Good);
+        let h: HexColor = SlackColor::Good.into();
         assert_eq!(h.to_string(), "good");
     }
 

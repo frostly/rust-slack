@@ -1,5 +1,4 @@
-use crate::error::{Error, Result};
-use crate::Payload;
+use crate::{Error, Payload, Result};
 use chrono::NaiveDateTime;
 use reqwest::{blocking::Client, Url};
 use serde::{Serialize, Serializer};
@@ -109,10 +108,10 @@ impl From<&[SlackTextContent]> for SlackText {
     fn from(v: &[SlackTextContent]) -> SlackText {
         let st = v
             .iter()
-            .map(|item| match *item {
-                SlackTextContent::Text(ref s) => format!("{}", s),
-                SlackTextContent::Link(ref link) => format!("{}", link),
-                SlackTextContent::User(ref u) => format!("{}", u),
+            .map(|item| match item {
+                SlackTextContent::Text(s) => s.to_string(),
+                SlackTextContent::Link(link) => link.to_string(),
+                SlackTextContent::User(u) => u.to_string(),
             })
             .collect::<Vec<String>>()
             .join(" ");
@@ -122,7 +121,7 @@ impl From<&[SlackTextContent]> for SlackText {
 
 impl fmt::Display for SlackText {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.0)
+        self.0.fmt(f)
     }
 }
 
@@ -159,7 +158,7 @@ impl Serialize for SlackLink {
     where
         S: Serializer,
     {
-        serializer.serialize_str(&format!("{}", self)[..])
+        serializer.serialize_str(&self.to_string())
     }
 }
 
@@ -193,7 +192,7 @@ impl Serialize for SlackUserLink {
     where
         S: Serializer,
     {
-        serializer.serialize_str(&format!("{}", self)[..])
+        serializer.serialize_str(&self.to_string())
     }
 }
 
@@ -215,7 +214,7 @@ mod test {
     #[test]
     fn slack_text_test() {
         let s = SlackText::new("moo <&> moo");
-        assert_eq!(format!("{}", s), "moo &lt;&amp;&gt; moo".to_owned());
+        assert_eq!(s.to_string(), "moo &lt;&amp;&gt; moo");
     }
 
     #[test]
@@ -224,10 +223,7 @@ mod test {
             text: SlackText::new("moo <&> moo"),
             url: "http://google.com".to_owned(),
         };
-        assert_eq!(
-            format!("{}", s),
-            "<http://google.com|moo &lt;&amp;&gt; moo>".to_owned()
-        );
+        assert_eq!(s.to_string(), "<http://google.com|moo &lt;&amp;&gt; moo>");
     }
 
     #[test]
@@ -238,7 +234,7 @@ mod test {
         };
         assert_eq!(
             serde_json::to_string(&s).unwrap(),
-            "\"<http://google.com|moo &lt;&amp;&gt; moo>\"".to_owned()
+            "\"<http://google.com|moo &lt;&amp;&gt; moo>\""
         )
     }
 
@@ -269,7 +265,7 @@ mod test {
             .unwrap();
 
         assert_eq!(serde_json::to_string(&p).unwrap(),
-            r##"{"text":"test message","channel":"#abc","username":"Bot","icon_url":"https://example.com/","icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","color":"#6800e8","fields":[{"title":"title","value":"value"}],"title_link":"https://title_link.com/","ts":123456789}],"unfurl_links":false,"link_names":1,"parse":"full"}"##.to_owned())
+            r##"{"text":"test message","channel":"#abc","username":"Bot","icon_url":"https://example.com/","icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","color":"#6800e8","fields":[{"title":"title","value":"value"}],"title_link":"https://title_link.com/","ts":123456789}],"unfurl_links":false,"link_names":1,"parse":"full"}"##)
     }
 
     #[test]
@@ -278,22 +274,21 @@ mod test {
 
         assert_eq!(
             serde_json::to_string(&p).unwrap(),
-            r##"{"text":"test message"}"##.to_owned()
+            r##"{"text":"test message"}"##
         )
     }
 
     #[test]
     fn slack_text_content_test() {
         use super::SlackTextContent;
-        use super::SlackTextContent::{Link, Text};
-        let message: Vec<SlackTextContent> = vec![
-            Text("moo <&> moo".into()),
-            Link(SlackLink::new("@USER", "M<E>")),
-            Text("wow.".into()),
+        let message = [
+            SlackTextContent::Text("moo <&> moo".into()),
+            SlackTextContent::Link(SlackLink::new("@USER", "M<E>")),
+            SlackTextContent::Text("wow.".into()),
         ];
-        let st: SlackText = SlackText::from(&message[..]);
+        let st = SlackText::from(&message[..]);
         assert_eq!(
-            format!("{}", st),
+            st.to_string(),
             "moo &lt;&amp;&gt; moo <@USER|M&lt;E&gt;> wow."
         );
     }

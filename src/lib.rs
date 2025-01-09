@@ -1,3 +1,4 @@
+// TODO(cosmic): switch from deny to warn (except for `unsafe_code`) and prune some of these
 #![deny(
     missing_docs,
     missing_debug_implementations,
@@ -20,6 +21,7 @@
 #[cfg(doctest)]
 pub struct ReadmeDoctests;
 
+// TODO(cosmic): We probably want _some_ level of nesting instead of having everything in the root
 pub use crate::attachment::{Action, Attachment, AttachmentBuilder, Field, Section};
 pub use crate::error::{Error, Result};
 pub use crate::hex::{HexColor, SlackColor};
