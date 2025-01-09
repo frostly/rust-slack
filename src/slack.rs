@@ -201,45 +201,40 @@ mod test {
     use crate::slack::{Slack, SlackLink};
     use crate::{AttachmentBuilder, Field, Parse, PayloadBuilder, SlackText};
     use chrono::DateTime;
+    use insta::{assert_json_snapshot, assert_snapshot};
 
     #[test]
-    fn slack_incoming_url_test() {
+    fn slack_incoming_url() {
         let s = Slack::new("https://hooks.slack.com/services/abc/123/45z").unwrap();
-        assert_eq!(
-            s.hook.to_string(),
-            "https://hooks.slack.com/services/abc/123/45z".to_owned()
-        );
+        assert_snapshot!(s.hook, @"https://hooks.slack.com/services/abc/123/45z");
     }
 
     #[test]
-    fn slack_text_test() {
+    fn slack_text() {
         let s = SlackText::new("moo <&> moo");
-        assert_eq!(s.to_string(), "moo &lt;&amp;&gt; moo");
+        assert_snapshot!(s, @"moo &lt;&amp;&gt; moo");
     }
 
     #[test]
-    fn slack_link_test() {
+    fn slack_link() {
         let s = SlackLink {
             text: SlackText::new("moo <&> moo"),
             url: "http://google.com".to_owned(),
         };
-        assert_eq!(s.to_string(), "<http://google.com|moo &lt;&amp;&gt; moo>");
+        assert_snapshot!(s, @"<http://google.com|moo &lt;&amp;&gt; moo>");
     }
 
     #[test]
-    fn json_slacklink_test() {
+    fn json_slacklink() {
         let s = SlackLink {
             text: SlackText::new("moo <&> moo"),
             url: "http://google.com".to_owned(),
         };
-        assert_eq!(
-            serde_json::to_string(&s).unwrap(),
-            "\"<http://google.com|moo &lt;&amp;&gt; moo>\""
-        )
+        assert_json_snapshot!(s, @r###""<http://google.com|moo &lt;&amp;&gt; moo>""###)
     }
 
     #[test]
-    fn json_complete_payload_test() {
+    fn json_complete_payload() {
         let a = vec![AttachmentBuilder::new("fallback <&>")
             .text("text <&>")
             .color("#6800e8")
@@ -264,22 +259,54 @@ mod test {
             .build()
             .unwrap();
 
-        assert_eq!(serde_json::to_string(&p).unwrap(),
-            r##"{"text":"test message","channel":"#abc","username":"Bot","icon_url":"https://example.com/","icon_emoji":":chart_with_upwards_trend:","attachments":[{"fallback":"fallback &lt;&amp;&gt;","text":"text &lt;&amp;&gt;","color":"#6800e8","fields":[{"title":"title","value":"value"}],"title_link":"https://title_link.com/","ts":123456789}],"unfurl_links":false,"link_names":1,"parse":"full"}"##)
+        assert_json_snapshot!(
+            p,
+            @r###"
+            {
+              "text": "test message",
+              "channel": "#abc",
+              "username": "Bot",
+              "icon_url": "https://example.com/",
+              "icon_emoji": ":chart_with_upwards_trend:",
+              "attachments": [
+                {
+                  "fallback": "fallback &lt;&amp;&gt;",
+                  "text": "text &lt;&amp;&gt;",
+                  "color": "#6800e8",
+                  "fields": [
+                    {
+                      "title": "title",
+                      "value": "value"
+                    }
+                  ],
+                  "title_link": "https://title_link.com/",
+                  "ts": 123456789
+                }
+              ],
+              "unfurl_links": false,
+              "link_names": 1,
+              "parse": "full"
+            }
+            "###
+        );
     }
 
     #[test]
-    fn json_message_payload_test() {
+    fn json_message_payload() {
         let p = PayloadBuilder::new().text("test message").build().unwrap();
 
-        assert_eq!(
-            serde_json::to_string(&p).unwrap(),
-            r##"{"text":"test message"}"##
-        )
+        assert_json_snapshot!(
+            p,
+            @r###"
+            {
+              "text": "test message"
+            }
+            "###,
+        );
     }
 
     #[test]
-    fn slack_text_content_test() {
+    fn slack_text_content() {
         use super::SlackTextContent;
         let message = [
             SlackTextContent::Text("moo <&> moo".into()),
@@ -287,9 +314,6 @@ mod test {
             SlackTextContent::Text("wow.".into()),
         ];
         let st = SlackText::from(&message[..]);
-        assert_eq!(
-            st.to_string(),
-            "moo &lt;&amp;&gt; moo <@USER|M&lt;E&gt;> wow."
-        );
+        assert_snapshot!(st, @"moo &lt;&amp;&gt; moo <@USER|M&lt;E&gt;> wow.");
     }
 }

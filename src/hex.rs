@@ -118,64 +118,73 @@ impl FromStr for HexColor {
 
 #[cfg(test)]
 mod test {
-    use super::*;
-    use crate::HexColor;
     use std::convert::TryFrom;
 
-    #[test]
-    fn test_hex_color_too_short() {
-        let err = HexColor::try_from("abc").unwrap_err();
-        assert_eq!(
-            err.to_string(),
-            "hex color parsing error: Must be 4 or 7 characters long (including #): found \
-             `abc`"
-        );
+    use super::*;
+    use crate::HexColor;
+
+    use insta::assert_snapshot;
+
+    mod err {
+        use super::*;
+
+        #[test]
+        fn too_short() {
+            let err = HexColor::try_from("abc").unwrap_err();
+            assert_snapshot!(
+                err,
+                @"hex color parsing error: Must be 4 or 7 characters long (including #): found `abc`"
+            );
+        }
+
+        #[test]
+        fn missing_hash() {
+            let err = HexColor::try_from("1234567").unwrap_err();
+            assert_snapshot!(
+                err,
+                @"hex color parsing error: No leading #: found `1234567`"
+            );
+        }
+
+        #[test]
+        fn invalid_hex_char() {
+            let err = HexColor::try_from("#abc12z").unwrap_err();
+            assert_snapshot!(err, @"Invalid character 'z' at position 5");
+        }
     }
 
-    #[test]
-    fn test_hex_color_missing_hash() {
-        let err = HexColor::try_from("1234567").unwrap_err();
-        assert_eq!(
-            err.to_string(),
-            "hex color parsing error: No leading #: found `1234567`"
-        );
-    }
+    mod ok {
+        use super::*;
 
-    #[test]
-    fn test_hex_color_invalid_hex_fmt() {
-        let err = HexColor::try_from("#abc12z").unwrap_err();
-        assert!(err
-            .to_string()
-            .contains("Invalid character 'z' at position 5"));
-    }
+        fn assert_hexcolor_roundtrip(color: &str) {
+            let ok: HexColor = color.parse().expect("color should be valid");
+            assert_eq!(ok.to_string(), color, "Color should roundtrip");
+        }
 
-    #[test]
-    fn test_hex_color_good() {
-        let h: HexColor = SlackColor::Good.into();
-        assert_eq!(h.to_string(), "good");
-    }
+        #[test]
+        fn good_variant() {
+            let h: HexColor = SlackColor::Good.into();
+            assert_snapshot!(h, @"good");
+        }
 
-    #[test]
-    fn test_hex_color_danger_str() {
-        let ok = HexColor::try_from("danger").unwrap();
-        assert_eq!(ok.to_string(), "danger");
-    }
+        #[test]
+        fn danger_str() {
+            assert_hexcolor_roundtrip("danger");
+        }
 
-    #[test]
-    fn test_hex_color_3_char_hex() {
-        let ok = HexColor::try_from("#d18").unwrap();
-        assert_eq!(ok.to_string(), "#d18");
-    }
+        #[test]
+        fn short_hex() {
+            assert_hexcolor_roundtrip("#d18");
+        }
 
-    #[test]
-    fn test_hex_color_valid_upper_hex() {
-        let ok = HexColor::try_from("#103D18").unwrap();
-        assert_eq!(ok.to_string(), "#103D18");
-    }
+        #[test]
+        fn upper_hex() {
+            assert_hexcolor_roundtrip("#103D18");
+        }
 
-    #[test]
-    fn test_hex_color_valid_lower_hex() {
-        let ok = HexColor::try_from("#103d18").unwrap();
-        assert_eq!(ok.to_string(), "#103d18");
+        #[test]
+        fn lower_hex() {
+            assert_hexcolor_roundtrip("#103d18");
+        }
     }
 }
