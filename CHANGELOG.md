@@ -1,3 +1,31 @@
+## [0.9.0](https://github.com/frostly/rust-slack/tree/0.9.0)
+
+### Breaking Changes
+
+- Replace `error-chain` with a manual implementation #42
+
+### Features
+
+- Add an asynchronous client and move the synchronous "blocking" client #47
+
+### Docs
+
+- Fix `cargo doc` warnings #34
+- Cleanup `Cargo.toml` definitions #39
+- Cleanup and update README #40
+- Document our `rust-version` #46
+
+### Other
+
+- Resolve `clippy` and `rustfmt` warnings #31
+- Switch CI from Travis to GitHub actions #32
+- Update to 2018 Edition #33
+- Update outdated dependencies #35
+- Resolve warnings #41
+- Pull CI back into the modern age #43
+- Update `reqwest` to the latest version #44
+- Internal refactoring and test cleanup #45
+
 ## [0.8.0](https://github.com/frostly/rust-slack/tree/0.8.0)
 
 ### Features
