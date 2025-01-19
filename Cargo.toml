@@ -1,6 +1,6 @@
 [package]
 name = "slack-hook"
-version = "0.9.0-dev"
+version = "0.9.0-rc.1"
 description = "A rust crate for sending messages to Slack via webhooks."
 authors = ["Christopher Brickley <brickley@gmail.com>"]
 keywords = ["slack", "webhook", "hook", "messaging"]
