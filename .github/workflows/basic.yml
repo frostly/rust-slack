@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        features: ['', '--all-features']
         rust:
           - stable
           - beta
@@ -25,15 +26,17 @@ jobs:
 
       - name: Cache
         uses: Swatinem/rust-cache@v2
+        with:
+          prefix-key: ${{ matrix.features }}
 
       - name: Build all targets
-        run: cargo build --all-targets
+        run: cargo build --all-targets ${{ matrix.features }}
 
       - name: Run the test suite
-        run: cargo test
+        run: cargo test ${{ matrix.features }}
 
       - name: Check formatting
         run: cargo fmt --check
 
       - name: Check clippy lints
-        run: cargo clippy -- -D warnings
+        run: cargo clippy ${{ matrix.features }} -- -D warnings
