@@ -11,13 +11,14 @@
     unused_results,
     rust_2018_idioms
 )]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 
 //! Library to send messages to slack rooms
 //! supports entire messaging API, including attachments and fields
 //! also support for built-in colors as well as any hex colors
 
 // Run doctests on the README
-#[doc = include_str!("../README.md")]
+#[cfg_attr(feature = "blocking", doc = include_str!("../README.md"))]
 #[cfg(doctest)]
 pub struct ReadmeDoctests;
 
@@ -32,6 +33,10 @@ pub use crate::slack::{Slack, SlackLink, SlackText, SlackTextContent, SlackTime,
 mod macros;
 
 mod attachment;
+/// A blocking slack client
+#[cfg(feature = "blocking")]
+#[cfg_attr(docsrs, doc(cfg(feature = "blocking")))]
+pub mod blocking;
 mod error;
 mod hex;
 mod payload;

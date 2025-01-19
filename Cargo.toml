@@ -9,9 +9,13 @@ repository = "https://github.com/frostly/rust-slack"
 edition = "2018"
 rust-version = "1.67.1"
 
+[features]
+# Enables use of the synchronous "blocking" Client
+blocking = ["reqwest/blocking"]
+
 [dependencies]
 chrono = "0.4.39"
-reqwest = { version = "0.12.12", features = ["blocking", "json"] }
+reqwest = { version = "0.12.12", features = ["json"] }
 hex = "0.4.3"
 serde = { version = "1.0.217", features = ["derive"] }
 serde_json = "1.0.135"
@@ -20,3 +24,7 @@ url = { version = "2.5.4", features = ["serde"] }
 
 [dev-dependencies]
 insta = { version = "1.42.0", features = ["json"] }
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
