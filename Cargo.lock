@@ -1047,7 +1047,7 @@ dependencies = [
 
 [[package]]
 name = "slack-hook"
-version = "0.9.0-dev"
+version = "0.9.0-rc.1"
 dependencies = [
  "chrono",
  "hex",
