@@ -12,18 +12,22 @@ A rust crate for sending messages to Slack via webhooks.
 
 Upgrading? See the [CHANGELOG](./CHANGELOG.md).
 
+# Features
+
+- **blocking**: Provides a synchronous "blocking" slack client
+
 # Usage
 
 Simply run this to add it to your `Cargo.toml`:
 
 ```console
-cargo add slack-hook
+cargo add slack-hook --features=blocking
 ```
 
 and then start sending messages!
 
 ```rust,no_run
-use slack_hook::{Slack, PayloadBuilder};
+use slack_hook::{blocking::Slack, PayloadBuilder};
 
 fn main() {
     let slack = Slack::new("https://hooks.slack.com/services/abc/123/45z").unwrap();

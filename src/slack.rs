@@ -1,6 +1,6 @@
 use crate::{Error, Payload, Result};
 use chrono::NaiveDateTime;
-use reqwest::{blocking::Client, Url};
+use reqwest::{Client, Url};
 use serde::{Serialize, Serializer};
 use std::fmt;
 
@@ -21,8 +21,13 @@ impl Slack {
     }
 
     /// Send payload to slack service
-    pub fn send(&self, payload: &Payload) -> Result<()> {
-        let response = self.client.post(self.hook.clone()).json(payload).send()?;
+    pub async fn send(&self, payload: &Payload) -> Result<()> {
+        let response = self
+            .client
+            .post(self.hook.clone())
+            .json(payload)
+            .send()
+            .await?;
 
         if response.status().is_success() {
             Ok(())
