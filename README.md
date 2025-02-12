@@ -15,6 +15,9 @@ Upgrading? See the [CHANGELOG](./CHANGELOG.md).
 # Features
 
 - **blocking**: Provides a synchronous "blocking" slack client
+- **default-tls** _(enabled by default)_: Provides TLS support to connect over HTTPS
+- **native-tls**: Enables TLS functionality provided by [`native-tls`](https://crates.io/crates/native-tls)
+- **rustls-tls**: Enables TLS functionality provided by [`rustls`](https://crates.io/crates/rustls)
 
 # Usage
 

@@ -11,7 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        features: ['', '--all-features']
+        features:
+          - ''
+          - '--features=blocking'
+          - '--no-default-features'
+          - '--no-default-features --features=rustls-tls'
         rust:
           - stable
           - beta

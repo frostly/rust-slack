@@ -11,8 +11,16 @@ edition = "2018"
 rust-version = "1.67.1"
 
 [features]
-# Enables use of the synchronous "blocking" Client
+default = ["default-tls"]
+
+# Enables use of the synchronous "blocking" HTTP client
 blocking = ["reqwest/blocking"]
+# Provides TLS support to connect over HTTPS
+default-tls = ["reqwest/default-tls"]
+# Enables TLS functionality provided by `native-tls`
+native-tls = ["reqwest/native-tls"]
+# Enables TLS functionality provided by `rustls`
+rustls-tls = ["reqwest/rustls-tls"]
 
 [dependencies]
 chrono = "0.4.39"
