@@ -14,10 +14,15 @@ pub struct Slack {
 impl Slack {
     /// Construct a new instance of slack for a specific incoming url endpoint.
     pub fn new<T: reqwest::IntoUrl>(hook: T) -> Result<Slack> {
-        Ok(Slack {
-            hook: hook.into_url()?,
-            client: Client::new(),
-        })
+        Self::new_with_client(hook, Client::new())
+    }
+
+    /// The same as [`Slack::new()`], but with a custom [`reqwest::Client`]
+    ///
+    /// This allows for configuring custom proxies, DNS resolvers, etc.
+    pub fn new_with_client<T: reqwest::IntoUrl>(hook: T, client: Client) -> Result<Self> {
+        let hook = hook.into_url()?;
+        Ok(Self { hook, client })
     }
 
     /// Send payload to slack service
