@@ -1,3 +1,16 @@
+## [0.9.1](https://github.com/frostly/rust-slack/tree/0.9.1)
+
+A small release with some useful features. Enjoy :)
+
+### Features
+
+- Allow for creating a slack client with a customized `reqwest::Client` #51
+- Allow for using different TLS implementations with feature flags #52 #53
+
+### Docs
+
+- Cleanup some of the README's codeblocks #54
+
 ## [0.9.0](https://github.com/frostly/rust-slack/tree/0.9.0)
 
 ### Breaking Changes
