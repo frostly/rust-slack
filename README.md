@@ -1,4 +1,4 @@
-# rust-slack
+# slack-hook
 
 [![CI](https://github.com/frostly/rust-slack/actions/workflows/basic.yml/badge.svg)](https://github.com/frostly/rust-slack/actions/workflows/basic.yml)
 [![Documentation](https://img.shields.io/badge/docs-latest-C9893D.svg)](https://docs.rs/slack-hook/)
@@ -32,20 +32,18 @@ and then start sending messages!
 ```rust,no_run
 use slack_hook::{blocking::Slack, PayloadBuilder};
 
-fn main() {
-    let slack = Slack::new("https://hooks.slack.com/services/abc/123/45z").unwrap();
-    let payload = PayloadBuilder::new()
-        .text("test message")
-        .channel("#testing")
-        .username("My Bot")
-        .icon_emoji(":chart_with_upwards_trend:")
-        .build()
-        .expect("we know this payload is valid");
+let slack = Slack::new("https://hooks.slack.com/services/abc/123/45z").unwrap();
+let payload = PayloadBuilder::new()
+    .text("test message")
+    .channel("#testing")
+    .username("My Bot")
+    .icon_emoji(":chart_with_upwards_trend:")
+    .build()
+    .expect("we know this payload is valid");
 
-    match slack.send(&payload) {
-        Ok(()) => println!("Message sent!"),
-        Err(err) => eprintln!("Error: {err:?}")
-    }
+match slack.send(&payload) {
+    Ok(()) => println!("Message sent!"),
+    Err(err) => eprintln!("Error: {err:?}")
 }
 ```
 
@@ -75,17 +73,15 @@ follows:
 ```rust
 use slack_hook::{PayloadBuilder, SlackTextContent, SlackLink};
 
-fn main() {
-    let text = [
-        SlackTextContent::Text("Hello".into()),
-        SlackTextContent::Link(SlackLink::new("https://google.com", "Google")),
-        SlackTextContent::Text(", nice to know you.".into())
-    ];
-  let _ = PayloadBuilder::new()
-    .text(text.as_slice())
-    .build()
-    .unwrap();
-}
+let text = [
+    SlackTextContent::Text("Hello".into()),
+    SlackTextContent::Link(SlackLink::new("https://google.com", "Google")),
+    SlackTextContent::Text(", nice to know you.".into())
+];
+let _ = PayloadBuilder::new()
+.text(text.as_slice())
+.build()
+.unwrap();
 ```
 
 Sending this payload will display the following in slack (note: each element
