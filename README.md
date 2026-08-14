@@ -1,3 +1,8 @@
+> [!IMPORTANT]
+> Moved to codeberg :wave:
+>
+> <https://codeberg.org/CosmicHarper/slack-hook>
+
 # slack-hook
 
 [![CI](https://github.com/frostly/rust-slack/actions/workflows/basic.yml/badge.svg)](https://github.com/frostly/rust-slack/actions/workflows/basic.yml)
